@@ -1,0 +1,32 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.evacuateme.Fragment.SignInFragment">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Введите подтверждающий код из СМС:"
+        android:id="@+id/input_sms_TV"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/input_sms_TV"
+        android:id="@+id/input_sms_ET"
+        android:hint="1234"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Вход в приложение"
+        android:id="@+id/signIn_BTN"
+        android:layout_below="@id/input_sms_ET"/>
+
+</RelativeLayout>
+
+</FrameLayout>

@@ -1,0 +1,51 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.evacuateme.Fragment.RegistrationFragment">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Введите Вашем имя:"
+            android:id="@+id/input_name_TV"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/input_name_TV"
+            android:id="@+id/input_name_ET"
+            android:hint="Иван"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/input_reg_sms_TV"
+            android:text="Введите код из СМС:"
+            android:layout_below="@id/input_name_ET"
+            android:layout_marginTop="10dp"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/input_reg_sms_ET"
+            android:layout_below="@id/input_reg_sms_TV"
+            android:hint="1234"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Вход в приложение"
+            android:id="@+id/signUp_BTN"
+            android:layout_below="@id/input_reg_sms_ET"/>
+
+
+
+    </RelativeLayout>
+
+</FrameLayout>
