@@ -17,15 +17,16 @@ public class LogRegActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_reg);
         Intent intent = getIntent();
+        Bundle bundle = new Bundle();
+        bundle.putString("phoneNumber", intent.getStringExtra("phoneNumber"));
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         if(intent.getBooleanExtra("isExist", false)){
             SignInFragment signInFragment = new SignInFragment();
+            signInFragment.setArguments(bundle);
             fragmentTransaction.replace(R.id.log_reg_container_fragment, signInFragment);
         }
         else {
             RegistrationFragment registrationFragment = new RegistrationFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("phoneNumber", intent.getStringExtra("phoneNumber"));
             registrationFragment.setArguments(bundle);
             fragmentTransaction.replace(R.id.log_reg_container_fragment, registrationFragment);
         }

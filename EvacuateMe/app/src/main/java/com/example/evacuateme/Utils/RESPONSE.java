@@ -5,8 +5,9 @@ package com.example.evacuateme.Utils;
  */
 
 public class RESPONSE {
-    public static int Ok = 200;
-    public static int NotFound = 404;
-    public static int Unauthorized = 401;
-    public static int Created = 201;
+    public static final int Ok = 200;
+    public static final int NotFound = 404;
+    public static final int Unauthorized = 401;
+    public static final int Created = 201;
+    public static final int BadRequest = 400;
 }

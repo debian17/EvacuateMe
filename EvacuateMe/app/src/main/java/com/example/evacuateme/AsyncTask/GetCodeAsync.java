@@ -55,46 +55,23 @@ public class GetCodeAsync extends AsyncTask<Void, Void, Response<ResponseBody>> 
     protected void onPostExecute(Response<ResponseBody> stringResponse) {
         super.onPostExecute(stringResponse);
         progressDialog.dismiss();
-        boolean result;
+        boolean result = false;
         if(stringResponse == null){
             Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже!",
                    Toast.LENGTH_SHORT).show();
            return;
         }
-
-        if(stringResponse.code() == RESPONSE.Ok){
-            result = true;
-        }
-        else {
-            Toast.makeText(context, "СМС сервис не работает!",
-                    Toast.LENGTH_SHORT).show();
-           return;
+        switch (stringResponse.code()){
+            case RESPONSE.Ok:{
+                result = true;
+                break;
+            }
+            default:{
+                Toast.makeText(context, "Внутренняя ошибка сервера.",
+                        Toast.LENGTH_SHORT).show();
+                break;
+            }
         }
         getCodeCallBack.getCodeCallBack(result);
     }
-
-    //    @Override
-//    protected void onPostExecute(Response<String> result) {
-//        progressDialog.dismiss();
-//        boolean res = false;
-//
-////        if(result == null){
-////            Log.d("TAG", "Косяк в геткоде");
-////            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже!",
-////                    Toast.LENGTH_SHORT).show();
-////            return;
-////        }
-//        Log.d("TAG", String.valueOf(result.code()));
-//
-//        if(result.code() == RESPONSE.Ok){
-//            res = true;
-//        }
-//        else {
-//            Toast.makeText(context, "СМС сервис не работает!",
-//                    Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        getCodeCallBack.getCodeCallBack(res);
-//        super.onPostExecute(result);
-//    }
 }

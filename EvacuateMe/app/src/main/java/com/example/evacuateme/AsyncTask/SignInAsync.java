@@ -3,10 +3,9 @@ package com.example.evacuateme.AsyncTask;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.example.evacuateme.Interface.IsUserExistsCallBack;
+import com.example.evacuateme.Interface.SignInCallBack;
 import com.example.evacuateme.Utils.App;
 import com.example.evacuateme.Utils.RESPONSE;
 
@@ -16,25 +15,27 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 /**
- * Created by Андрей Кравченко on 14-Apr-17.
+ * Created by Андрей Кравченко on 15-Apr-17.
  */
 
-public class IsUserExistsAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
-    private String phoneNumber;
-    private ProgressDialog progressDialog;
+public class SignInAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
     private Context context;
-    private IsUserExistsCallBack isUserExistsCallBack;
+    private String phoneNumber;
+    private String code;
+    private SignInCallBack signInCallBack;
+    private ProgressDialog progressDialog;
 
-    public IsUserExistsAsync(Context context, String phoneNumber, IsUserExistsCallBack isUserExistsCallBack){
+    public SignInAsync(Context context, String phoneNumber, String code, SignInCallBack signInCallBack){
         this.context = context;
         this.phoneNumber = phoneNumber;
-        this.isUserExistsCallBack = isUserExistsCallBack;
+        this.code = code;
+        this.signInCallBack = signInCallBack;
     }
 
     @Override
     protected void onPreExecute() {
         progressDialog = new ProgressDialog(context);
-        progressDialog.setMessage("Определяю Вас в системе...");
+        progressDialog.setMessage("Вход в систему...");
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
@@ -44,7 +45,7 @@ public class IsUserExistsAsync extends AsyncTask<Void, Void, Response<ResponseBo
     @Override
     protected Response<ResponseBody> doInBackground(Void... params) {
         try {
-            return App.getApi().isUserExists(phoneNumber).execute();
+            return App.getApi().signIn(phoneNumber, code).execute();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,27 +53,35 @@ public class IsUserExistsAsync extends AsyncTask<Void, Void, Response<ResponseBo
     }
 
     @Override
-    protected void onPostExecute(Response<ResponseBody> result) {
-        super.onPostExecute(result);
+    protected void onPostExecute(Response<ResponseBody> responseBody) {
+        super.onPostExecute(responseBody);
         progressDialog.dismiss();
-        boolean isExist = false;
-        if(result == null){
+        boolean result = false;
+        String api_key = "";
+
+        if(responseBody == null){
             Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT)
                     .show();
             return;
         }
-        switch (result.code()){
+        switch (responseBody.code()){
             case RESPONSE.Ok:{
-                isExist = true;
-                break;
-            }
-            case RESPONSE.BadRequest:{
-                Toast.makeText(context, "Неверный формат номер телефона!", Toast.LENGTH_SHORT)
-                        .show();
+                try {
+                    api_key = responseBody.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                result = true;
                 break;
             }
             case RESPONSE.NotFound:{
-                isExist = false;
+                Toast.makeText(context, "Неверно введен проверочный код!", Toast.LENGTH_SHORT)
+                        .show();
+                break;
+            }
+            case RESPONSE.BadRequest:{
+                Toast.makeText(context, "Неверно введен номер телефона или проверочный код!", Toast.LENGTH_SHORT)
+                        .show();
                 break;
             }
             default:{
@@ -81,6 +90,6 @@ public class IsUserExistsAsync extends AsyncTask<Void, Void, Response<ResponseBo
                 break;
             }
         }
-        isUserExistsCallBack.completed(isExist);
+        signInCallBack.completed(result, api_key);
     }
 }

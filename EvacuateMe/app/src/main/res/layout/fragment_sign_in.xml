@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/input_sms_TV"
         android:id="@+id/input_sms_ET"
-        android:hint="1234"/>
+        android:hint="1234"
+        android:inputType="number"/>
 
     <Button
         android:layout_width="wrap_content"

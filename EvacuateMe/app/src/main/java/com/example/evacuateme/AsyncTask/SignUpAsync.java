@@ -2,9 +2,11 @@ package com.example.evacuateme.AsyncTask;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.icu.text.LocaleDisplayNames;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.evacuateme.Interface.SignUpCallBack;
@@ -17,11 +19,13 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by Андрей Кравченко on 14-Apr-17.
  */
 
-public class SignUpAsync extends AsyncTask<Void, Void, Response<String>> {
+public class SignUpAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
 
     private Context context;
     private String phoneNumber;
@@ -29,6 +33,7 @@ public class SignUpAsync extends AsyncTask<Void, Void, Response<String>> {
     private String code;
     private SignUpCallBack signUpCallBack;
     private ProgressDialog progressDialog;
+    private SharedPreferences sharedPreferences;
 
     public SignUpAsync(Context context, String phoneNumber, String name, String code, SignUpCallBack signUpCallBack){
         this.context = context;
@@ -49,7 +54,7 @@ public class SignUpAsync extends AsyncTask<Void, Void, Response<String>> {
     }
 
     @Override
-    protected Response<String> doInBackground(Void... params) {
+    protected Response<ResponseBody> doInBackground(Void... params) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("phone", phoneNumber);
         jsonObject.addProperty("code", code);
@@ -63,24 +68,42 @@ public class SignUpAsync extends AsyncTask<Void, Void, Response<String>> {
     }
 
     @Override
-    protected void onPostExecute(Response<String> responseBodyResponse) {
-        super.onPostExecute(responseBodyResponse);
+    protected void onPostExecute(Response<ResponseBody> responseBody) {
+        super.onPostExecute(responseBody);
         progressDialog.dismiss();
-        boolean res = false;
-
-        if(responseBodyResponse == null){
+        boolean result = false;
+        String api_key = "";
+        if(responseBody == null){
             Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT)
                     .show();
             return;
         }
-
-        if(responseBodyResponse.code() == RESPONSE.Ok){
-            Log.d("TAG", responseBodyResponse.body());
-            res = true;
+        switch (responseBody.code()){
+            case RESPONSE.Created:{
+                try {
+                    api_key = responseBody.body().string();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                result = true;
+                break;
+            }
+            case RESPONSE.BadRequest:{
+                Toast.makeText(context, "Неверный формат номер телефона!", Toast.LENGTH_SHORT)
+                        .show();
+                break;
+            }
+            case RESPONSE.NotFound:{
+                Toast.makeText(context, "Неверно введен проверочный код!", Toast.LENGTH_SHORT)
+                        .show();
+                break;
+            }
+            default:{
+                Toast.makeText(context, "Внутренняя ошибка сервера!", Toast.LENGTH_SHORT)
+                        .show();
+                break;
+            }
         }
-        else {
-            res = false;
-        }
-        signUpCallBack.completed(res);
+        signUpCallBack.completed(result, api_key);
     }
 }
