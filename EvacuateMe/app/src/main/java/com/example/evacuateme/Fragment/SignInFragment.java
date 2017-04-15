@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.evacuateme.Activity.NavigationDrawerActivity;
 import com.example.evacuateme.Activity.Test_LogReg;
 import com.example.evacuateme.AsyncTask.SignInAsync;
 import com.example.evacuateme.Interface.SignInCallBack;
@@ -54,7 +55,7 @@ public class SignInFragment extends Fragment {
                                         SharedPreferences.Editor editor_isLogin = sharedPreferences.edit();
                                         editor_isLogin.putBoolean("is_login", true);
                                         editor_isLogin.apply();
-                                        Intent intent = new Intent(getContext(), Test_LogReg.class);
+                                        Intent intent = new Intent(getContext(), NavigationDrawerActivity.class);
                                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);
                                     }

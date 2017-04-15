@@ -32,12 +32,11 @@ public class MainActivity extends AppCompatActivity implements IsUserExistsCallB
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkPermission();
-        sharedPreferences = getSharedPreferences("API_KEY", MODE_PRIVATE);
-        Log.d("TAG_API", sharedPreferences.getString("API_KEY", ""));
         sharedPreferences = getSharedPreferences("IS_LOGIN", MODE_PRIVATE);
         if(sharedPreferences.getBoolean("is_login", false)){
             Log.d("TAG","SP = true");
-            Intent intent = new Intent(MainActivity.this, Test_LogReg.class);
+            Intent intent = new Intent(MainActivity.this, NavigationDrawerActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
         else {
