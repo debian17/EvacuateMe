@@ -34,13 +34,11 @@ public class MainActivity extends AppCompatActivity implements IsUserExistsCallB
         checkPermission();
         sharedPreferences = getSharedPreferences("IS_LOGIN", MODE_PRIVATE);
         if(sharedPreferences.getBoolean("is_login", false)){
-            Log.d("TAG","SP = true");
             Intent intent = new Intent(MainActivity.this, NavigationDrawerActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
         }
         else {
-            Log.d("TAG","SP = false");
             start_BTN = (Button) findViewById(R.id.start_BTN);
             phoneNumber_ET = (EditText) findViewById(R.id.phoneNumber_ET);
             start_BTN.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +76,24 @@ public class MainActivity extends AppCompatActivity implements IsUserExistsCallB
         }
     }
 
+    @Override
+    public void completed(boolean isExist) {
+        this.isExist = isExist;
+        GetCodeAsync getCodeAsync = new GetCodeAsync(MainActivity.this,
+                phoneNumber_ET.getText().toString(), MainActivity.this);
+        getCodeAsync.execute();
+    }
+
+    @Override
+    public void getCodeCallBack(boolean result) {
+        if(result){
+            Intent intent = new Intent(MainActivity.this, LogRegActivity.class);
+            intent.putExtra("isExist", isExist);
+            intent.putExtra("phoneNumber", phoneNumber_ET.getText().toString());
+            startActivity(intent);
+        }
+    }
+
     private void checkPermission(){
         if (ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -90,30 +106,12 @@ public class MainActivity extends AppCompatActivity implements IsUserExistsCallB
         }
     }
 
-    @Override
-    public void completed(boolean isExist) {
-        this.isExist = isExist;
-        GetCodeAsync getCodeAsync = new GetCodeAsync(MainActivity.this,
-                phoneNumber_ET.getText().toString(), MainActivity.this);
-        getCodeAsync.execute();
-    }
-
     private boolean isNumberEmpty(){
         if(phoneNumber_ET.getText().toString().equals("")){
             return true;
         }
         else{
             return false;
-        }
-    }
-
-    @Override
-    public void getCodeCallBack(boolean result) {
-        if(result){
-            Intent intent = new Intent(MainActivity.this, LogRegActivity.class);
-            intent.putExtra("isExist", isExist);
-            intent.putExtra("phoneNumber", phoneNumber_ET.getText().toString());
-            startActivity(intent);
         }
     }
 }

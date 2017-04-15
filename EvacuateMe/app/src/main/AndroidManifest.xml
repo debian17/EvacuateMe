@@ -27,7 +27,7 @@
         <activity android:name=".Activity.Test_LogReg" />
         <activity
             android:name=".Activity.NavigationDrawerActivity"
-            android:label="@string/title_activity_navigation_drawer"
+            android:label="EvacuateMe"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
