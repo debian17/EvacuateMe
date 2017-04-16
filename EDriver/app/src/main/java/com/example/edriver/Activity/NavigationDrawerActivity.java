@@ -1,8 +1,12 @@
 package com.example.edriver.Activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +21,8 @@ import com.example.edriver.R;
 
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private FragmentTransaction fragmentTransaction;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,38 +59,51 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        switch (id){
+            case R.id.nav_map:{
+                break;
+            }
+            case R.id.nav_orders:{
+                break;
+            }
+            case R.id.nav_settings:{
+                break;
+            }
+            case R.id.nav_test:{
+                break;
+            }
+            case R.id.nav_exit:{
+                exit();
+                break;
+            }
         }
-
+        fragmentTransaction.commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void exit(){
+        sharedPreferences = getSharedPreferences("IS_LOGIN", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor_isLogin = sharedPreferences.edit();
+        editor_isLogin.putBoolean("is_login", false);
+        editor_isLogin.apply();
+        sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor_api_key = sharedPreferences.edit();
+        editor_api_key.putString("is_login", "");
+        editor_api_key.apply();
+        Intent intent = new Intent(NavigationDrawerActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
 }

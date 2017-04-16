@@ -3,6 +3,7 @@ package com.example.edriver.AsyncTask;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.edriver.Interface.IsUserExistCallBack;
@@ -43,8 +44,12 @@ public class IsUserExistAsync extends AsyncTask<Void, Void, Response<ResponseBod
 
     @Override
     protected Response<ResponseBody> doInBackground(Void... params) {
+        if(isUserExistCallBack==null){
+            Log.d("TAG", "ПОЧЕМУ_ТО НУЛЛ");
+        }
         try {
-            return  App.getApi().get_code(phoneNumber).execute();
+            Response<ResponseBody> r = App.getApi().get_code(phoneNumber).execute();
+            return  r;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,7 +67,6 @@ public class IsUserExistAsync extends AsyncTask<Void, Void, Response<ResponseBod
                     .show();
             return;
         }
-
         switch (responseBody.code()){
             case RESPONSE.Ok:{
                 isExist = true;

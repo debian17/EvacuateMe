@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -43,11 +44,11 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     if (!Net.isAvailable(MainActivity.this)) {
                         Toast.makeText(MainActivity.this, "Для работы приложения необходимо интернет" +
-                                " соединение!", Toast.LENGTH_SHORT)
-                                .show();
+                                " соединение!", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if(!isNumberEmpty()){
+                        Log.d("TAG", input_phone_ET.getText().toString());
                         IsUserExistAsync isUserExistAsync = new IsUserExistAsync(MainActivity.this,
                                 input_phone_ET.getText().toString(), new IsUserExistCallBack() {
                             @Override
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                                     GetCodeAsync getCodeAsync = new GetCodeAsync(MainActivity.this,
                                             input_phone_ET.getText().toString(), new GetCodeCallBack() {
                                         @Override
-                                        public void completed(boolean result) {
+                                        public void getCodeCallBack(boolean result) {
                                             if(result){
                                                 Intent intent = new Intent(MainActivity.this,
                                                         LogInActivity.class);

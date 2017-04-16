@@ -5,5 +5,5 @@ package com.example.edriver.Interface;
  */
 
 public interface GetCodeCallBack {
-    public void completed(boolean result);
+    public void getCodeCallBack(boolean result);
 }

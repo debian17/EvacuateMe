@@ -71,6 +71,6 @@ public class GetCodeAsync extends AsyncTask<Void, Void, Response<ResponseBody>> 
                 break;
             }
         }
-        getCodeCallBack.completed(result);
+        getCodeCallBack.getCodeCallBack(result);
     }
 }
