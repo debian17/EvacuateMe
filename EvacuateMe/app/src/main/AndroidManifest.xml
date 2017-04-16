@@ -24,11 +24,19 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity.LogRegActivity" />
-        <activity android:name=".Activity.Test_LogReg" />
         <activity
             android:name=".Activity.NavigationDrawerActivity"
+            android:screenOrientation="portrait"
             android:label="EvacuateMe"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".Fragment.MainMapFragment"
+            android:label="@string/title_activity_main_map_fragment"></activity>
     </application>
 
 </manifest>

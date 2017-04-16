@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.evacuateme.Activity.Test_LogReg;
+import com.example.evacuateme.Activity.NavigationDrawerActivity;
 import com.example.evacuateme.AsyncTask.SignUpAsync;
 import com.example.evacuateme.Interface.SignUpCallBack;
 import com.example.evacuateme.R;
@@ -32,10 +32,10 @@ public class RegistrationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              final Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_registration, container, false);
-        input_name_ET = (EditText) v.findViewById(R.id.input_name_ET);
-        input_reg_sms_ET = (EditText) v.findViewById(R.id.input_reg_sms_ET);
-        signUp_BTN = (Button) v.findViewById(R.id.signUp_BTN);
+        View view = inflater.inflate(R.layout.fragment_registration, container, false);
+        input_name_ET = (EditText) view.findViewById(R.id.input_name_ET);
+        input_reg_sms_ET = (EditText) view.findViewById(R.id.input_reg_sms_ET);
+        signUp_BTN = (Button) view.findViewById(R.id.signUp_BTN);
         bundle = getArguments();
         signUp_BTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +58,7 @@ public class RegistrationFragment extends Fragment {
                                 SharedPreferences.Editor editor_isLogin = sharedPreferences.edit();
                                 editor_isLogin.putBoolean("is_login", true);
                                 editor_isLogin.apply();
-                                Intent intent = new Intent(getContext(), Test_LogReg.class);
+                                Intent intent = new Intent(getContext(), NavigationDrawerActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
                                         Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
@@ -77,7 +77,7 @@ public class RegistrationFragment extends Fragment {
                 }
             }
         });
-        return v;
+        return view;
     }
 
     private boolean checkName(){

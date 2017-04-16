@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.evacuateme.Activity.NavigationDrawerActivity;
-import com.example.evacuateme.Activity.Test_LogReg;
 import com.example.evacuateme.AsyncTask.SignInAsync;
 import com.example.evacuateme.Interface.SignInCallBack;
 import com.example.evacuateme.R;
@@ -32,9 +31,10 @@ public class SignInFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_sign_in, container, false);
-        input_sms_ET = (EditText) v.findViewById(R.id.input_sms_ET);
-        signIn_BTN = (Button) v.findViewById(R.id.signIn_BTN);
+
+        View view = inflater.inflate(R.layout.fragment_sign_in, container, false);
+        input_sms_ET = (EditText) view.findViewById(R.id.input_sms_ET);
+        signIn_BTN = (Button) view.findViewById(R.id.signIn_BTN);
         bundle = getArguments();
         signIn_BTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,8 +73,7 @@ public class SignInFragment extends Fragment {
                 }
             }
         });
-
-        return v;
+        return view;
     }
 
     private boolean checkCode(){
@@ -85,5 +84,4 @@ public class SignInFragment extends Fragment {
             return true;
         }
     }
-
 }
