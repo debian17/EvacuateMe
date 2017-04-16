@@ -44,12 +44,8 @@ public class IsUserExistAsync extends AsyncTask<Void, Void, Response<ResponseBod
 
     @Override
     protected Response<ResponseBody> doInBackground(Void... params) {
-        if(isUserExistCallBack==null){
-            Log.d("TAG", "ПОЧЕМУ_ТО НУЛЛ");
-        }
         try {
-            Response<ResponseBody> r = App.getApi().get_code(phoneNumber).execute();
-            return  r;
+            return App.getApi().isUserExist(phoneNumber).execute();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,7 +82,6 @@ public class IsUserExistAsync extends AsyncTask<Void, Void, Response<ResponseBod
                         .show();
                 break;
             }
-
         }
         isUserExistCallBack.completed(isExist);
     }

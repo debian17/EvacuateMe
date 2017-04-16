@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,12 +18,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.edriver.Fragment.GpsOffFragment;
+import com.example.edriver.Fragment.MainMapFragment;
+import com.example.edriver.Fragment.TestFragment;
 import com.example.edriver.R;
+import com.example.edriver.Utils.Gps;
+import com.example.edriver.Utils.Net;
 
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private FragmentTransaction fragmentTransaction;
     private SharedPreferences sharedPreferences;
+    private boolean isMapAttached = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        changeUI();
     }
 
     @Override
@@ -67,9 +76,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
         switch (id){
             case R.id.nav_map:{
+                changeUI();
                 break;
             }
             case R.id.nav_orders:{
@@ -79,6 +88,10 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 break;
             }
             case R.id.nav_test:{
+                isMapAttached = false;
+                fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                TestFragment testFragment = new TestFragment();
+                fragmentTransaction.replace(R.id.main_container_fragment, testFragment).commit();
                 break;
             }
             case R.id.nav_exit:{
@@ -86,10 +99,28 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 break;
             }
         }
-        fragmentTransaction.commit();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void changeUI(){
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        if(isMapAttached){
+            return;
+        }
+        if(Net.isAvailable(NavigationDrawerActivity.this) && Gps.isAvailable(NavigationDrawerActivity.this)){
+            MainMapFragment mainMapFragment = new MainMapFragment();
+            fragmentTransaction.replace(R.id.main_container_fragment, mainMapFragment);
+            Log.d("TAG", "Прикрепил карту");
+            isMapAttached = true;
+        }
+        else {
+            GpsOffFragment gpsOffFragment = new GpsOffFragment();
+            fragmentTransaction.replace(R.id.main_container_fragment, gpsOffFragment);
+            Log.d("TAG", "Прикрепил GPS off " + String.valueOf(isMapAttached));
+        }
+        fragmentTransaction.commit();
     }
 
     private void exit(){
@@ -105,5 +136,4 @@ public class NavigationDrawerActivity extends AppCompatActivity
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
-
 }

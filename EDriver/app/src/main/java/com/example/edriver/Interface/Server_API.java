@@ -13,6 +13,9 @@ import retrofit2.http.Path;
 public interface Server_API {
 
     @GET("/api/workers/verification/{phone}")
+    Call<ResponseBody> isUserExist(@Path("phone") String phoneNumber);
+
+    @GET("/api/code/{phone}")
     Call<ResponseBody> get_code(@Path("phone") String phoneNumber);
 
     @GET("/api/workers/api_key")
