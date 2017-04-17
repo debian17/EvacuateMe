@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.example.evacuateme.Interface.GetCodeCallBack;
 import com.example.evacuateme.Utils.App;
-import com.example.evacuateme.Utils.RESPONSE;
+import com.example.evacuateme.Utils.STATUS;
 
 import java.io.IOException;
 
@@ -62,7 +62,7 @@ public class GetCodeAsync extends AsyncTask<Void, Void, Response<ResponseBody>> 
            return;
         }
         switch (stringResponse.code()){
-            case RESPONSE.Ok:{
+            case STATUS.Ok:{
                 result = true;
                 break;
             }

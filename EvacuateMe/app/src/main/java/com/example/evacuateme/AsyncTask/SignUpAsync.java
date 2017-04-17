@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.example.evacuateme.Interface.SignUpCallBack;
 import com.example.evacuateme.Utils.App;
-import com.example.evacuateme.Utils.RESPONSE;
+import com.example.evacuateme.Utils.STATUS;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -79,7 +79,7 @@ public class SignUpAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
             return;
         }
         switch (responseBody.code()){
-            case RESPONSE.Created:{
+            case STATUS.Created:{
                 try {
                     api_key = responseBody.body().string();
                 } catch (IOException e) {
@@ -88,12 +88,12 @@ public class SignUpAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
                 result = true;
                 break;
             }
-            case RESPONSE.BadRequest:{
+            case STATUS.BadRequest:{
                 Toast.makeText(context, "Неверный формат номер телефона!", Toast.LENGTH_SHORT)
                         .show();
                 break;
             }
-            case RESPONSE.NotFound:{
+            case STATUS.NotFound:{
                 Toast.makeText(context, "Неверно введен проверочный код!", Toast.LENGTH_SHORT)
                         .show();
                 break;

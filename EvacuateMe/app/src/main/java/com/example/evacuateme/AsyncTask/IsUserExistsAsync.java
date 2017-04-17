@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.example.evacuateme.Interface.IsUserExistsCallBack;
 import com.example.evacuateme.Utils.App;
-import com.example.evacuateme.Utils.RESPONSE;
+import com.example.evacuateme.Utils.STATUS;
 
 import java.io.IOException;
 
@@ -62,16 +62,16 @@ public class IsUserExistsAsync extends AsyncTask<Void, Void, Response<ResponseBo
             return;
         }
         switch (result.code()){
-            case RESPONSE.Ok:{
+            case STATUS.Ok:{
                 isExist = true;
                 break;
             }
-            case RESPONSE.BadRequest:{
+            case STATUS.BadRequest:{
                 Toast.makeText(context, "Неверный формат номер телефона!", Toast.LENGTH_SHORT)
                         .show();
                 break;
             }
-            case RESPONSE.NotFound:{
+            case STATUS.NotFound:{
                 isExist = false;
                 break;
             }

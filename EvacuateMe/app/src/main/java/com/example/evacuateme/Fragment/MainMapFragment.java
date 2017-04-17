@@ -1,5 +1,7 @@
 package com.example.evacuateme.Fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -7,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +45,8 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private Location lastLocation;
     private boolean isLocated;
     private ImageButton find_me_BTN;
+    private SharedPreferences sharedPreferences;
+    private FragmentTransaction fragmentTransaction;
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -159,6 +164,18 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 moveCameraToMyLocation();
             }
         });
+
+        sharedPreferences = getContext().getSharedPreferences("IS_ORDER", Context.MODE_PRIVATE);
+        boolean isOrder = sharedPreferences.getBoolean("is_order", false);
+        if(isOrder){
+            //на заказе
+        }
+        else {
+            //не на заказе
+            StartFragment startFragment = new StartFragment();
+            fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+        }
 
         return view;
     }

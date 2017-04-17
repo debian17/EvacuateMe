@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.example.evacuateme.Interface.SignInCallBack;
 import com.example.evacuateme.Utils.App;
-import com.example.evacuateme.Utils.RESPONSE;
+import com.example.evacuateme.Utils.STATUS;
 
 import java.io.IOException;
 
@@ -65,7 +65,7 @@ public class SignInAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
             return;
         }
         switch (responseBody.code()){
-            case RESPONSE.Ok:{
+            case STATUS.Ok:{
                 try {
                     api_key = responseBody.body().string();
                 } catch (IOException e) {
@@ -74,12 +74,12 @@ public class SignInAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
                 result = true;
                 break;
             }
-            case RESPONSE.NotFound:{
+            case STATUS.NotFound:{
                 Toast.makeText(context, "Неверно введен проверочный код!", Toast.LENGTH_SHORT)
                         .show();
                 break;
             }
-            case RESPONSE.BadRequest:{
+            case STATUS.BadRequest:{
                 Toast.makeText(context, "Неверно введен номер телефона или проверочный код!", Toast.LENGTH_SHORT)
                         .show();
                 break;
