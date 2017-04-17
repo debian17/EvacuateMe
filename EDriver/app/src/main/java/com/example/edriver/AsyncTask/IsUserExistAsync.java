@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import com.example.edriver.Interface.IsUserExistCallBack;
 import com.example.edriver.Utils.App;
-import com.example.edriver.Utils.RESPONSE;
+import com.example.edriver.Utils.STATUS;
 
 import java.io.IOException;
 
@@ -64,16 +64,16 @@ public class IsUserExistAsync extends AsyncTask<Void, Void, Response<ResponseBod
             return;
         }
         switch (responseBody.code()){
-            case RESPONSE.Ok:{
+            case STATUS.Ok:{
                 isExist = true;
                 break;
             }
-            case RESPONSE.BadRequest:{
+            case STATUS.BadRequest:{
                 Toast.makeText(context, "Неверно введен номер телефона!", Toast.LENGTH_SHORT)
                         .show();
                 break;
             }
-            case RESPONSE.NotFound:{
+            case STATUS.NotFound:{
                 isExist = false;
                 break;
             }

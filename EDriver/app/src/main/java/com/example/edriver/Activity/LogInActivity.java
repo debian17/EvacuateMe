@@ -40,7 +40,6 @@ public class LogInActivity extends AppCompatActivity {
                                 sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor_key = sharedPreferences.edit();
                                 editor_key.putString("api_key", api_key);
-                                Log.d("TAG API_KEY = ", api_key);
                                 editor_key.apply();
                                 sharedPreferences = getSharedPreferences("IS_LOGIN", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor_isLogin = sharedPreferences.edit();

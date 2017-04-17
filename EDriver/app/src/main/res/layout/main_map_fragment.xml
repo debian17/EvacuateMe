@@ -40,24 +40,6 @@
             android:layout_height="match_parent"
             android:layout_weight="8"
             android:background="#DFE8EC">
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ToggleButton
-                    android:id="@+id/call_evacuator"
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:textOn="Закончить работу"
-                    android:textOff="Начать работу"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginStart="97dp"
-                    android:background="#5AC1E2"
-                    android:textColor="#FFFFFF"
-                    />
-
-            </RelativeLayout>
         </FrameLayout>
     </LinearLayout>
 </FrameLayout>

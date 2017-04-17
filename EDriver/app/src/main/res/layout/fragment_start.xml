@@ -1,0 +1,26 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.edriver.Fragment.StartFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ToggleButton
+            android:id="@+id/change_status_BTN"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:textOn="Закончить работу"
+            android:textOff="Начать работу"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="97dp"
+            android:background="#5AC1E2"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="10dp"
+            />
+
+    </RelativeLayout>
+
+</FrameLayout>

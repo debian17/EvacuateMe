@@ -1,9 +1,12 @@
 package com.example.edriver.Interface;
 
+import com.example.edriver.Model.DataOrder;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 /**
@@ -20,4 +23,10 @@ public interface Server_API {
 
     @GET("/api/workers/api_key")
     Call<ResponseBody> signIn(@Header("phone") String phoneNumber, @Header("code") String code);
+
+    @PUT("/api/workers/status/{new_status}")
+    Call<ResponseBody> change_status(@Header("api_key") String api_key, @Path("new_status") int new_status);
+
+    @GET("/api/workers/orders")
+    Call<DataOrder> getOrder(@Header("api_key") String api_key);
 }

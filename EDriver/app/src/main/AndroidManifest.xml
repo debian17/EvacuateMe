@@ -14,6 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service android:name=".Service.GetOrderService"
+            android:enabled="true"/>
         <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,7 +26,7 @@
         <activity android:name=".Activity.LogInActivity" />
         <activity
             android:name=".Activity.NavigationDrawerActivity"
-            android:label="@string/title_activity_navigation_drawer"
+            android:label="EDriver"
             android:theme="@style/AppTheme.NoActionBar" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

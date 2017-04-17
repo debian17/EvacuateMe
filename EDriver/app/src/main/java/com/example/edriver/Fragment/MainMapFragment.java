@@ -1,5 +1,7 @@
 package com.example.edriver.Fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -8,11 +10,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.edriver.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -43,6 +47,8 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private Location lastLocation;
     private ImageButton find_me_BTN;
     private boolean isLocated;
+    private SharedPreferences sharedPreferences;
+    private FragmentTransaction fragmentTransaction;
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -130,7 +136,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             Toast.makeText(getContext(), "Не могу определить местоположение. Попробуйте еще раз!",
                     Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
@@ -161,6 +166,17 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             }
         });
 
+        sharedPreferences = getContext().getSharedPreferences("IS_ORDER", Context.MODE_PRIVATE);
+        boolean isOrder = sharedPreferences.getBoolean("is_order", false);
+        if(isOrder){
+            //на заказе
+        }
+        else {
+            //не на заказе
+            StartFragment startFragment = new StartFragment();
+            fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+        }
         return view;
     }
 
