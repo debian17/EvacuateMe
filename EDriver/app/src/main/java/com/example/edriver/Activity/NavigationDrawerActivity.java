@@ -25,11 +25,11 @@ import com.example.edriver.R;
 import com.example.edriver.Utils.Gps;
 import com.example.edriver.Utils.Net;
 
-public class NavigationDrawerActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class NavigationDrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private FragmentTransaction fragmentTransaction;
     private SharedPreferences sharedPreferences;
     private boolean isMapAttached = false;
+    public static boolean active = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,10 +130,24 @@ public class NavigationDrawerActivity extends AppCompatActivity
         editor_isLogin.apply();
         sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor_api_key = sharedPreferences.edit();
-        editor_api_key.putString("is_login", "");
+        editor_api_key.putString("api_key", "");
         editor_api_key.apply();
         Intent intent = new Intent(NavigationDrawerActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        active = true;
+        Log.d("ACTIVITY", "TRUE");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        active = false;
+        Log.d("ACTIVITY", "FALSE");
     }
 }

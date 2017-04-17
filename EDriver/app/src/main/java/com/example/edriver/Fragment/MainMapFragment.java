@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.edriver.R;
+import com.example.edriver.Utils.MyLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,9 +39,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, android.location.LocationListener {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-    private static int UPDATE_INTERVAL = 0; // 10 sec
-    private static int FATEST_INTERVAL = 0; // 5 sec
-    private static int DISPLACEMENT = 0; // 10 meters
+    private static int UPDATE_INTERVAL = 20; // 10 sec
+    private static int FATEST_INTERVAL = 10; // 5 sec
+    private static int DISPLACEMENT = 30; // 10 meters
 
     private GoogleMap map;
     private GoogleApiClient googleApiClient;
@@ -218,11 +220,27 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.d("TAG", "MY_LAT = "+String.valueOf(MyLocation.latitude));
+        Log.d("TAG", "MY_LON = "+String.valueOf(MyLocation.longitude));
+        Log.d("TAG", "NEW_LAT = "+String.valueOf(location.getLatitude()));
+        Log.d("TAG", "NEW_LAT = "+String.valueOf(location.getLongitude()));
+        if((location.getLatitude() == MyLocation.latitude) && (location.getLongitude() == MyLocation.longitude)){
+            MyLocation.isNew = false;
+            Log.d("MY_LOCATION", "FALSE");
+        }
+        else {
+            MyLocation.latitude = location.getLatitude();
+            MyLocation.longitude = location.getLongitude();
+            MyLocation.isNew = true;
+            Log.d("MY_LOCATION", "TRUE");
+        }
         if(isLocated){
             return;
         }
-        lastLocation = location;
-        moveCameraToMyLocation();
+        else {
+            lastLocation = location;
+            moveCameraToMyLocation();
+        }
     }
 
     @Override
@@ -258,6 +276,5 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
     }
 }

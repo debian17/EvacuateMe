@@ -1,6 +1,5 @@
 package com.example.edriver.Service;
 
-import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,15 +11,17 @@ import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.example.edriver.Activity.NavigationDrawerActivity;
-import com.example.edriver.Fragment.MainMapFragment;
 import com.example.edriver.Model.DataOrder;
 import com.example.edriver.Utils.App;
+import com.example.edriver.Utils.MyLocation;
 import com.example.edriver.Utils.STATUS;
+import com.google.gson.JsonObject;
 
+import java.sql.Time;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,7 +30,7 @@ import retrofit2.Response;
  * Created by Андрей Кравченко on 17-Apr-17.
  */
 
-public class GetOrderService extends Service {
+public class UpdateLocationService extends Service {
     private Timer timer;
     private TimerTask timerTask;
     private SharedPreferences sharedPreferences;
@@ -54,7 +55,7 @@ public class GetOrderService extends Service {
                 Run();
             }
         };
-        timer.schedule(timerTask, 0, 4000);
+        timer.schedule(timerTask, 0, 10000);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -63,48 +64,36 @@ public class GetOrderService extends Service {
         super.onDestroy();
         timerTask.cancel();
         timer.cancel();
-        Log.d("SERVICE", "DESTROY");
     }
 
     private void Run(){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
+                if(!MyLocation.isNew){
+                    Log.d("LOCATION", "НЕ ОТПРАВЛЯЮ КООРДИНАТЫ");
+                    return;
+                }
+                Log.d("LOCATION", "ОТПРАВЛЯЮ КООРДИНАТЫ");
+                JsonObject jsonObject = new JsonObject();
+                jsonObject.addProperty("latitude", MyLocation.latitude);
+                jsonObject.addProperty("longitude", MyLocation.longitude);
                 try {
-                    App.getApi().getOrder(api_key).enqueue(new Callback<DataOrder>() {
+                    App.getApi().updateLocation(api_key, jsonObject).enqueue(new Callback<ResponseBody>() {
                         @Override
-                        public void onResponse(Call<DataOrder> call, Response<DataOrder> response) {
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             if(response == null){
-                                return;
+                                Log.d("LOCATION", "ОТВЕТ НУЛЛ");
                             }
-                            switch (response.code()){
-                                case STATUS.NotFound:{
-                                    //Log.d("SERVICE", "ЗАКАЗОВ НЕТ");
-                                    break;
-                                }
-                                case STATUS.Ok:{
-                                    Log.d("SERVICE", "ЕСТЬ ЗАКАЗ");
-                                    timerTask.cancel();
-                                    timer.cancel();
-//                                    Intent intent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
-//                                    intent.putExtra("latitude", response.body().latitude);
-//                                    intent.putExtra("longitude", response.body().longitude);
-//                                    intent.putExtra("clientPhone", response.body().clientPhone);
-//                                    intent.putExtra("isOrder", true);
-//                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                                    startActivity(intent);
-                                    break;
-                                }
-                                default:{
-                                    Log.d("TAG", "Внетренняя ошибка сервера!");
-                                    break;
-                                }
+                            if(response.code() == STATUS.Ok){
+                                MyLocation.isNew = false;
+                                //Log.d("LOCATION", "КООРДИНАТЫ ОБНОВЛЕНЫ");
                             }
                         }
                         @Override
-                        public void onFailure(Call<DataOrder> call, Throwable t) {
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
                             Log.d("TAG", "ВСЕ ПЛОХО!");
-                    }
+                        }
                     });
                 } catch (Exception e) {
                     e.printStackTrace();

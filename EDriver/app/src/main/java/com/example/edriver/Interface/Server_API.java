@@ -1,9 +1,11 @@
 package com.example.edriver.Interface;
 
 import com.example.edriver.Model.DataOrder;
+import com.google.gson.JsonObject;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.PUT;
@@ -29,4 +31,7 @@ public interface Server_API {
 
     @GET("/api/workers/orders")
     Call<DataOrder> getOrder(@Header("api_key") String api_key);
+
+    @PUT("/api/workers/location")
+    Call<ResponseBody> updateLocation(@Header("api_key") String api_key, @Body JsonObject jsonData);
 }
