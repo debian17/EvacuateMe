@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.evacuateme.R;
+import com.example.evacuateme.Utils.MyLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -42,7 +43,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private GoogleMap map;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
-    private Location lastLocation;
+    //private Location lastLocation;
     private boolean isLocated;
     private ImageButton find_me_BTN;
     private SharedPreferences sharedPreferences;
@@ -112,29 +113,29 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     }
 
     private void moveCameraToMyLocation(){
-        if(lastLocation!=null){
+        //if(lastLocation!=null){
             if(map!=null){
                 isLocated = true;
                 map.clear();
                 CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
+                        //.target(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
+                        .target(new LatLng(MyLocation.latitude, MyLocation.longitude))
                         .zoom(15)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                 map.moveCamera(cameraUpdate);
-                map.addMarker(new MarkerOptions().position(new LatLng(lastLocation.getLatitude(),
-                        lastLocation.getLongitude())));
+                map.addMarker(new MarkerOptions().position(new LatLng(MyLocation.latitude,
+                        MyLocation.longitude)));
             }
             else {
                 Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
                         Toast.LENGTH_SHORT).show();
             }
-        }
-        else {
-            Toast.makeText(getContext(), "Не могу определить местоположение. Попробуйте еще раз!",
-                    Toast.LENGTH_SHORT).show();
-        }
-
+//        }
+//        else {
+//            Toast.makeText(getContext(), "Не могу определить местоположение. Попробуйте еще раз!",
+//                    Toast.LENGTH_SHORT).show();
+//        }
     }
 
     @Override
@@ -160,7 +161,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         find_me_BTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lastLocation = getMyLocation();
+                Location temp = getMyLocation();
+                MyLocation.latitude = temp.getLatitude();
+                MyLocation.longitude = temp.getLongitude();
                 moveCameraToMyLocation();
             }
         });
@@ -221,7 +224,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         if(isLocated){
             return;
         }
-        lastLocation = location;
+        MyLocation.latitude = location.getLatitude();
+        MyLocation.longitude = location.getLongitude();
+        //lastLocation = location;
         moveCameraToMyLocation();
     }
 
