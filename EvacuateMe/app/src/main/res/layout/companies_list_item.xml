@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="170dp">
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:id="@+id/CV"
+        card_view:cardBackgroundColor="#e5e5e5"
+        card_view:cardCornerRadius="3dp"
+        card_view:cardElevation="2dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/company_name_TV"
+                android:textSize="20dp"
+                android:text="Название фирмы"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp"
+                android:textColor="#000000"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tariff_TV"
+                android:text="Тариф: 15р/км"
+                android:layout_below="@id/company_name_TV"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:textSize="16dp"
+                android:textColor="#000000"
+                />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/make_order_BTN"
+                android:text="Заказать"
+                android:layout_alignParentBottom="true"
+                android:background="#5AC1E2"
+                android:textColor="#FFFFFF"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/duration_TV"
+                android:layout_marginEnd="50dp"
+                android:text="7 min"
+                android:textSize="24dp"
+                android:layout_alignTop="@+id/company_name_TV"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="11dp"
+                android:textColor="#418835"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

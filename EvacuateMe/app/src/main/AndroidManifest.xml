@@ -14,6 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <service android:name=".Service.ConfirmOrderService"
+                 android:enabled="true"/>
         <activity
             android:name=".Activity.MainActivity"
             android:screenOrientation="portrait">
@@ -38,6 +40,8 @@
             android:name=".Fragment.MainMapFragment"
             android:label="@string/title_activity_main_map_fragment"/>
         <activity android:name=".Activity.InfoOrderActivity">
+        </activity>
+        <activity android:name=".Activity.CompaniesListActivity">
         </activity>
     </application>
 

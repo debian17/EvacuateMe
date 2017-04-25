@@ -20,4 +20,7 @@ public class CarType {
     public String toString() {
         return name;
     }
+
+    public boolean selected;
+
 }

@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.evacuateme.R;
+import com.example.evacuateme.Utils.Client;
 import com.example.evacuateme.Utils.MyLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -43,11 +44,11 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private GoogleMap map;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
-    //private Location lastLocation;
     private boolean isLocated;
     private ImageButton find_me_BTN;
     private SharedPreferences sharedPreferences;
     private FragmentTransaction fragmentTransaction;
+    private Client client;
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -119,13 +120,13 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 map.clear();
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         //.target(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
-                        .target(new LatLng(MyLocation.latitude, MyLocation.longitude))
+                        .target(new LatLng(client.getLatitude(), client.getLongitude()))
                         .zoom(15)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                 map.moveCamera(cameraUpdate);
-                map.addMarker(new MarkerOptions().position(new LatLng(MyLocation.latitude,
-                        MyLocation.longitude)));
+                map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(),
+                        client.getLongitude())));
             }
             else {
                 Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
@@ -141,6 +142,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        client = Client.getInstance();
         if (checkPlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
@@ -162,8 +164,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             @Override
             public void onClick(View v) {
                 Location temp = getMyLocation();
-                MyLocation.latitude = temp.getLatitude();
-                MyLocation.longitude = temp.getLongitude();
+                client.setLatitude(temp.getLatitude());
+                client.setLongitude(temp.getLongitude());
+                Log.d("FIND_ME", String.valueOf(client.getLatitude()));
+                Log.d("FIND_ME", String.valueOf(client.getLongitude()));
                 moveCameraToMyLocation();
             }
         });
@@ -224,8 +228,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         if(isLocated){
             return;
         }
-        MyLocation.latitude = location.getLatitude();
-        MyLocation.longitude = location.getLongitude();
+        client.setLatitude(location.getLatitude());
+        client.setLongitude(location.getLongitude());
+        Log.d("ONLCH", String.valueOf(client.getLatitude()));
+        Log.d("ONLCH", String.valueOf(client.getLongitude()));
         //lastLocation = location;
         moveCameraToMyLocation();
     }

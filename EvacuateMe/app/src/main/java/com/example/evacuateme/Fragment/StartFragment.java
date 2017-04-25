@@ -1,7 +1,9 @@
 package com.example.evacuateme.Fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -23,6 +25,7 @@ import java.util.List;
 
 public class StartFragment extends Fragment {
     private Button search_evacuator_BTN;
+    private SharedPreferences sharedPreferences;
 
     public StartFragment() {
     }
@@ -35,14 +38,16 @@ public class StartFragment extends Fragment {
         search_evacuator_BTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GetCarTypeAsync getCarTypeAsync = new GetCarTypeAsync(getContext(),
+                sharedPreferences = getContext().getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
+                String api_key = sharedPreferences.getString("api_key", "");
+                GetCarTypeAsync getCarTypeAsync = new GetCarTypeAsync(getContext(), api_key,
                         new GetCarTypeCallBack() {
                             @Override
                             public void completed(boolean result, List<CarType> data) {
                                 if(result){
                                     Intent intent = new Intent(getContext(), InfoOrderActivity.class);
-                                    intent.putExtra("latitude", MyLocation.latitude);
-                                    intent.putExtra("longitude", MyLocation.longitude);
+//                                    intent.putExtra("latitude", MyLocation.latitude);
+//                                    intent.putExtra("longitude", MyLocation.longitude);
                                     intent.putExtra("car_list", new Gson().toJson(data));
                                     startActivity(intent);
                                 }

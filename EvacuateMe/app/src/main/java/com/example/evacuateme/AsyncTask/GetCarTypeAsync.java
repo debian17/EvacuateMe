@@ -24,11 +24,13 @@ import retrofit2.Response;
 
 public class GetCarTypeAsync extends AsyncTask<Void, Void, Response<List<CarType>>> {
     private Context context;
+    private String api_key;
     private ProgressDialog progressDialog;
     private GetCarTypeCallBack getCarTypeCallBack;
 
-    public GetCarTypeAsync(Context context, GetCarTypeCallBack getCarTypeCallBack){
+    public GetCarTypeAsync(Context context, String api_key, GetCarTypeCallBack getCarTypeCallBack){
         this.context = context;
+        this.api_key = api_key;
         this.getCarTypeCallBack = getCarTypeCallBack;
     }
 
@@ -45,7 +47,7 @@ public class GetCarTypeAsync extends AsyncTask<Void, Void, Response<List<CarType
     @Override
     protected Response<List<CarType>> doInBackground(Void... params) {
         try {
-            return App.getApi().get_car_type().execute();
+            return App.getApi().get_car_type(api_key).execute();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,6 +73,11 @@ public class GetCarTypeAsync extends AsyncTask<Void, Void, Response<List<CarType
             }
             case STATUS.NotFound:{
                 result = false;
+                break;
+            }
+            case STATUS.Unauthorized:{
+                Toast.makeText(context, "Вы не авторизованы в системе!", Toast.LENGTH_SHORT)
+                        .show();
                 break;
             }
             default:{
