@@ -1,5 +1,8 @@
 package com.example.edriver.Service;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
@@ -10,13 +13,17 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.edriver.Activity.NavigationDrawerActivity;
 import com.example.edriver.Fragment.MainMapFragment;
 import com.example.edriver.Model.DataOrder;
 import com.example.edriver.Utils.App;
+import com.example.edriver.Utils.Order;
 import com.example.edriver.Utils.STATUS;
+import com.example.edriver.Utils.State;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,6 +41,7 @@ public class GetOrderService extends Service {
     private TimerTask timerTask;
     private SharedPreferences sharedPreferences;
     private String api_key;
+    private NotificationManager notificationManager;
 
     @Override
     public void onCreate() {
@@ -41,6 +49,7 @@ public class GetOrderService extends Service {
         timer = new Timer();
         sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
         api_key = sharedPreferences.getString("api_key", "");
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 
     @Override
@@ -79,20 +88,38 @@ public class GetOrderService extends Service {
                             }
                             switch (response.code()){
                                 case STATUS.NotFound:{
-                                    //Log.d("SERVICE", "ЗАКАЗОВ НЕТ");
+                                    Log.d("SERVICE", "ЗАКАЗОВ НЕТ");
                                     break;
                                 }
                                 case STATUS.Ok:{
                                     Log.d("SERVICE", "ЕСТЬ ЗАКАЗ");
-                                    timerTask.cancel();
-                                    timer.cancel();
-//                                    Intent intent = new Intent(getApplicationContext(), NavigationDrawerActivity.class);
-//                                    intent.putExtra("latitude", response.body().latitude);
-//                                    intent.putExtra("longitude", response.body().longitude);
-//                                    intent.putExtra("clientPhone", response.body().clientPhone);
-//                                    intent.putExtra("isOrder", true);
-//                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                                    startActivity(intent);
+                                    Order order = Order.getInstance();
+                                    order.setOrder_id(response.body().order_id);
+                                    order.setLatitude(response.body().latitude);
+                                    order.setLongitude(response.body().longitude);
+                                    order.setPhone(response.body().clientPhone);
+                                    order.setComment(response.body().comment);
+                                    if(NavigationDrawerActivity.active){
+                                        Intent intent = new Intent("Order");
+                                        intent.putExtra("key", "ПРИШЕЛ ЗАКАЗ!");
+                                        LocalBroadcastManager.getInstance(GetOrderService.this).sendBroadcast(intent);
+                                    }
+                                    else {
+                                        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(GetOrderService.this)
+                                                .setSmallIcon(android.R.mipmap.sym_def_app_icon)
+                                                .setContentTitle("Пришел заказ!")
+                                                .setContentText("НАЖМИ ДЛЯ ДВИЖУХИ");
+                                        Intent intent = new Intent(GetOrderService.this, NavigationDrawerActivity.class);
+                                        PendingIntent pendingIntent = PendingIntent.getActivity(GetOrderService.this, 0, intent, 0);
+                                        sharedPreferences = getSharedPreferences("STATUS", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor_status = sharedPreferences.edit();
+                                        editor_status.putInt("status", STATUS.Selection);
+                                        editor_status.apply();
+                                        mBuilder.setContentIntent(pendingIntent);
+                                        mBuilder.mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
+                                        notificationManager.notify(0, mBuilder.build());
+                                    }
+                                    stopSelf();
                                     break;
                                 }
                                 default:{

@@ -58,7 +58,7 @@ public class StartFragment extends Fragment {
                                         //progressDialog.show();
                                         getActivity().startService(intent_order);
                                         getActivity().startService(intent_location);
-                                        Log.d("TAG_FRAGMENT", "ЗАПУСТИЛ СЕРВИС");
+                                        //Log.d("TAG_FRAGMENT", "ЗАПУСТИЛ СЕРВИС");
                                     }
                                     else {
                                         change_status_BTN.setChecked(false);
@@ -82,7 +82,7 @@ public class StartFragment extends Fragment {
                                         editor_status.apply();
                                         getActivity().stopService(intent_order);
                                         getActivity().stopService(intent_location);
-                                        Log.d("TAG_FRAGMENT", "ОСТАНОВИЛ СЕРВИС");
+                                        //Log.d("TAG_FRAGMENT", "ОСТАНОВИЛ СЕРВИС");
                                     }
                                     else {
                                         change_status_BTN.setChecked(true);

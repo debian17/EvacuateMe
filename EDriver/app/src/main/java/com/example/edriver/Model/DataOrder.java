@@ -19,4 +19,12 @@ public class DataOrder {
     @SerializedName("ClientPhone")
     @Expose
     public String clientPhone;
+
+    @SerializedName("commentary")
+    @Expose
+    public String comment;
+
+    @SerializedName("order_id")
+    @Expose
+    public int order_id;
 }

@@ -27,11 +27,14 @@ public interface Server_API {
     Call<ResponseBody> signIn(@Header("phone") String phoneNumber, @Header("code") String code);
 
     @PUT("/api/workers/status/{new_status}")
-    Call<ResponseBody> change_status(@Header("api_key") String api_key, @Path("new_status") int new_status);
+    Call<ResponseBody> change_worker_status(@Header("api_key") String api_key, @Path("new_status") int new_status);
 
     @GET("/api/workers/orders")
     Call<DataOrder> getOrder(@Header("api_key") String api_key);
 
     @PUT("/api/workers/location")
     Call<ResponseBody> updateLocation(@Header("api_key") String api_key, @Body JsonObject jsonData);
+
+    @PUT("/api/orders/{order_id}/status/{new_status}")
+    Call<ResponseBody> changeOrderStatus(@Header("api_key") String api_key, @Path("order_id") int order_id, @Path("new_status") int new_status);
 }

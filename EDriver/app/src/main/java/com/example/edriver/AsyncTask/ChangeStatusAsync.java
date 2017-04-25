@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.edriver.Interface.ChangeStatusCallBack;
@@ -49,7 +48,7 @@ public class ChangeStatusAsync extends AsyncTask<Void, Void, Response<ResponseBo
     @Override
     protected Response<ResponseBody> doInBackground(Void... params) {
         try {
-            return App.getApi().change_status(api_key, new_status).execute();
+            return App.getApi().change_worker_status(api_key, new_status).execute();
         } catch (IOException e) {
             e.printStackTrace();
         }

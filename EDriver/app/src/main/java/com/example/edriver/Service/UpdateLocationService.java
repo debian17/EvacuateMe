@@ -71,10 +71,10 @@ public class UpdateLocationService extends Service {
             @Override
             public void run() {
                 if(!MyLocation.isNew){
-                    Log.d("LOCATION", "НЕ ОТПРАВЛЯЮ КООРДИНАТЫ");
+                    //Log.d("LOCATION", "НЕ ОТПРАВЛЯЮ КООРДИНАТЫ");
                     return;
                 }
-                Log.d("LOCATION", "ОТПРАВЛЯЮ КООРДИНАТЫ");
+                //Log.d("LOCATION", "ОТПРАВЛЯЮ КООРДИНАТЫ");
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("latitude", MyLocation.latitude);
                 jsonObject.addProperty("longitude", MyLocation.longitude);
@@ -83,7 +83,7 @@ public class UpdateLocationService extends Service {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             if(response == null){
-                                Log.d("LOCATION", "ОТВЕТ НУЛЛ");
+                                //Log.d("LOCATION", "ОТВЕТ НУЛЛ");
                             }
                             if(response.code() == STATUS.Ok){
                                 MyLocation.isNew = false;

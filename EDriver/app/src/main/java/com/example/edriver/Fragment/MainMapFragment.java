@@ -1,6 +1,9 @@
 package com.example.edriver.Fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +25,8 @@ import android.widget.ToggleButton;
 
 import com.example.edriver.R;
 import com.example.edriver.Utils.MyLocation;
+import com.example.edriver.Utils.STATUS;
+import com.example.edriver.Utils.State;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -168,17 +174,37 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             }
         });
 
-        sharedPreferences = getContext().getSharedPreferences("IS_ORDER", Context.MODE_PRIVATE);
-        boolean isOrder = sharedPreferences.getBoolean("is_order", false);
-        if(isOrder){
-            //на заказе
-        }
-        else {
-            //не на заказе
-            StartFragment startFragment = new StartFragment();
-            fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
-        }
+//        sharedPreferences = getContext().getSharedPreferences("STATUS", Context.MODE_PRIVATE);
+//        int status = sharedPreferences.getInt("status", 0);
+//        switch (status){
+//            case STATUS.Selection:{
+//                SelectionFragment selectionFragment = new SelectionFragment();
+//                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+//                fragmentTransaction.replace(R.id.info_container_fragment, selectionFragment).commit();
+//                break;
+//            }
+//            case STATUS.Working:{
+//                StartFragment startFragment = new StartFragment();
+//                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+//                fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+//                break;
+//            }
+//            case STATUS.NotWorking:{
+//                StartFragment startFragment = new StartFragment();
+//                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+//                fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+//                break;
+//            }
+//        }
+//        if(isOrder){
+//            //на заказе
+//        }
+//        else {
+//            //не на заказе
+//            StartFragment startFragment = new StartFragment();
+//            fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+//            fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+//        }
         return view;
     }
 
@@ -220,19 +246,19 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("TAG", "MY_LAT = "+String.valueOf(MyLocation.latitude));
-        Log.d("TAG", "MY_LON = "+String.valueOf(MyLocation.longitude));
-        Log.d("TAG", "NEW_LAT = "+String.valueOf(location.getLatitude()));
-        Log.d("TAG", "NEW_LAT = "+String.valueOf(location.getLongitude()));
+//        Log.d("TAG", "MY_LAT = "+String.valueOf(MyLocation.latitude));
+//        Log.d("TAG", "MY_LON = "+String.valueOf(MyLocation.longitude));
+//        Log.d("TAG", "NEW_LAT = "+String.valueOf(location.getLatitude()));
+//        Log.d("TAG", "NEW_LAT = "+String.valueOf(location.getLongitude()));
         if((location.getLatitude() == MyLocation.latitude) && (location.getLongitude() == MyLocation.longitude)){
             MyLocation.isNew = false;
-            Log.d("MY_LOCATION", "FALSE");
+            //Log.d("MY_LOCATION", "FALSE");
         }
         else {
             MyLocation.latitude = location.getLatitude();
             MyLocation.longitude = location.getLongitude();
             MyLocation.isNew = true;
-            Log.d("MY_LOCATION", "TRUE");
+            //Log.d("MY_LOCATION", "TRUE");
         }
         if(isLocated){
             return;
@@ -263,6 +289,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onPause() {
         super.onPause();
         stopLocationUpdates();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver);
     }
 
     @Override
@@ -271,7 +298,40 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         if (checkPlayServices() && googleApiClient.isConnected()) {
             startLocationUpdates();
         }
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, new IntentFilter("Order"));
+        sharedPreferences = getContext().getSharedPreferences("STATUS", Context.MODE_PRIVATE);
+        int status = sharedPreferences.getInt("status", 0);
+        switch (status){
+            case STATUS.Selection:{
+                SelectionFragment selectionFragment = new SelectionFragment();
+                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.info_container_fragment, selectionFragment).commit();
+                break;
+            }
+            case STATUS.Working:{
+                StartFragment startFragment = new StartFragment();
+                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+                break;
+            }
+            case STATUS.NotWorking:{
+                StartFragment startFragment = new StartFragment();
+                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+                break;
+            }
+        }
     }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            SelectionFragment selectionFragment = new SelectionFragment();
+            fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.info_container_fragment, selectionFragment).commit();
+            Log.d("FRAGMENT", intent.getStringExtra("key"));
+        }
+    };
 
     @Override
     public void onSaveInstanceState(Bundle outState) {

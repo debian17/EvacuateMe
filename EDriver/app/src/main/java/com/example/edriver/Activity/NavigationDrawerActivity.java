@@ -1,5 +1,6 @@
 package com.example.edriver.Activity;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,6 +31,7 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     private SharedPreferences sharedPreferences;
     private boolean isMapAttached = false;
     public static boolean active = false;
+    private NotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +45,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         changeUI();
     }
@@ -112,13 +111,13 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         if(Net.isAvailable(NavigationDrawerActivity.this) && Gps.isAvailable(NavigationDrawerActivity.this)){
             MainMapFragment mainMapFragment = new MainMapFragment();
             fragmentTransaction.replace(R.id.main_container_fragment, mainMapFragment);
-            Log.d("TAG", "Прикрепил карту");
+            //Log.d("TAG", "Прикрепил карту");
             isMapAttached = true;
         }
         else {
             GpsOffFragment gpsOffFragment = new GpsOffFragment();
             fragmentTransaction.replace(R.id.main_container_fragment, gpsOffFragment);
-            Log.d("TAG", "Прикрепил GPS off " + String.valueOf(isMapAttached));
+            //Log.d("TAG", "Прикрепил GPS off " + String.valueOf(isMapAttached));
         }
         fragmentTransaction.commit();
     }
@@ -140,14 +139,29 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     @Override
     protected void onStart() {
         super.onStart();
-        active = true;
-        Log.d("ACTIVITY", "TRUE");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         active = false;
         Log.d("ACTIVITY", "FALSE");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        active = true;
+        Log.d("ACTIVITY", "TRUE");
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
     }
 }
