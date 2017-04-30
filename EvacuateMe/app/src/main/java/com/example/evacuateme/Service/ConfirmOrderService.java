@@ -93,7 +93,6 @@ public class ConfirmOrderService extends Service {
                             }
                             switch (response.code()){
                                 case STATUS.Ok:{
-                                    Log.d("CONFIRM_SERVICE", "STATUS 200");
                                     switch (response.body().id){
                                         case STATUS.Awaiting:{
                                             Log.d("ORDER_STATUS", "ЗАКАЗ ОЖИДАЕТ ПОДТВЕРЖДЕНИЯ!");
@@ -108,6 +107,7 @@ public class ConfirmOrderService extends Service {
                                             break;
                                         }
                                         case STATUS.CanceledByWorker:{
+                                            Log.d("ORDER_STATUS", "ЗАКАЗ ОТМЕНЕН РАБОТНИКОМ!");
                                             worker.setOrder_status(STATUS.CanceledByWorker);
                                             Intent intent = new Intent(MyAction.OrderCanceledByWorker);
                                             LocalBroadcastManager.getInstance(ConfirmOrderService.this).sendBroadcast(intent);

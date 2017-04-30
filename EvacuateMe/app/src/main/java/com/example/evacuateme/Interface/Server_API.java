@@ -4,6 +4,7 @@ import com.example.evacuateme.Model.CarType;
 import com.example.evacuateme.Model.Companies;
 import com.example.evacuateme.Model.OrderStatus;
 import com.example.evacuateme.Model.OrderData;
+import com.example.evacuateme.Model.WorkerLocation;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -51,5 +52,7 @@ public interface Server_API {
     Call<ResponseBody> changeOrderStatus(@Header("api_key") String api_key, @Path("order_id") int order_id, @Path("new_status") int new_status);
 
     //get_worker_location
+    @GET("/api/workers/{worker_id}/location")
+    Call<WorkerLocation> get_worker_location(@Header("api_key") String api_key, @Path("worker_id") int worker_id);
 
 }

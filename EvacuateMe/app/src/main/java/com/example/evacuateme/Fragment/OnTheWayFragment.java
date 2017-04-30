@@ -66,11 +66,6 @@ public class OnTheWayFragment extends Fragment {
             }
         });
 
-
-
-
-
-
         return view;
     }
 }

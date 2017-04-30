@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import com.example.evacuateme.R;
+import com.example.evacuateme.Service.GetWorkerLocationService;
 import com.example.evacuateme.Utils.Client;
 import com.example.evacuateme.Utils.MyAction;
 import com.example.evacuateme.Utils.STATUS;
@@ -176,8 +177,18 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.getUiSettings().setZoomControlsEnabled(true);
-        if(worker.getOrder_status() == STATUS.OnTheWay){
-            showWorkerPosition();
+
+        switch (worker.getOrder_status()){
+
+            case STATUS.OnTheWay:{
+                showWorkerPosition();
+                break;
+            }
+
+            default:{
+                Log.d("MAP_READY", "НЕВЕДОМЫЙ СТАТУС!");
+                break;
+            }
         }
     }
 
@@ -250,7 +261,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     @Override
     public void onResume() {
         super.onResume();
-        IntentFilter intentFilter = new IntentFilter(MyAction.OrderCanceledByClient);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyAction.OrderCanceledByClient);
+        intentFilter.addAction(MyAction.WorkerLocationChanged);
+        intentFilter.addAction(MyAction.OrderConfirmed);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, intentFilter);
         if (checkPlayServices() && googleApiClient.isConnected()) {
             startLocationUpdates();
@@ -258,6 +272,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         switch (worker.getOrder_status()){
             case STATUS.OnTheWay:{
                 Log.d("MMF", "ЗАКАЗ ГОТОВ К ОТОБРАЖЕНИЮ!");
+                Log.d("SERVICE", "ЗАПУСКАЮ");
+                Intent service_intent = new Intent(getContext(), GetWorkerLocationService.class);
+                getContext().startService(service_intent);
                 OnTheWayFragment onTheWayFragment = new OnTheWayFragment();
                 fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.info_container_fragment, onTheWayFragment).commit();
@@ -278,7 +295,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             double mLong = (client.getLongitude() + worker.getLongitude())/2;
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(mLat, mLong))
-                    .zoom(15)
+                    .zoom(13)
                     .build();
             CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
             map.moveCamera(cameraUpdate);
@@ -301,9 +318,25 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
             switch (intent.getAction()){
                 case MyAction.OrderCanceledByClient:{
+                    Intent service_intent = new Intent(getContext(), GetWorkerLocationService.class);
+                    getContext().stopService(service_intent);
                     StartFragment startFragment = new StartFragment();
                     fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+                    break;
+                }
+
+//                case MyAction.OrderConfirmed:{
+//                    Log.d("SERVICE", "ЗАПУСКАЮ");
+//                    showWorkerPosition();
+//                    Intent service_intent = new Intent(getContext(), GetWorkerLocationService.class);
+//                    getActivity().startService(service_intent);
+//                    break;
+//                }
+
+                case MyAction.WorkerLocationChanged:{
+                    Log.d("ОТРИСОВКА", "НОВЫЕ КООРДИНАТЫ");
+                    showWorkerPosition();
                     break;
                 }
 
@@ -312,8 +345,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     break;
                 }
             }
-
-
         }
     };
 

@@ -11,7 +11,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.evacuateme.Model.OrderStatus;
+import com.example.evacuateme.Model.WorkerLocation;
 import com.example.evacuateme.Utils.App;
+import com.example.evacuateme.Utils.MyAction;
 import com.example.evacuateme.Utils.STATUS;
 import com.example.evacuateme.Utils.Worker;
 
@@ -40,6 +42,7 @@ public class GetWorkerLocationService extends Service {
         sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
         api_key = sharedPreferences.getString("api_key","");
         worker = Worker.getInstance();
+        Log.d("Я", "СОЗДАЛСО БЛЕАТЬ!");
     }
 
     @Override
@@ -53,7 +56,7 @@ public class GetWorkerLocationService extends Service {
                 Run();
             }
         };
-        timer.schedule(timerTask, 0, 10000);
+        timer.schedule(timerTask, 0, 5000);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -62,30 +65,55 @@ public class GetWorkerLocationService extends Service {
         super.onDestroy();
         timerTask.cancel();
         timer.cancel();
+        Log.d("Я", "ОСТАНОВИЛСО БЛЕАТЬ!");
     }
 
     private void Run(){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-//                try {
-//                    App.getApi().get_worker_location(api_key, worker.getWorker_id()).enqueue(new Callback<OrderStatus>() {
-//                        @Override
-//                        public void onResponse(Call<OrderStatus> call, Response<OrderStatus> response) {
-//                            if(response == null){
-//                                Log.d("LOCATION", "ОТВЕТ НУЛЛ");
-//                                return;
-//                            }
-//
-//                        }
-//                        @Override
-//                        public void onFailure(Call<OrderStatus> call, Throwable t) {
-//                            Log.d("TAG", "ВСЕ ПЛОХО!");
-//                        }
-//                    });
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    App.getApi().get_worker_location(api_key, worker.getWorker_id()).enqueue(new Callback<WorkerLocation>() {
+                        @Override
+                        public void onResponse(Call<WorkerLocation> call, Response<WorkerLocation> response) {
+                            if(response == null){
+                                Log.d("LOCATION", "ОТВЕТ НУЛЛ");
+                                return;
+                            }
+                            switch (response.code()){
+                                case STATUS.Ok:{
+                                    Log.d("GWLLS", "КООРДИНАТЫ РАБОТНИКА ОБНОВЛЕНЫ!");
+                                    worker.setLatitude(response.body().latitude);
+                                    worker.setLongitude(response.body().longitude);
+                                    Intent intent = new Intent(MyAction.WorkerLocationChanged);
+                                    LocalBroadcastManager.getInstance(GetWorkerLocationService.this).sendBroadcast(intent);
+                                    break;
+                                }
+                                case STATUS.NotFound:{
+                                    break;
+                                }
+
+                                case STATUS.BadRequest:{
+                                    break;
+                                }
+
+                                case STATUS.Unauthorized:{
+                                    break;
+                                }
+                                default:{
+                                    Log.d("GWLS", "Внутренняя ошибка сервера!");
+                                    break;
+                                }
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<WorkerLocation> call, Throwable t) {
+                            Log.d("TAG", "ВСЕ ПЛОХО!");
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
