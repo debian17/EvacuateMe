@@ -39,6 +39,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -48,7 +49,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private static int UPDATE_INTERVAL = 0; // 10 sec
-    private static int FATEST_INTERVAL = 3; // 5 sec
+    private static int FATEST_INTERVAL = 0; // 5 sec
     private static int DISPLACEMENT = 0; // 10 meters
 
     private GoogleMap map;
@@ -148,8 +149,28 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         }
     }
 
-    private void DrawToMarks(){
+    private void DrawToMarkers(){
+        if(map!=null){
+            map.clear();
+            double mLat = (order.getLatitude() + myLocation.getLatitude())/2;
+            double mLong = (order.getLongitude() + myLocation.getLongitude())/2;
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(mLat, mLong))
+                    .zoom(13)
+                    .build();
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+            map.moveCamera(cameraUpdate);
+            map.addMarker(new MarkerOptions().position(new LatLng(order.getLatitude(),
+                    order.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
+            map.addMarker(new MarkerOptions().position(new LatLng(myLocation.getLatitude(),
+                    myLocation.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+        }
+        else {
+            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
+                    Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -176,50 +197,18 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         find_me_BTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myLocation.setLatitude(47.30148265);
-                myLocation.setLongitude(39.72292542);
-                myLocation.setNew(true);
-                moveCameraToMyLocation();
+//                myLocation.setLatitude(47.30148265);
+//                myLocation.setLongitude(39.72292542);
+//                myLocation.setNew(true);
+//                moveCameraToMyLocation();
 
 //                //работает
-//                Location temp = getMyLocation();
-//                myLocation.setLatitude(temp.getLatitude());
-//                myLocation.setLongitude(temp.getLongitude());
-//                moveCameraToMyLocation();
+                Location temp = getMyLocation();
+                myLocation.setLatitude(temp.getLatitude());
+                myLocation.setLongitude(temp.getLongitude());
+                moveCameraToMyLocation();
             }
         });
-
-//        sharedPreferences = getContext().getSharedPreferences("STATUS", Context.MODE_PRIVATE);
-//        int status = sharedPreferences.getInt("status", 0);
-//        switch (status){
-//            case STATUS.Selection:{
-//                SelectionFragment selectionFragment = new SelectionFragment();
-//                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-//                fragmentTransaction.replace(R.id.info_container_fragment, selectionFragment).commit();
-//                break;
-//            }
-//            case STATUS.Working:{
-//                StartFragment startFragment = new StartFragment();
-//                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-//                fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
-//                break;
-//            }
-//            case STATUS.NotWorking:{
-//                StartFragment startFragment = new StartFragment();
-//                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-//                fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
-//                break;
-//            }
-//        }
-//        if(isOrder){
-//            //на заказе
-//        }
-//        else {
-//            //не на заказе
-//            StartFragment startFragment = new StartFragment();
-//            fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-//            fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
-//        }
         return view;
     }
 
@@ -227,6 +216,18 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.getUiSettings().setZoomControlsEnabled(true);
+
+        switch (order.getOrder_status()){
+
+            case Order.OnTheWay:{
+                DrawToMarkers();
+                break;
+            }
+
+            default:{
+                break;
+            }
+        }
     }
 
     @Override
@@ -262,28 +263,46 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     @Override
     public void onLocationChanged(Location location) {
         Log.d("LOCATION", "ИЗМЕНИЛОСЬ МЕСТОПОЛОЖЕНИЕ");
-        myLocation.setLatitude(47.30148265);
-        myLocation.setLongitude(39.72292542);
-        myLocation.setNew(true);
-        moveCameraToMyLocation();
-
-//        //вроде работает
-//        if((location.getLatitude() == myLocation.getLatitude()) && (location.getLongitude() == myLocation.getLongitude())){
-//            myLocation.setNew(false);
+//        myLocation.setLatitude(47.30148265);
+//        myLocation.setLongitude(39.72292542);
+//        myLocation.setNew(true);
+//
+//        if(order.getOrder_status()==Order.OnTheWay){
+//            DrawToMarks();
+//            return;
 //        }
-//        else {
-//            myLocation.setLatitude(location.getLatitude());
-//            myLocation.setLongitude(location.getLongitude());
-//            myLocation.setNew(true);
-//        }
+//
 //        if(isLocated){
 //            return;
 //        }
 //        else {
-//            myLocation.setLatitude(location.getLatitude());
-//            myLocation.setLongitude(location.getLongitude());
 //            moveCameraToMyLocation();
 //        }
+
+        //вроде работает
+
+        if((location.getLatitude() == myLocation.getLatitude()) && (location.getLongitude() == myLocation.getLongitude())){
+            myLocation.setNew(false);
+        }
+        else {
+            myLocation.setLatitude(location.getLatitude());
+            myLocation.setLongitude(location.getLongitude());
+            myLocation.setNew(true);
+        }
+
+        if(order.getOrder_status()==Order.OnTheWay){
+            DrawToMarkers();
+            return;
+        }
+
+        if(isLocated){
+            return;
+        }
+        else {
+            myLocation.setLatitude(location.getLatitude());
+            myLocation.setLongitude(location.getLongitude());
+            moveCameraToMyLocation();
+        }
     }
 
     @Override
@@ -339,6 +358,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             }
 
             case Order.CanceledByClient:{
+                moveCameraToMyLocation();
                 Intent intent_order = new Intent(getActivity(), GetOrderService.class);
                 getContext().startService(intent_order);
             }
@@ -376,6 +396,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 }
 
                 case MyAction.DrawTwoMarks:{
+                    DrawToMarkers();
                     break;
                 }
 

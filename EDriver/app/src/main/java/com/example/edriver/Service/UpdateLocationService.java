@@ -57,7 +57,7 @@ public class UpdateLocationService extends Service {
                 Run();
             }
         };
-        timer.schedule(timerTask, 0, 10000);
+        timer.schedule(timerTask, 0, 3000);
         return super.onStartCommand(intent, flags, startId);
     }
 

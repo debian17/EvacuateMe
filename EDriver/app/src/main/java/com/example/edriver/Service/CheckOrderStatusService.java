@@ -96,7 +96,7 @@ public class CheckOrderStatusService extends Service {
                                             break;
                                         }
                                         default:{
-                                            Log.d("DEFAULT", "ОТВЕТ НЕ ОК");
+                                            Log.d("НЕ ОК", String.valueOf(response.code()));
                                             break;
                                         }
                                     }

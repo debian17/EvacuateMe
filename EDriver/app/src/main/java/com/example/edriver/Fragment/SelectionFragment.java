@@ -86,14 +86,12 @@ public class SelectionFragment extends Fragment {
                         fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
                         final Intent intent_order = new Intent(getActivity(), GetOrderService.class);
                         getActivity().startService(intent_order);
-                        //Order order = Order.getInstance();
                         order.setOrder_status(Order.CanceledByWorker);
                     }
                 });
                 changeOrderStatusAsync.execute();
             }
         });
-
         return view;
     }
 }
