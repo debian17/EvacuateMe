@@ -3,13 +3,13 @@ package com.example.evacuateme.AsyncTask;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.evacuateme.Interface.GetCompaniesCallBack;
 import com.example.evacuateme.Model.Companies;
 import com.example.evacuateme.Utils.App;
 import com.example.evacuateme.Utils.Client;
-import com.example.evacuateme.Utils.MyLocation;
 import com.example.evacuateme.Utils.STATUS;
 import com.google.gson.JsonObject;
 

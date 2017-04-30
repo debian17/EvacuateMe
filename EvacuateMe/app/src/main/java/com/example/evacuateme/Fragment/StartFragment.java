@@ -18,7 +18,6 @@ import com.example.evacuateme.AsyncTask.GetCarTypeAsync;
 import com.example.evacuateme.Interface.GetCarTypeCallBack;
 import com.example.evacuateme.Model.CarType;
 import com.example.evacuateme.R;
-import com.example.evacuateme.Utils.MyLocation;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -46,8 +45,6 @@ public class StartFragment extends Fragment {
                             public void completed(boolean result, List<CarType> data) {
                                 if(result){
                                     Intent intent = new Intent(getContext(), InfoOrderActivity.class);
-//                                    intent.putExtra("latitude", MyLocation.latitude);
-//                                    intent.putExtra("longitude", MyLocation.longitude);
                                     intent.putExtra("car_list", new Gson().toJson(data));
                                     startActivity(intent);
                                 }
