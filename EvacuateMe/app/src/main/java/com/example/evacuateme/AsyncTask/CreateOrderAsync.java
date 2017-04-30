@@ -7,10 +7,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.evacuateme.Interface.CreateOrderCallBack;
-import com.example.evacuateme.Model.Worker;
+import com.example.evacuateme.Model.OrderData;
 import com.example.evacuateme.Utils.App;
 import com.example.evacuateme.Utils.Client;
 import com.example.evacuateme.Utils.STATUS;
+import com.example.evacuateme.Utils.Worker;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -21,12 +22,13 @@ import retrofit2.Response;
  * Created by Андрей Кравченко on 21-Apr-17.
  */
 
-public class CreateOrderAsync extends AsyncTask<Void, Void, Response<Worker>> {
+public class CreateOrderAsync extends AsyncTask<Void, Void, Response<OrderData>> {
 
     private ProgressDialog progressDialog;
     private Context context;
     private String api_ley;
     private Client client;
+    private Worker worker;
     private CreateOrderCallBack createOrderCallBack;
 
     public CreateOrderAsync(Context context, String api_key, CreateOrderCallBack createOrderCallBack){
@@ -34,6 +36,7 @@ public class CreateOrderAsync extends AsyncTask<Void, Void, Response<Worker>> {
         this.api_ley = api_key;
         this.createOrderCallBack = createOrderCallBack;
         client = Client.getInstance();
+        worker = Worker.getInstance();
     }
 
 
@@ -48,16 +51,13 @@ public class CreateOrderAsync extends AsyncTask<Void, Void, Response<Worker>> {
     }
 
     @Override
-    protected Response<Worker> doInBackground(Void... params) {
+    protected Response<OrderData> doInBackground(Void... params) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("latitude", client.getLatitude());
         jsonObject.addProperty("longitude", client.getLongitude());
-//        Log.d("JSON", String.valueOf(client.getLatitude()));
-//        Log.d("JSON", String.valueOf(client.getLongitude()));
         jsonObject.addProperty("car_type", client.getCar_type());
-        jsonObject.addProperty("company_id", client.getCompany_id());
-        jsonObject.addProperty("worker_id", client.getWorker_id());
-        //Log.d("WORKER", "ID"+String.valueOf(client.getWorker_id()));
+        jsonObject.addProperty("company_id", worker.getCompany_id());
+        jsonObject.addProperty("worker_id", worker.getWorker_id());
         jsonObject.addProperty("commentary", client.getComment());
         try {
             return App.getApi().create_order(api_ley, jsonObject).execute();
@@ -68,11 +68,11 @@ public class CreateOrderAsync extends AsyncTask<Void, Void, Response<Worker>> {
     }
 
     @Override
-    protected void onPostExecute(Response<Worker> resultResponse) {
+    protected void onPostExecute(Response<OrderData> resultResponse) {
         super.onPostExecute(resultResponse);
         progressDialog.dismiss();
         boolean result = false;
-        Worker worker = null;
+        OrderData worker = null;
 
         if(resultResponse == null){
             Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT)

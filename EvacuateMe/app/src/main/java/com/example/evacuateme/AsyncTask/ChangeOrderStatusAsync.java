@@ -1,4 +1,4 @@
-package com.example.edriver.AsyncTask;
+package com.example.evacuateme.AsyncTask;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -6,10 +6,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.example.edriver.Interface.ChangeOrderStatusCallBack;
-import com.example.edriver.Interface.ChangeStatusCallBack;
-import com.example.edriver.Utils.App;
-import com.example.edriver.Utils.STATUS;
+import com.example.evacuateme.Interface.ChangeOrderStatusCallBack;
+import com.example.evacuateme.Utils.App;
+import com.example.evacuateme.Utils.STATUS;
 
 import java.io.IOException;
 
@@ -17,7 +16,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 /**
- * Created by Андрей Кравченко on 24-Apr-17.
+ * Created by Андрей Кравченко on 26-Apr-17.
  */
 
 public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
@@ -73,17 +72,15 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
 
         switch (responseBody.code()){
             case STATUS.BadRequest:{
-                result = false;
+                //Toast.makeText(context, "Вы отправили неверные данные!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.NotFound:{
-                result = false;
-                //Toast.makeText(context, "Такой заказ не найден!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Такой заказ не найден!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.Unauthorized:{
-                result = false;
-                //Toast.makeText(context, "Вы не авторизованы!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Вы не авторизованы!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.Ok:{
@@ -98,3 +95,4 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
         changeOrderStatusCallBack.completed(result);
     }
 }
+

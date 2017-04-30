@@ -35,6 +35,7 @@ public class UpdateLocationService extends Service {
     private TimerTask timerTask;
     private SharedPreferences sharedPreferences;
     private String api_key;
+    private MyLocation myLocation = MyLocation.getInstance();
 
     @Override
     public void onCreate() {
@@ -46,6 +47,7 @@ public class UpdateLocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("UPDATE_LOCATION", "ЗАПУСТИЛСЯ");
         if(timerTask!=null){
             timerTask.cancel();
         }
@@ -64,30 +66,30 @@ public class UpdateLocationService extends Service {
         super.onDestroy();
         timerTask.cancel();
         timer.cancel();
+        Log.d("UPDATE_LOCATION", "ОСТАНОВИЛСЯ");
     }
 
     private void Run(){
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
-                if(!MyLocation.isNew){
-                    //Log.d("LOCATION", "НЕ ОТПРАВЛЯЮ КООРДИНАТЫ");
+
+                if(!myLocation.isNew()){
+                    Log.d("LOCATION", "НЕ ОТПРАВЛЯЮ КООРДИНАТЫ");
                     return;
                 }
-                //Log.d("LOCATION", "ОТПРАВЛЯЮ КООРДИНАТЫ");
+                Log.d("LOCATION", "ОТПРАВЛЯЮ КООРДИНАТЫ");
                 JsonObject jsonObject = new JsonObject();
-                jsonObject.addProperty("latitude", MyLocation.latitude);
-                jsonObject.addProperty("longitude", MyLocation.longitude);
+                jsonObject.addProperty("latitude", myLocation.getLatitude());
+                jsonObject.addProperty("longitude", myLocation.getLongitude());
                 try {
                     App.getApi().updateLocation(api_key, jsonObject).enqueue(new Callback<ResponseBody>() {
                         @Override
                         public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                             if(response == null){
-                                //Log.d("LOCATION", "ОТВЕТ НУЛЛ");
                             }
                             if(response.code() == STATUS.Ok){
-                                MyLocation.isNew = false;
-                                //Log.d("LOCATION", "КООРДИНАТЫ ОБНОВЛЕНЫ");
+                                myLocation.setNew(false);
                             }
                         }
                         @Override

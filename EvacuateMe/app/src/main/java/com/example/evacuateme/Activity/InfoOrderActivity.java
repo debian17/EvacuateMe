@@ -23,7 +23,6 @@ import com.example.evacuateme.Model.CarType;
 import com.example.evacuateme.Model.Companies;
 import com.example.evacuateme.R;
 import com.example.evacuateme.Utils.Client;
-import com.example.evacuateme.Utils.MyLocation;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 

@@ -13,6 +13,4 @@ public class STATUS {
 
     public static final int NotWorking = 0;
     public static final int Working = 1;
-    public static final int PerformingOrder = 2;
-    public static final int Selection = 3;
 }

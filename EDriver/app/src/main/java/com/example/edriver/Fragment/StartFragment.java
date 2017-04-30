@@ -4,9 +4,11 @@ package com.example.edriver.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,12 +20,12 @@ import com.example.edriver.Interface.ChangeStatusCallBack;
 import com.example.edriver.R;
 import com.example.edriver.Service.GetOrderService;
 import com.example.edriver.Service.UpdateLocationService;
+import com.example.edriver.Utils.Order;
 import com.example.edriver.Utils.STATUS;
 
 public class StartFragment extends Fragment {
     private ToggleButton change_status_BTN;
     private SharedPreferences sharedPreferences;
-    private ProgressDialog progressDialog;
 
     public StartFragment() {
     }
@@ -33,12 +35,6 @@ public class StartFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_start, container, false);
         sharedPreferences = getActivity().getSharedPreferences("STATUS", Context.MODE_PRIVATE);
-
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Работает сервис...");
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
-
         change_status_BTN = (ToggleButton) view.findViewById(R.id.change_status_BTN);
         change_status_BTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,10 +51,8 @@ public class StartFragment extends Fragment {
                                         SharedPreferences.Editor editor_status = sharedPreferences.edit();
                                         editor_status.putInt("status", STATUS.Working);
                                         editor_status.apply();
-                                        //progressDialog.show();
                                         getActivity().startService(intent_order);
                                         getActivity().startService(intent_location);
-                                        //Log.d("TAG_FRAGMENT", "ЗАПУСТИЛ СЕРВИС");
                                     }
                                     else {
                                         change_status_BTN.setChecked(false);
@@ -82,7 +76,6 @@ public class StartFragment extends Fragment {
                                         editor_status.apply();
                                         getActivity().stopService(intent_order);
                                         getActivity().stopService(intent_location);
-                                        //Log.d("TAG_FRAGMENT", "ОСТАНОВИЛ СЕРВИС");
                                     }
                                     else {
                                         change_status_BTN.setChecked(true);
@@ -103,5 +96,21 @@ public class StartFragment extends Fragment {
             change_status_BTN.setChecked(true);
         }
         return view;
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

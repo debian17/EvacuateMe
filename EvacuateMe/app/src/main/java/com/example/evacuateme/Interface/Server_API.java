@@ -3,7 +3,7 @@ package com.example.evacuateme.Interface;
 import com.example.evacuateme.Model.CarType;
 import com.example.evacuateme.Model.Companies;
 import com.example.evacuateme.Model.OrderStatus;
-import com.example.evacuateme.Model.Worker;
+import com.example.evacuateme.Model.OrderData;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -14,6 +14,7 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 /**
@@ -41,8 +42,14 @@ public interface Server_API {
     Call<List<Companies>> get_companies(@Header("api_key") String api_key, @Body JsonObject jsonObject);
 
     @POST("/api/orders")
-    Call<Worker> create_order(@Header("api_key") String api_key, @Body JsonObject jsonObject);
+    Call<OrderData> create_order(@Header("api_key") String api_key, @Body JsonObject jsonObject);
 
     @GET("/api/orders/{order_id}/status")
     Call<OrderStatus> get_order_status(@Header("api_key") String api_key, @Path("order_id") int order_id);
+
+    @PUT("/api/orders/{order_id}/status/{new_status}")
+    Call<ResponseBody> changeOrderStatus(@Header("api_key") String api_key, @Path("order_id") int order_id, @Path("new_status") int new_status);
+
+    //get_worker_location
+
 }

@@ -8,15 +8,15 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class DataOrder {
-    @SerializedName("Latitude")
+    @SerializedName("latitude")
     @Expose
     public Double latitude;
 
-    @SerializedName("Longitude")
+    @SerializedName("longitude")
     @Expose
     public Double longitude;
 
-    @SerializedName("ClientPhone")
+    @SerializedName("phone")
     @Expose
     public String clientPhone;
 

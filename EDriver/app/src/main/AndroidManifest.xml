@@ -16,6 +16,8 @@
         android:theme="@style/AppTheme">
         <service android:name=".Service.GetOrderService"
             android:enabled="true"/>
+        <service android:name=".Service.CheckOrderStatusService"
+                 android:enabled="true"/>
         <service android:name=".Service.UpdateLocationService"
                  android:enabled="true"/>
         <activity android:name=".Activity.MainActivity">

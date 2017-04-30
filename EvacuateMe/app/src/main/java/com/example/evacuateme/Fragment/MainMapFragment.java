@@ -1,6 +1,9 @@
 package com.example.evacuateme.Fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -10,16 +13,18 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
 import com.example.evacuateme.R;
 import com.example.evacuateme.Utils.Client;
-import com.example.evacuateme.Utils.MyLocation;
+import com.example.evacuateme.Utils.MyAction;
+import com.example.evacuateme.Utils.STATUS;
+import com.example.evacuateme.Utils.Worker;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,6 +35,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -46,9 +52,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private LocationRequest locationRequest;
     private boolean isLocated;
     private ImageButton find_me_BTN;
-    private SharedPreferences sharedPreferences;
     private FragmentTransaction fragmentTransaction;
     private Client client;
+    private Worker worker;
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -114,12 +120,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     }
 
     private void moveCameraToMyLocation(){
-        //if(lastLocation!=null){
             if(map!=null){
                 isLocated = true;
                 map.clear();
                 CameraPosition cameraPosition = new CameraPosition.Builder()
-                        //.target(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
                         .target(new LatLng(client.getLatitude(), client.getLongitude()))
                         .zoom(15)
                         .build();
@@ -132,17 +136,13 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
                         Toast.LENGTH_SHORT).show();
             }
-//        }
-//        else {
-//            Toast.makeText(getContext(), "Не могу определить местоположение. Попробуйте еще раз!",
-//                    Toast.LENGTH_SHORT).show();
-//        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         client = Client.getInstance();
+        worker = Worker.getInstance();
         if (checkPlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
@@ -166,24 +166,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 Location temp = getMyLocation();
                 client.setLatitude(temp.getLatitude());
                 client.setLongitude(temp.getLongitude());
-                Log.d("FIND_ME", String.valueOf(client.getLatitude()));
-                Log.d("FIND_ME", String.valueOf(client.getLongitude()));
                 moveCameraToMyLocation();
             }
         });
-
-        sharedPreferences = getContext().getSharedPreferences("IS_ORDER", Context.MODE_PRIVATE);
-        boolean isOrder = sharedPreferences.getBoolean("is_order", false);
-        if(isOrder){
-            //на заказе
-        }
-        else {
-            //не на заказе
-            StartFragment startFragment = new StartFragment();
-            fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
-        }
-
         return view;
     }
 
@@ -191,6 +176,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.getUiSettings().setZoomControlsEnabled(true);
+        if(worker.getOrder_status() == STATUS.OnTheWay){
+            showWorkerPosition();
+        }
     }
 
     @Override
@@ -228,11 +216,11 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         if(isLocated){
             return;
         }
+        if(worker.getOrder_status() == STATUS.OnTheWay || worker.getOrder_status() == STATUS.Performing){
+            return;
+        }
         client.setLatitude(location.getLatitude());
         client.setLongitude(location.getLongitude());
-        Log.d("ONLCH", String.valueOf(client.getLatitude()));
-        Log.d("ONLCH", String.valueOf(client.getLongitude()));
-        //lastLocation = location;
         moveCameraToMyLocation();
     }
 
@@ -256,19 +244,81 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onPause() {
         super.onPause();
         stopLocationUpdates();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(broadcastReceiver);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        IntentFilter intentFilter = new IntentFilter(MyAction.OrderCanceledByClient);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, intentFilter);
         if (checkPlayServices() && googleApiClient.isConnected()) {
             startLocationUpdates();
         }
+        switch (worker.getOrder_status()){
+            case STATUS.OnTheWay:{
+                Log.d("MMF", "ЗАКАЗ ГОТОВ К ОТОБРАЖЕНИЮ!");
+                OnTheWayFragment onTheWayFragment = new OnTheWayFragment();
+                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.info_container_fragment, onTheWayFragment).commit();
+                break;
+            }
+            default:{
+                StartFragment startFragment = new StartFragment();
+                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+            }
+        }
     }
+
+    private void showWorkerPosition(){
+        if(map!=null){
+            map.clear();
+            double mLat = (client.getLatitude() + worker.getLatitude())/2;
+            double mLong = (client.getLongitude() + worker.getLongitude())/2;
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(mLat, mLong))
+                    .zoom(15)
+                    .build();
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+            map.moveCamera(cameraUpdate);
+            map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(),
+                    client.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+            map.addMarker(new MarkerOptions().position(new LatLng(worker.getLatitude(),
+                    worker.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
+        }
+        else {
+            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            switch (intent.getAction()){
+                case MyAction.OrderCanceledByClient:{
+                    StartFragment startFragment = new StartFragment();
+                    fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+                    break;
+                }
+
+                default:{
+                    Log.d("НЕВЕДОМАЯ", "ХЕРНЯ");
+                    break;
+                }
+            }
+
+
+        }
+    };
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
     }
 }

@@ -17,17 +17,6 @@ public class Client {
     private Double longitude;
     private String comment;
     private int car_type;
-    private int company_id;
-    private int worker_id;
-    private int order_id;
-
-    public int getOrder_id() {
-        return order_id;
-    }
-
-    public void setOrder_id(int order_id) {
-        this.order_id = order_id;
-    }
 
     public Double getLatitude() {
         return latitude;
@@ -61,19 +50,4 @@ public class Client {
         this.car_type = car_type;
     }
 
-    public int getCompany_id() {
-        return company_id;
-    }
-
-    public void setCompany_id(int company_id) {
-        this.company_id = company_id;
-    }
-
-    public int getWorker_id() {
-        return worker_id;
-    }
-
-    public void setWorker_id(int worker_id) {
-        this.worker_id = worker_id;
-    }
 }

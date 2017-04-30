@@ -1,5 +1,6 @@
 package com.example.evacuateme.Service;
 
+import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -9,13 +10,16 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.evacuateme.Model.OrderStatus;
 import com.example.evacuateme.Utils.App;
 import com.example.evacuateme.Utils.Client;
+import com.example.evacuateme.Utils.MyAction;
 import com.example.evacuateme.Utils.STATUS;
+import com.example.evacuateme.Utils.Worker;
 import com.google.gson.JsonObject;
 
 import java.util.Timer;
@@ -36,6 +40,7 @@ public class ConfirmOrderService extends Service {
     private SharedPreferences sharedPreferences;
     private String api_key;
     private int order_id;
+    private Worker worker;
 
     @Override
     public void onCreate() {
@@ -43,8 +48,8 @@ public class ConfirmOrderService extends Service {
         timer = new Timer();
         sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
         api_key = sharedPreferences.getString("api_key","");
-        Client client = Client.getInstance();
-        order_id = client.getOrder_id();
+        worker = Worker.getInstance();
+        order_id = worker.getOrder_id();
     }
 
     @Override
@@ -92,11 +97,20 @@ public class ConfirmOrderService extends Service {
                                     switch (response.body().id){
                                         case STATUS.Awaiting:{
                                             Log.d("ORDER_STATUS", "ЗАКАЗ ОЖИДАЕТ ПОДТВЕРЖДЕНИЯ!");
-                                            stopSelf();
                                             break;
                                         }
                                         case STATUS.OnTheWay:{
                                             Log.d("ORDER_STATUS", "ЗАКАЗ БЫЛ ПРИНЯТ!");
+                                            worker.setOrder_status(STATUS.OnTheWay);
+                                            Intent intent = new Intent(MyAction.OrderConfirmed);
+                                            LocalBroadcastManager.getInstance(ConfirmOrderService.this).sendBroadcast(intent);
+                                            stopSelf();
+                                            break;
+                                        }
+                                        case STATUS.CanceledByWorker:{
+                                            worker.setOrder_status(STATUS.CanceledByWorker);
+                                            Intent intent = new Intent(MyAction.OrderCanceledByWorker);
+                                            LocalBroadcastManager.getInstance(ConfirmOrderService.this).sendBroadcast(intent);
                                             stopSelf();
                                             break;
                                         }

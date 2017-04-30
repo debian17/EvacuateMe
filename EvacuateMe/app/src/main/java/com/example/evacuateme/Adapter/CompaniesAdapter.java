@@ -1,8 +1,13 @@
 package com.example.evacuateme.Adapter;
 
+import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,14 +15,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.evacuateme.Activity.NavigationDrawerActivity;
+import com.example.evacuateme.AsyncTask.ChangeOrderStatusAsync;
 import com.example.evacuateme.AsyncTask.CreateOrderAsync;
+import com.example.evacuateme.Interface.ChangeOrderStatusCallBack;
 import com.example.evacuateme.Interface.CreateOrderCallBack;
 import com.example.evacuateme.Model.Companies;
-import com.example.evacuateme.Model.Worker;
+import com.example.evacuateme.Model.OrderData;
+import com.example.evacuateme.Model.OrderStatus;
 import com.example.evacuateme.R;
 import com.example.evacuateme.Service.ConfirmOrderService;
 import com.example.evacuateme.Utils.Client;
+import com.example.evacuateme.Utils.MyAction;
+import com.example.evacuateme.Utils.STATUS;
+import com.example.evacuateme.Utils.Worker;
 
 import java.util.List;
 
@@ -45,13 +58,24 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
     private List<Companies> items;
     private Context context;
     private Client client;
+    private Worker worker;
     private SharedPreferences sharedPreferences;
+    private ProgressDialog progressDialog;
 
     public CompaniesAdapter(Context context, List<Companies> items){
         this.items = items;
         this.context = context;
         client = Client.getInstance();
+        worker = Worker.getInstance();
         sharedPreferences = context.getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyAction.OrderConfirmed);
+        intentFilter.addAction(MyAction.OrderCanceledByWorker);
+        LocalBroadcastManager.getInstance(context).registerReceiver(broadcastReceiver, intentFilter);
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Ожидайте подтверждения заказа...");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(true);
     }
 
     @Override
@@ -70,20 +94,39 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
         holder.make_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                client.setCompany_id(company.id);
-                client.setWorker_id(company.closestWorkerId);
+                worker.setCompany_id(company.id);
+                worker.setWorker_id(company.closestWorkerId);
                 String api_key = sharedPreferences.getString("api_key", "");
                 CreateOrderAsync createOrderAsync = new CreateOrderAsync(context, api_key, new CreateOrderCallBack() {
                     @Override
-                    public void created(boolean result, Worker worker) {
+                    public void created(boolean result, OrderData orderData) {
                         if(result){
-                            Log.d("ORDER", String.valueOf(worker.order_id));
-                            client.setOrder_id(worker.order_id);
-                            Intent intent = new Intent(context, ConfirmOrderService.class);
+                            worker.setOrder_id(orderData.order_id);
+                            worker.setLatitude(orderData.latitude);
+                            worker.setLongitude(orderData.longitude);
+                            worker.setPhone(orderData.phone);
+                            final Intent intent = new Intent(context, ConfirmOrderService.class);
+                            progressDialog.show();
+                            progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    context.stopService(intent);
+                                    ChangeOrderStatusAsync changeOrderStatusAsync = new ChangeOrderStatusAsync(context,
+                                            worker.getOrder_id(), STATUS.CanceledByClient, new ChangeOrderStatusCallBack() {
+                                        @Override
+                                        public void completed(boolean result) {
+                                            if(result){
+                                                Toast.makeText(context, "Вы отменили заказ!", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                    changeOrderStatusAsync.execute();
+                                }
+                            });
                             context.startService(intent);
                         }
                         else {
-                            Log.d("ORDER", "Заказ НЕ сформирован");
+                            Log.d("ORDER", "Заказ НЕ сформирован!");
                         }
                     }
                 });
@@ -91,6 +134,29 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
             }
         });
     }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            progressDialog.dismiss();
+
+            switch (intent.getAction()){
+                case MyAction.OrderConfirmed:{
+                    Intent new_intent = new Intent(context, NavigationDrawerActivity.class);
+                    new_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    context.startActivity(new_intent);
+                    break;
+                }
+                case MyAction.OrderCanceledByWorker:{
+                    Toast.makeText(context, "Работник отменил заказ!", Toast.LENGTH_SHORT).show();
+                    break;
+                }
+                default:
+                    Log.d("НЕВЕДОМАЯ", "ДИЧЬ");
+                    break;
+            }
+        }
+    };
 
     @Override
     public int getItemCount() {
