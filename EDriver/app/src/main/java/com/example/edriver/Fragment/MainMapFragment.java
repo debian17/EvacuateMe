@@ -24,9 +24,11 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.edriver.R;
+import com.example.edriver.Service.GetOrderService;
+import com.example.edriver.Utils.MyAction;
 import com.example.edriver.Utils.MyLocation;
+import com.example.edriver.Utils.Order;
 import com.example.edriver.Utils.STATUS;
-import com.example.edriver.Utils.State;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -45,18 +47,18 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, android.location.LocationListener {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-    private static int UPDATE_INTERVAL = 20; // 10 sec
-    private static int FATEST_INTERVAL = 10; // 5 sec
-    private static int DISPLACEMENT = 30; // 10 meters
+    private static int UPDATE_INTERVAL = 0; // 10 sec
+    private static int FATEST_INTERVAL = 3; // 5 sec
+    private static int DISPLACEMENT = 0; // 10 meters
 
     private GoogleMap map;
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
-    private Location lastLocation;
     private ImageButton find_me_BTN;
     private boolean isLocated;
-    private SharedPreferences sharedPreferences;
     private FragmentTransaction fragmentTransaction;
+    private Order order = Order.getInstance();
+    private MyLocation myLocation = MyLocation.getInstance();
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -122,18 +124,18 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     }
 
     private void moveCameraToMyLocation(){
-        if(lastLocation!=null){
+        if(myLocation!=null){
             if(map!=null){
                 isLocated = true;
                 map.clear();
                 CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
+                        .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
                         .zoom(15)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                 map.moveCamera(cameraUpdate);
-                map.addMarker(new MarkerOptions().position(new LatLng(lastLocation.getLatitude(),
-                        lastLocation.getLongitude())));
+                map.addMarker(new MarkerOptions().position(new LatLng(myLocation.getLatitude(),
+                        myLocation.getLongitude())));
             }
             else {
                 Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
@@ -144,6 +146,11 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             Toast.makeText(getContext(), "Не могу определить местоположение. Попробуйте еще раз!",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void DrawToMarks(){
+
+
     }
 
     @Override
@@ -169,8 +176,16 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         find_me_BTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lastLocation = getMyLocation();
+                myLocation.setLatitude(47.30148265);
+                myLocation.setLongitude(39.72292542);
+                myLocation.setNew(true);
                 moveCameraToMyLocation();
+
+//                //работает
+//                Location temp = getMyLocation();
+//                myLocation.setLatitude(temp.getLatitude());
+//                myLocation.setLongitude(temp.getLongitude());
+//                moveCameraToMyLocation();
             }
         });
 
@@ -246,27 +261,29 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
     @Override
     public void onLocationChanged(Location location) {
-//        Log.d("TAG", "MY_LAT = "+String.valueOf(MyLocation.latitude));
-//        Log.d("TAG", "MY_LON = "+String.valueOf(MyLocation.longitude));
-//        Log.d("TAG", "NEW_LAT = "+String.valueOf(location.getLatitude()));
-//        Log.d("TAG", "NEW_LAT = "+String.valueOf(location.getLongitude()));
-        if((location.getLatitude() == MyLocation.latitude) && (location.getLongitude() == MyLocation.longitude)){
-            MyLocation.isNew = false;
-            //Log.d("MY_LOCATION", "FALSE");
-        }
-        else {
-            MyLocation.latitude = location.getLatitude();
-            MyLocation.longitude = location.getLongitude();
-            MyLocation.isNew = true;
-            //Log.d("MY_LOCATION", "TRUE");
-        }
-        if(isLocated){
-            return;
-        }
-        else {
-            lastLocation = location;
-            moveCameraToMyLocation();
-        }
+        Log.d("LOCATION", "ИЗМЕНИЛОСЬ МЕСТОПОЛОЖЕНИЕ");
+        myLocation.setLatitude(47.30148265);
+        myLocation.setLongitude(39.72292542);
+        myLocation.setNew(true);
+        moveCameraToMyLocation();
+
+//        //вроде работает
+//        if((location.getLatitude() == myLocation.getLatitude()) && (location.getLongitude() == myLocation.getLongitude())){
+//            myLocation.setNew(false);
+//        }
+//        else {
+//            myLocation.setLatitude(location.getLatitude());
+//            myLocation.setLongitude(location.getLongitude());
+//            myLocation.setNew(true);
+//        }
+//        if(isLocated){
+//            return;
+//        }
+//        else {
+//            myLocation.setLatitude(location.getLatitude());
+//            myLocation.setLongitude(location.getLongitude());
+//            moveCameraToMyLocation();
+//        }
     }
 
     @Override
@@ -298,23 +315,35 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         if (checkPlayServices() && googleApiClient.isConnected()) {
             startLocationUpdates();
         }
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, new IntentFilter("Order"));
-        sharedPreferences = getContext().getSharedPreferences("STATUS", Context.MODE_PRIVATE);
-        int status = sharedPreferences.getInt("status", 0);
-        switch (status){
-            case STATUS.Selection:{
+        IntentFilter intentFilter = new IntentFilter(MyAction.Order);
+        intentFilter.addAction(MyAction.OrderCanceledByClient);
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, intentFilter);
+        Log.d("ORDER_STATUS", String.valueOf(order.getOrder_status()));
+        switch (order.getOrder_status()){
+            case Order.Awaiting:{
                 SelectionFragment selectionFragment = new SelectionFragment();
                 fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.info_container_fragment, selectionFragment).commit();
                 break;
             }
-            case STATUS.Working:{
-                StartFragment startFragment = new StartFragment();
+
+            case Order.OnTheWay:{
+                OnTheWayFragment onTheWayFragment = new OnTheWayFragment();
                 fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+                fragmentTransaction.replace(R.id.info_container_fragment, onTheWayFragment).commit();
                 break;
             }
-            case STATUS.NotWorking:{
+
+            case Order.Performing:{
+                break;
+            }
+
+            case Order.CanceledByClient:{
+                Intent intent_order = new Intent(getActivity(), GetOrderService.class);
+                getContext().startService(intent_order);
+            }
+
+            default:{
                 StartFragment startFragment = new StartFragment();
                 fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
@@ -326,10 +355,34 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            SelectionFragment selectionFragment = new SelectionFragment();
-            fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.info_container_fragment, selectionFragment).commit();
-            Log.d("FRAGMENT", intent.getStringExtra("key"));
+
+            switch (intent.getAction()){
+               case MyAction.Order:{
+                   SelectionFragment selectionFragment = new SelectionFragment();
+                   fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                   fragmentTransaction.replace(R.id.info_container_fragment, selectionFragment).commit();
+                   break;
+                }
+
+                case MyAction.OrderCanceledByClient:{
+                    Toast.makeText(context, "Заказ бы отменен клиентом!", Toast.LENGTH_SHORT).show();
+                    fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    StartFragment startFragment = new StartFragment();
+                    fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+                    Intent new_intent = new Intent(context, GetOrderService.class);
+                    getActivity().startService(new_intent);
+                    moveCameraToMyLocation();
+                    break;
+                }
+
+                case MyAction.DrawTwoMarks:{
+                    break;
+                }
+
+                default:{
+                    break;
+                }
+            }
         }
     };
 

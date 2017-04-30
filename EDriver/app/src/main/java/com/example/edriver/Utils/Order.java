@@ -6,7 +6,9 @@ package com.example.edriver.Utils;
 
 public class Order {
     private static Order order = new Order();
-    private Order(){}
+    private Order(){
+        this.order_status= -1;
+    }
     public static Order getInstance(){
         return order;
     }
@@ -16,6 +18,22 @@ public class Order {
     private String phone;
     private int order_id;
     private String comment;
+    private int order_status;
+
+    public static final int Awaiting = 0;
+    public static final int OnTheWay = 1;
+    public static final int Performing = 2;
+    public static final int Completed = 3;
+    public static final int CanceledByWorker = 4;
+    public static final int CanceledByClient = 5;
+
+    public int getOrder_status() {
+        return order_status;
+    }
+
+    public void setOrder_status(int order_status) {
+        this.order_status = order_status;
+    }
 
     public Double getLatitude() {
         return latitude;

@@ -23,7 +23,6 @@ import retrofit2.Response;
 public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
 
     private Context context;
-    private boolean type;
     private int order_id;
     private int new_status;
     private String api_key;
@@ -31,9 +30,8 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
     private SharedPreferences sharedPreferences;
     private ProgressDialog progressDialog;
 
-    public ChangeOrderStatusAsync(Context context, boolean type, int order_id, int new_status, ChangeOrderStatusCallBack changeOrderStatusCallBack){
+    public ChangeOrderStatusAsync(Context context, int order_id, int new_status, ChangeOrderStatusCallBack changeOrderStatusCallBack){
         this.context = context;
-        this.type = type;
         this.order_id = order_id;
         this.new_status = new_status;
         this.changeOrderStatusCallBack = changeOrderStatusCallBack;
@@ -45,14 +43,9 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
     protected void onPreExecute() {
         super.onPreExecute();
         progressDialog = new ProgressDialog(context);
-        if(type){
-            progressDialog.setMessage("Подтверждаю заказ...");
-        }
-        else {
-            progressDialog.setMessage("Отмена заказа...");
-        }
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
+        progressDialog.setMessage("Ожидайте...");
         progressDialog.show();
         super.onPreExecute();
     }
@@ -80,15 +73,17 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
 
         switch (responseBody.code()){
             case STATUS.BadRequest:{
-                Toast.makeText(context, "Вы отправили неверные данные!", Toast.LENGTH_SHORT).show();
+                result = false;
                 break;
             }
             case STATUS.NotFound:{
-                Toast.makeText(context, "Такой заказ не найден!", Toast.LENGTH_SHORT).show();
+                result = false;
+                //Toast.makeText(context, "Такой заказ не найден!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.Unauthorized:{
-                Toast.makeText(context, "Вы не авторизованы!", Toast.LENGTH_SHORT).show();
+                result = false;
+                //Toast.makeText(context, "Вы не авторизованы!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.Ok:{
