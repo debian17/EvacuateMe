@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Path;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -181,7 +182,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         switch (worker.getOrder_status()){
 
             case STATUS.OnTheWay:{
-                showWorkerPosition();
+                showWorkerPosition(true);
                 break;
             }
 
@@ -288,23 +289,24 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         }
     }
 
-    private void showWorkerPosition(){
+    private void showWorkerPosition(boolean flag){
         if(map!=null){
             map.clear();
-            double mLat = (client.getLatitude() + worker.getLatitude())/2;
-            double mLong = (client.getLongitude() + worker.getLongitude())/2;
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(mLat, mLong))
-                    .zoom(13)
-                    .build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-            map.moveCamera(cameraUpdate);
+            if(flag){
+                double mLat = (client.getLatitude() + worker.getLatitude())/2;
+                double mLong = (client.getLongitude() + worker.getLongitude())/2;
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(mLat, mLong))
+                        .zoom(13)
+                        .build();
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                map.moveCamera(cameraUpdate);
+            }
             map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(),
                     client.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
             map.addMarker(new MarkerOptions().position(new LatLng(worker.getLatitude(),
                     worker.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
         }
         else {
             Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
@@ -326,17 +328,8 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     break;
                 }
 
-//                case MyAction.OrderConfirmed:{
-//                    Log.d("SERVICE", "ЗАПУСКАЮ");
-//                    showWorkerPosition();
-//                    Intent service_intent = new Intent(getContext(), GetWorkerLocationService.class);
-//                    getActivity().startService(service_intent);
-//                    break;
-//                }
-
                 case MyAction.WorkerLocationChanged:{
-                    Log.d("ОТРИСОВКА", "НОВЫЕ КООРДИНАТЫ");
-                    showWorkerPosition();
+                    showWorkerPosition(false);
                     break;
                 }
 
