@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.example.edriver.Interface.ChangeOrderStatusCallBack;
 import com.example.edriver.Interface.ChangeStatusCallBack;
 import com.example.edriver.Utils.App;
+import com.example.edriver.Utils.Order;
 import com.example.edriver.Utils.STATUS;
 
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
     private ChangeOrderStatusCallBack changeOrderStatusCallBack;
     private SharedPreferences sharedPreferences;
     private ProgressDialog progressDialog;
+    private Order order;
 
     public ChangeOrderStatusAsync(Context context, int order_id, int new_status, ChangeOrderStatusCallBack changeOrderStatusCallBack){
         this.context = context;
@@ -37,6 +39,7 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
         this.changeOrderStatusCallBack = changeOrderStatusCallBack;
         sharedPreferences = context.getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
         api_key = sharedPreferences.getString("api_key", "");
+        order = Order.getInstance();
     }
 
     @Override
@@ -88,6 +91,7 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
             }
             case STATUS.Ok:{
                 result = true;
+                order.setOrder_status(new_status);
                 break;
             }
             default:{

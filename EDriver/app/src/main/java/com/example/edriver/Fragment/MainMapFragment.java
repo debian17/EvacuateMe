@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +24,11 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.directions.route.AbstractRouting;
+import com.directions.route.Route;
+import com.directions.route.RouteException;
+import com.directions.route.Routing;
+import com.directions.route.RoutingListener;
 import com.example.edriver.R;
 import com.example.edriver.Service.GetOrderService;
 import com.example.edriver.Utils.MyAction;
@@ -43,14 +49,19 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, android.location.LocationListener {
+        GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, android.location.LocationListener, RoutingListener {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-    private static int UPDATE_INTERVAL = 0; // 10 sec
-    private static int FATEST_INTERVAL = 0; // 5 sec
-    private static int DISPLACEMENT = 0; // 10 meters
+    private static int UPDATE_INTERVAL = 10; // 10 sec
+    private static int FATEST_INTERVAL = 5; // 5 sec
+    private static int DISPLACEMENT = 5; // 10 meters
 
     private GoogleMap map;
     private GoogleApiClient googleApiClient;
@@ -60,6 +71,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private FragmentTransaction fragmentTransaction;
     private Order order = Order.getInstance();
     private MyLocation myLocation = MyLocation.getInstance();
+    private List<Polyline> polylines;
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -124,19 +136,20 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         return null;
     }
 
-    private void moveCameraToMyLocation(){
+    private void moveCameraToMyLocation(boolean flag){
         if(myLocation!=null){
             if(map!=null){
                 isLocated = true;
                 map.clear();
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
-                        .zoom(15)
-                        .build();
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                map.moveCamera(cameraUpdate);
-                map.addMarker(new MarkerOptions().position(new LatLng(myLocation.getLatitude(),
-                        myLocation.getLongitude())));
+                if(flag){
+                    CameraPosition cameraPosition = new CameraPosition.Builder()
+                            .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
+                            .zoom(15)
+                            .build();
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                    map.moveCamera(cameraUpdate);
+                }
+                map.addMarker(new MarkerOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())));
             }
             else {
                 Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
@@ -149,7 +162,42 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         }
     }
 
-    private void DrawToMarkers(){
+    @Override
+    public void onRoutingFailure(RouteException e) {
+
+    }
+
+    @Override
+    public void onRoutingStart() {
+
+    }
+
+    @Override
+    public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex)
+    {
+        if(polylines.size()>0) {
+            for (Polyline poly : polylines) {
+                poly.remove();
+            }
+        }
+        polylines = new ArrayList<>();
+        for (int i = 0; i <route.size(); i++) {
+            PolylineOptions polyOptions = new PolylineOptions();
+            polyOptions.color(Color.CYAN);
+            polyOptions.width(10 + i * 3);
+            polyOptions.addAll(route.get(i).getPoints());
+            Polyline polyline = map.addPolyline(polyOptions);
+            polylines.add(polyline);
+        }
+        Log.d("DISTANCE", route.get(route.size()-1).getDistanceText());
+    }
+
+    @Override
+    public void onRoutingCancelled() {
+
+    }
+
+    private void DrawRoute(){
         if(map!=null){
             map.clear();
             double mLat = (order.getLatitude() + myLocation.getLatitude())/2;
@@ -166,17 +214,22 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             map.addMarker(new MarkerOptions().position(new LatLng(myLocation.getLatitude(),
                     myLocation.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
+            LatLng start = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            LatLng end = new LatLng(order.getLatitude(), order.getLongitude());
+            Routing routing = new Routing.Builder().travelMode(Routing.TravelMode.DRIVING).withListener(this)
+                    .waypoints(start, end).build();
+            routing.execute();
         }
         else {
             Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
                     Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        polylines = new ArrayList<>();
         if (checkPlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
@@ -206,7 +259,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 Location temp = getMyLocation();
                 myLocation.setLatitude(temp.getLatitude());
                 myLocation.setLongitude(temp.getLongitude());
-                moveCameraToMyLocation();
+                moveCameraToMyLocation(true);
             }
         });
         return view;
@@ -220,7 +273,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         switch (order.getOrder_status()){
 
             case Order.OnTheWay:{
-                DrawToMarkers();
+                DrawRoute();
                 break;
             }
 
@@ -262,7 +315,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("LOCATION", "ИЗМЕНИЛОСЬ МЕСТОПОЛОЖЕНИЕ");
 //        myLocation.setLatitude(47.30148265);
 //        myLocation.setLongitude(39.72292542);
 //        myLocation.setNew(true);
@@ -280,7 +332,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
 //        }
 
         //вроде работает
-
         if((location.getLatitude() == myLocation.getLatitude()) && (location.getLongitude() == myLocation.getLongitude())){
             myLocation.setNew(false);
         }
@@ -290,8 +341,14 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             myLocation.setNew(true);
         }
 
+
         if(order.getOrder_status()==Order.OnTheWay){
-            DrawToMarkers();
+            DrawRoute();
+            return;
+        }
+
+        if(order.getOrder_status()==Order.Performing){
+            moveCameraToMyLocation(false);
             return;
         }
 
@@ -301,7 +358,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         else {
             myLocation.setLatitude(location.getLatitude());
             myLocation.setLongitude(location.getLongitude());
-            moveCameraToMyLocation();
+            moveCameraToMyLocation(true);
         }
     }
 
@@ -334,8 +391,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         if (checkPlayServices() && googleApiClient.isConnected()) {
             startLocationUpdates();
         }
-        IntentFilter intentFilter = new IntentFilter(MyAction.Order);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyAction.Order);
         intentFilter.addAction(MyAction.OrderCanceledByClient);
+        intentFilter.addAction(MyAction.StartedImplementation);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, intentFilter);
         Log.d("ORDER_STATUS", String.valueOf(order.getOrder_status()));
         switch (order.getOrder_status()){
@@ -354,11 +413,14 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             }
 
             case Order.Performing:{
+                PerformingFragment performingFragment = new PerformingFragment();
+                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.info_container_fragment, performingFragment).commit();
                 break;
             }
 
             case Order.CanceledByClient:{
-                moveCameraToMyLocation();
+                moveCameraToMyLocation(true);
                 Intent intent_order = new Intent(getActivity(), GetOrderService.class);
                 getContext().startService(intent_order);
             }
@@ -391,12 +453,17 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
                     Intent new_intent = new Intent(context, GetOrderService.class);
                     getActivity().startService(new_intent);
-                    moveCameraToMyLocation();
+                    moveCameraToMyLocation(true);
                     break;
                 }
 
                 case MyAction.DrawTwoMarks:{
-                    DrawToMarkers();
+                    DrawRoute();
+                    break;
+                }
+
+                case MyAction.StartedImplementation:{
+                    moveCameraToMyLocation(true);
                     break;
                 }
 

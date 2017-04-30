@@ -51,11 +51,9 @@ public class SelectionFragment extends Fragment {
                         if(result){
                             OnTheWayFragment onTheWayFragment = new OnTheWayFragment();
                             fragmentTransaction.replace(R.id.info_container_fragment, onTheWayFragment).commit();
-                            order.setOrder_status(Order.OnTheWay);
+                            //order.setOrder_status(Order.OnTheWay);
                             Intent intent = new Intent(getActivity(), CheckOrderStatusService.class);
-                            Log.d("SERVICE", "CHECK_ORDER_ЗАПУЩЕН");
                             getActivity().startService(intent);
-
                             Intent markers = new Intent(MyAction.DrawTwoMarks);
                             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(markers);
                         }
@@ -64,7 +62,7 @@ public class SelectionFragment extends Fragment {
                             Toast.makeText(getContext(), "К сожалению клиент отменил заказ!", Toast.LENGTH_SHORT).show();
                             StartFragment startFragment = new StartFragment();
                             fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
-                            order.setOrder_status(Order.CanceledByClient);
+                            //order.setOrder_status(Order.CanceledByClient);
                             Intent intent = new Intent(getActivity(), GetOrderService.class);
                             getActivity().startService(intent);
                         }
@@ -86,7 +84,7 @@ public class SelectionFragment extends Fragment {
                         fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
                         final Intent intent_order = new Intent(getActivity(), GetOrderService.class);
                         getActivity().startService(intent_order);
-                        order.setOrder_status(Order.CanceledByWorker);
+                        //order.setOrder_status(Order.CanceledByWorker);
                     }
                 });
                 changeOrderStatusAsync.execute();

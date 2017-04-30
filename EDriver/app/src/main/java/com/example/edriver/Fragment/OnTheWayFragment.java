@@ -17,15 +17,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.edriver.AsyncTask.ChangeOrderStatusAsync;
+import com.example.edriver.Interface.ChangeOrderStatusCallBack;
 import com.example.edriver.R;
 import com.example.edriver.Service.CheckOrderStatusService;
+import com.example.edriver.Utils.MyAction;
 import com.example.edriver.Utils.Order;
 
 public class OnTheWayFragment extends Fragment {
     private Button i_am_here_BTN;
     private Button call_client_BTN;
+    private Order order;
+    private FragmentTransaction fragmentTransaction;
 
     public OnTheWayFragment() {
+        order = Order.getInstance();
     }
 
     @Override
@@ -37,13 +43,23 @@ public class OnTheWayFragment extends Fragment {
         call_client_BTN = (Button) view.findViewById(R.id.call_client_BTN);
 
         final Order order = Order.getInstance();
-        Log.d("ON_WAY", String.valueOf(order.getPhone()));
-
         i_am_here_BTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), CheckOrderStatusService.class);
-                getActivity().stopService(intent);
+                ChangeOrderStatusAsync changeOrderStatusAsync = new ChangeOrderStatusAsync(getContext(), order.getOrder_id(),
+                        Order.Performing, new ChangeOrderStatusCallBack() {
+                    @Override
+                    public void completed(boolean result) {
+                        fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        PerformingFragment performingFragment = new PerformingFragment();
+                        fragmentTransaction.replace(R.id.info_container_fragment, performingFragment).commit();
+                        Intent service_intent = new Intent(getActivity(), CheckOrderStatusService.class);
+                        getActivity().stopService(service_intent);
+                        Intent intent = new Intent(MyAction.StartedImplementation);
+                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                    }
+                });
+                changeOrderStatusAsync.execute();
             }
         });
 
@@ -57,8 +73,7 @@ public class OnTheWayFragment extends Fragment {
         });
         return view;
     }
-
-
+    
     @Override
     public void onPause() {
         super.onPause();
