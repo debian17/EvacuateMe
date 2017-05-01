@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.edriver">
+          package="com.example.edriver">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:name=".Utils.App"
@@ -14,24 +14,28 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".Service.GetOrderService"
+        <service
+            android:name=".Service.GetOrderService"
             android:enabled="true"/>
-        <service android:name=".Service.CheckOrderStatusService"
-                 android:enabled="true"/>
-        <service android:name=".Service.UpdateLocationService"
-                 android:enabled="true"/>
+        <service
+            android:name=".Service.CheckOrderStatusService"
+            android:enabled="true"/>
+        <service
+            android:name=".Service.UpdateLocationService"
+            android:enabled="true"/>
+
         <activity android:name=".Activity.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.LogInActivity" />
+        <activity android:name=".Activity.LogInActivity"/>
         <activity
             android:name=".Activity.NavigationDrawerActivity"
             android:label="EDriver"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -42,11 +46,13 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+            android:value="@string/google_maps_key"/>
 
         <activity
             android:name=".Fragment.MainMapFragment"
-            android:label="@string/title_activity_main_map_fragment"></activity>
+            android:label="@string/title_activity_main_map_fragment"/>
+        <activity android:name=".Activity.OrderInfoActivity">
+        </activity>
     </application>
 
 </manifest>

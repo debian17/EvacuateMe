@@ -47,7 +47,7 @@ public class UpdateLocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("UPDATE_LOCATION", "ЗАПУСТИЛСЯ");
+        //Log.d("UPDATE_LOCATION", "ЗАПУСТИЛСЯ");
         if(timerTask!=null){
             timerTask.cancel();
         }
@@ -66,7 +66,7 @@ public class UpdateLocationService extends Service {
         super.onDestroy();
         timerTask.cancel();
         timer.cancel();
-        Log.d("UPDATE_LOCATION", "ОСТАНОВИЛСЯ");
+        //Log.d("UPDATE_LOCATION", "ОСТАНОВИЛСЯ");
     }
 
     private void Run(){
@@ -75,10 +75,10 @@ public class UpdateLocationService extends Service {
             public void run() {
 
                 if(!myLocation.isNew()){
-                    Log.d("LOCATION", "НЕ ОТПРАВЛЯЮ КООРДИНАТЫ");
+                    //Log.d("LOCATION", "НЕ ОТПРАВЛЯЮ КООРДИНАТЫ");
                     return;
                 }
-                Log.d("LOCATION", "ОТПРАВЛЯЮ КООРДИНАТЫ");
+                //Log.d("LOCATION", "ОТПРАВЛЯЮ КООРДИНАТЫ");
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("latitude", myLocation.getLatitude());
                 jsonObject.addProperty("longitude", myLocation.getLongitude());

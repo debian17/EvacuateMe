@@ -1,6 +1,7 @@
 package com.example.edriver.Interface;
 
 import com.example.edriver.Model.DataOrder;
+import com.example.edriver.Model.OrderInfo;
 import com.example.edriver.Model.OrderStatus;
 import com.google.gson.JsonObject;
 
@@ -41,4 +42,8 @@ public interface Server_API {
 
     @GET("/api/orders/{order_id}/status")
     Call<OrderStatus> get_order_status(@Header("api_key") String api_key, @Path("order_id") int order_id);
+
+    @GET("/api/orders/{order_id}/info")
+    Call<OrderInfo> get_order_info(@Header("api_key") String api_key, @Path("order_id") int order_id);
+
 }

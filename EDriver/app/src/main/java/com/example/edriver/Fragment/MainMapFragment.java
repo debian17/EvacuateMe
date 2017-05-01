@@ -29,8 +29,12 @@ import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
+import com.example.edriver.Activity.NavigationDrawerActivity;
+import com.example.edriver.Activity.OrderInfoActivity;
+import com.example.edriver.Model.OrderInfo;
 import com.example.edriver.R;
 import com.example.edriver.Service.GetOrderService;
+import com.example.edriver.Utils.App;
 import com.example.edriver.Utils.MyAction;
 import com.example.edriver.Utils.MyLocation;
 import com.example.edriver.Utils.Order;
@@ -55,6 +59,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, android.location.LocationListener, RoutingListener {
 
@@ -72,6 +80,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private Order order = Order.getInstance();
     private MyLocation myLocation = MyLocation.getInstance();
     private List<Polyline> polylines;
+    private SharedPreferences sharedPreferences;
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -348,7 +357,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         }
 
         if(order.getOrder_status()==Order.Performing){
-            moveCameraToMyLocation(false);
+            moveCameraToMyLocation(true);
             return;
         }
 
@@ -395,8 +404,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         intentFilter.addAction(MyAction.Order);
         intentFilter.addAction(MyAction.OrderCanceledByClient);
         intentFilter.addAction(MyAction.StartedImplementation);
+        intentFilter.addAction(MyAction.DrawTwoMarks);
+        intentFilter.addAction(MyAction.OrderCompleted);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, intentFilter);
-        Log.d("ORDER_STATUS", String.valueOf(order.getOrder_status()));
         switch (order.getOrder_status()){
             case Order.Awaiting:{
                 SelectionFragment selectionFragment = new SelectionFragment();
@@ -413,6 +423,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             }
 
             case Order.Performing:{
+                moveCameraToMyLocation(true);
                 PerformingFragment performingFragment = new PerformingFragment();
                 fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.info_container_fragment, performingFragment).commit();
@@ -423,6 +434,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 moveCameraToMyLocation(true);
                 Intent intent_order = new Intent(getActivity(), GetOrderService.class);
                 getContext().startService(intent_order);
+                break;
             }
 
             default:{
@@ -465,6 +477,56 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 case MyAction.StartedImplementation:{
                     moveCameraToMyLocation(true);
                     break;
+                }
+
+                case MyAction.OrderCompleted:{
+                    sharedPreferences = getContext().getSharedPreferences("API_KEY",Context.MODE_PRIVATE);
+                    String api_key = sharedPreferences.getString("api_key", "");
+                    App.getApi().get_order_info(api_key, order.getOrder_id()).enqueue(new Callback<OrderInfo>() {
+                        @Override
+                        public void onResponse(Call<OrderInfo> call, Response<OrderInfo> response) {
+                            if(response==null){
+                                Toast.makeText(getContext(), "Получить информацию о заказе не удалось! Свяжитесь с водитилем!",
+                                        Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getContext(), NavigationDrawerActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                getContext().startActivity(intent);
+                            }
+                            else {
+                                switch (response.code()){
+                                    case STATUS.Ok:{
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt("order_id", response.body().order_id);
+                                        bundle.putString("company", response.body().company);
+                                        bundle.putDouble("distance", response.body().distance);
+                                        bundle.putDouble("summary", response.body().summary);
+                                        Intent activity_intent = new Intent(getContext(), OrderInfoActivity.class);
+                                        activity_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        activity_intent.putExtra("data", bundle);
+                                        getContext().startActivity(activity_intent);
+                                        break;
+                                    }
+                                    case STATUS.BadRequest:{
+                                        break;
+                                    }
+                                    case STATUS.Unauthorized:{
+                                        break;
+                                    }
+                                    case STATUS.NotFound:{
+                                        break;
+                                    }
+                                    default:{
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<OrderInfo> call, Throwable t) {
+
+                        }
+                    });
                 }
 
                 default:{

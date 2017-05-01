@@ -84,7 +84,6 @@ public class CheckOrderStatusService extends Service {
                             }
                             switch (response.code()){
                                 case STATUS.Ok:{
-                                    Log.d("STATUS_SERVICE", "STATUS 200");
                                     switch (response.body().id){
                                         case Order.CanceledByClient:{
                                             Log.d("ORDER_STATUS", "ЗАКАЗ ОТМЕНЕН КЛИЕНТОМ!");
@@ -93,6 +92,10 @@ public class CheckOrderStatusService extends Service {
                                             intent.putExtra("canceled", true);
                                             LocalBroadcastManager.getInstance(CheckOrderStatusService.this).sendBroadcast(intent);
                                             stopSelf();
+                                            break;
+                                        }
+                                        case Order.OnTheWay:{
+                                            Log.d("ORDER_STATUS", "Я В ПУТИ");
                                             break;
                                         }
                                         default:{
