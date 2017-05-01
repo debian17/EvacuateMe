@@ -29,17 +29,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by Андрей Кравченко on 17-Apr-17.
- */
-
 public class GetOrderService extends Service {
     private Timer timer;
     private TimerTask timerTask;
     private SharedPreferences sharedPreferences;
     private String api_key;
     private NotificationManager notificationManager;
-    private Order order  = Order.getInstance();
+    private Order order;
 
     @Override
     public void onCreate() {
@@ -48,6 +44,7 @@ public class GetOrderService extends Service {
         sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
         api_key = sharedPreferences.getString("api_key", "");
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        order = Order.getInstance();
     }
 
     @Override
@@ -70,7 +67,6 @@ public class GetOrderService extends Service {
         super.onDestroy();
         timerTask.cancel();
         timer.cancel();
-        Log.d("SERVICE", "DESTROY");
     }
 
     private void Run(){
@@ -86,7 +82,6 @@ public class GetOrderService extends Service {
                             }
                             switch (response.code()){
                                 case STATUS.NotFound:{
-                                    Log.d("SERVICE", "ЗАКАЗОВ НЕТ");
                                     break;
                                 }
                                 case STATUS.Ok:{
@@ -106,8 +101,10 @@ public class GetOrderService extends Service {
                                                 .setContentTitle("У Вас новый заказ!")
                                                 .setContentText("Нажмите для просмотра");
                                         Intent intent = new Intent(GetOrderService.this, NavigationDrawerActivity.class);
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        PendingIntent pendingIntent = PendingIntent.getActivity(GetOrderService.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                                                Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        PendingIntent pendingIntent = PendingIntent.getActivity(GetOrderService.this, 0, intent,
+                                                PendingIntent.FLAG_CANCEL_CURRENT);
                                         mBuilder.setContentIntent(pendingIntent);
                                         mBuilder.mNotification.flags |= Notification.FLAG_AUTO_CANCEL;
                                         notificationManager.notify(0, mBuilder.build());
@@ -115,15 +112,10 @@ public class GetOrderService extends Service {
                                     stopSelf();
                                     break;
                                 }
-                                default:{
-                                    Log.d("TAG", "Внетренняя ошибка сервера!");
-                                    break;
-                                }
                             }
                         }
                         @Override
                         public void onFailure(Call<DataOrder> call, Throwable t) {
-                            Log.d("TAG", "ВСЕ ПЛОХО!");
                     }
                     });
                 } catch (Exception e) {

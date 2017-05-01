@@ -74,7 +74,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         switch (id){
             case R.id.nav_map:{
                 changeUI();
@@ -111,13 +110,11 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
         if(Net.isAvailable(NavigationDrawerActivity.this) && Gps.isAvailable(NavigationDrawerActivity.this)){
             MainMapFragment mainMapFragment = new MainMapFragment();
             fragmentTransaction.replace(R.id.main_container_fragment, mainMapFragment);
-            //Log.d("TAG", "Прикрепил карту");
             isMapAttached = true;
         }
         else {
             GpsOffFragment gpsOffFragment = new GpsOffFragment();
             fragmentTransaction.replace(R.id.main_container_fragment, gpsOffFragment);
-            //Log.d("TAG", "Прикрепил GPS off " + String.valueOf(isMapAttached));
         }
         fragmentTransaction.commit();
     }
@@ -151,14 +148,12 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
     protected void onPause() {
         super.onPause();
         active = false;
-        Log.d("ACTIVITY", "FALSE");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         active = true;
-        Log.d("ACTIVITY", "TRUE");
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

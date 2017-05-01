@@ -1,9 +1,5 @@
 package com.example.edriver.Utils;
 
-/**
- * Created by Андрей Кравченко on 24-Apr-17.
- */
-
 public class Order {
     private static Order order = new Order();
     private Order(){

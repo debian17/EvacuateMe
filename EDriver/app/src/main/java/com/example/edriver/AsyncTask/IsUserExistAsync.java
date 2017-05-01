@@ -15,10 +15,6 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-/**
- * Created by Андрей Кравченко on 16-Apr-17.
- */
-
 public class IsUserExistAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
 
     private Context context;
@@ -59,8 +55,7 @@ public class IsUserExistAsync extends AsyncTask<Void, Void, Response<ResponseBod
         boolean isExist = false;
 
         if(responseBody == null){
-            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT).show();
             return;
         }
         switch (responseBody.code()){
@@ -69,8 +64,7 @@ public class IsUserExistAsync extends AsyncTask<Void, Void, Response<ResponseBod
                 break;
             }
             case STATUS.BadRequest:{
-                Toast.makeText(context, "Неверно введен номер телефона!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Неверно введен номер телефона!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.NotFound:{
@@ -78,8 +72,7 @@ public class IsUserExistAsync extends AsyncTask<Void, Void, Response<ResponseBod
                 break;
             }
             default:{
-                Toast.makeText(context, "Внутренняя ошибка сервера!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Внутренняя ошибка сервера!", Toast.LENGTH_SHORT).show();
                 break;
             }
         }

@@ -26,16 +26,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by Андрей Кравченко on 17-Apr-17.
- */
-
 public class UpdateLocationService extends Service {
     private Timer timer;
     private TimerTask timerTask;
     private SharedPreferences sharedPreferences;
     private String api_key;
-    private MyLocation myLocation = MyLocation.getInstance();
+    private MyLocation myLocation;
 
     @Override
     public void onCreate() {
@@ -43,11 +39,11 @@ public class UpdateLocationService extends Service {
         timer = new Timer();
         sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
         api_key = sharedPreferences.getString("api_key", "");
+        myLocation = MyLocation.getInstance();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //Log.d("UPDATE_LOCATION", "ЗАПУСТИЛСЯ");
         if(timerTask!=null){
             timerTask.cancel();
         }
@@ -66,7 +62,6 @@ public class UpdateLocationService extends Service {
         super.onDestroy();
         timerTask.cancel();
         timer.cancel();
-        //Log.d("UPDATE_LOCATION", "ОСТАНОВИЛСЯ");
     }
 
     private void Run(){
@@ -75,10 +70,8 @@ public class UpdateLocationService extends Service {
             public void run() {
 
                 if(!myLocation.isNew()){
-                    //Log.d("LOCATION", "НЕ ОТПРАВЛЯЮ КООРДИНАТЫ");
                     return;
                 }
-                //Log.d("LOCATION", "ОТПРАВЛЯЮ КООРДИНАТЫ");
                 JsonObject jsonObject = new JsonObject();
                 jsonObject.addProperty("latitude", myLocation.getLatitude());
                 jsonObject.addProperty("longitude", myLocation.getLongitude());
@@ -94,7 +87,6 @@ public class UpdateLocationService extends Service {
                         }
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Log.d("TAG", "ВСЕ ПЛОХО!");
                         }
                     });
                 } catch (Exception e) {

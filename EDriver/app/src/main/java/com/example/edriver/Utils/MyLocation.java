@@ -1,9 +1,5 @@
 package com.example.edriver.Utils;
 
-/**
- * Created by Андрей Кравченко on 17-Apr-17.
- */
-
 public class MyLocation {
     private static MyLocation myLocation = new MyLocation();
     private MyLocation(){

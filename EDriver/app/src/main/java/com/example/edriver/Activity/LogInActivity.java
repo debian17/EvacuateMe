@@ -50,8 +50,7 @@ public class LogInActivity extends AppCompatActivity {
                                 startActivity(intent);
                             }
                             else {
-                                Toast.makeText(LogInActivity.this, "Не удалось выполнить вход!",
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LogInActivity.this, "Не удалось выполнить вход!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

@@ -31,8 +31,7 @@ public class StartFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_start, container, false);
         sharedPreferences = getActivity().getSharedPreferences("STATUS", Context.MODE_PRIVATE);
         change_status_BTN = (ToggleButton) view.findViewById(R.id.change_status_BTN);

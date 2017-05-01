@@ -23,13 +23,13 @@ public interface Server_API {
     Call<ResponseBody> isUserExist(@Path("phone") String phoneNumber);
 
     @GET("/api/code/{phone}")
-    Call<ResponseBody> get_code(@Path("phone") String phoneNumber);
+    Call<ResponseBody> getCode(@Path("phone") String phoneNumber);
 
     @GET("/api/workers/api_key")
     Call<ResponseBody> signIn(@Header("phone") String phoneNumber, @Header("code") String code);
 
     @PUT("/api/workers/status/{new_status}")
-    Call<ResponseBody> change_worker_status(@Header("api_key") String api_key, @Path("new_status") int new_status);
+    Call<ResponseBody> changeWorkerStatus(@Header("api_key") String api_key, @Path("new_status") int new_status);
 
     @GET("/api/workers/orders")
     Call<DataOrder> getOrder(@Header("api_key") String api_key);
@@ -38,12 +38,12 @@ public interface Server_API {
     Call<ResponseBody> updateLocation(@Header("api_key") String api_key, @Body JsonObject jsonData);
 
     @PUT("/api/orders/{order_id}/status/{new_status}")
-    Call<ResponseBody> changeOrderStatus(@Header("api_key") String api_key, @Path("order_id") int order_id, @Path("new_status") int new_status);
+    Call<ResponseBody> changeOrderStatus(@Header("api_key") String api_key, @Path("order_id") int order_id,
+                                         @Path("new_status") int new_status);
 
     @GET("/api/orders/{order_id}/status")
-    Call<OrderStatus> get_order_status(@Header("api_key") String api_key, @Path("order_id") int order_id);
+    Call<OrderStatus> getOrderStatus(@Header("api_key") String api_key, @Path("order_id") int order_id);
 
     @GET("/api/orders/{order_id}/info")
-    Call<OrderInfo> get_order_info(@Header("api_key") String api_key, @Path("order_id") int order_id);
-
+    Call<OrderInfo> getOrderInfo(@Header("api_key") String api_key, @Path("order_id") int order_id);
 }

@@ -32,7 +32,6 @@ import retrofit2.Response;
 public class PerformingFragment extends Fragment {
     private Button complete_order_BTN;
     private Order order;
-    private FragmentTransaction fragmentTransaction;
     private SharedPreferences sharedPreferences;
     private MyLocation myLocation;
 
@@ -40,7 +39,6 @@ public class PerformingFragment extends Fragment {
         order = Order.getInstance();
         myLocation = MyLocation.getInstance();
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,8 +56,8 @@ public class PerformingFragment extends Fragment {
                 App.getApi().updateLocation(api_key, jsonObject).enqueue(new Callback<ResponseBody>() {
                     @Override
                     public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        ChangeOrderStatusAsync changeOrderStatusAsync = new ChangeOrderStatusAsync(getContext(), order.getOrder_id(),
-                                Order.Completed, new ChangeOrderStatusCallBack() {
+                        ChangeOrderStatusAsync changeOrderStatusAsync = new ChangeOrderStatusAsync(getContext(),
+                                order.getOrder_id(), Order.Completed, new ChangeOrderStatusCallBack() {
                             @Override
                             public void completed(boolean result) {
                                 Toast.makeText(getContext(), "Заказ завершен!", Toast.LENGTH_SHORT).show();

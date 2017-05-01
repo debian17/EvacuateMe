@@ -27,11 +27,9 @@ import com.example.edriver.Utils.Order;
 public class OnTheWayFragment extends Fragment {
     private Button i_am_here_BTN;
     private Button call_client_BTN;
-    private Order order;
     private FragmentTransaction fragmentTransaction;
 
     public OnTheWayFragment() {
-        order = Order.getInstance();
     }
 
     @Override

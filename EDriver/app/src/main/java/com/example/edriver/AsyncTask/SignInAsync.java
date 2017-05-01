@@ -14,10 +14,6 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-/**
- * Created by Андрей Кравченко on 16-Apr-17.
- */
-
 public class SignInAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
 
     private Context context;
@@ -32,7 +28,6 @@ public class SignInAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
         this.code = code;
         this.signInCallBack = signInCallBack;
     }
-
 
     @Override
     protected void onPreExecute() {
@@ -61,8 +56,7 @@ public class SignInAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
         boolean result = false;
         String api_key = "";
         if(responseBody == null){
-            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT).show();
             return;
         }
         switch (responseBody.code()){
@@ -76,18 +70,15 @@ public class SignInAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
                 break;
             }
             case STATUS.NotFound:{
-                Toast.makeText(context, "Неверно введен проверочный код!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Неверно введен проверочный код!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.BadRequest:{
-                Toast.makeText(context, "Неверно введен номер телефона или проверочный код!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Неверно введен номер телефона или проверочный код!", Toast.LENGTH_SHORT).show();
                 break;
             }
             default:{
-                Toast.makeText(context, "Внутренняя ошибка сервера!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Внутренняя ошибка сервера!", Toast.LENGTH_SHORT).show();
                 break;
             }
         }

@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     if(!isNumberEmpty()){
-                        Log.d("TAG", input_phone_ET.getText().toString());
                         IsUserExistAsync isUserExistAsync = new IsUserExistAsync(MainActivity.this,
                                 input_phone_ET.getText().toString(), new IsUserExistCallBack() {
                             @Override
@@ -59,10 +58,8 @@ public class MainActivity extends AppCompatActivity {
                                         @Override
                                         public void getCodeCallBack(boolean result) {
                                             if(result){
-                                                Intent intent = new Intent(MainActivity.this,
-                                                        LogInActivity.class);
-                                                intent.putExtra("phoneNumber", input_phone_ET
-                                                        .getText().toString());
+                                                Intent intent = new Intent(MainActivity.this, LogInActivity.class);
+                                                intent.putExtra("phoneNumber", input_phone_ET.getText().toString());
                                                 startActivity(intent);
                                             }
                                         }
@@ -71,16 +68,14 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 else {
                                     Toast.makeText(MainActivity.this, "Данный номер телефона " +
-                                            "не зарегистрирован в системе!", Toast.LENGTH_SHORT)
-                                            .show();
+                                            "не зарегистрирован в системе!", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
                         isUserExistAsync.execute();
                     }
                     else {
-                        Toast.makeText(MainActivity.this, "Введите Ваш номер телефона!",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Введите Ваш номер телефона!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -88,8 +83,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 Toast.makeText(MainActivity.this, "Извините, но для использования приложения " +

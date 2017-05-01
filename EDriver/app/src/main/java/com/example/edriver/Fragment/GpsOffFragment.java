@@ -21,12 +21,10 @@ public class GpsOffFragment extends Fragment {
     public GpsOffFragment() {
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_gps_off, container, false);
-
         reload_BTN = (Button) view.findViewById(R.id.reload_BTN);
         reload_BTN.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,8 +35,7 @@ public class GpsOffFragment extends Fragment {
                     fragmentTransaction.replace(R.id.main_container_fragment, mainMapFragment).commit();
                 }
                 else{
-                    Toast.makeText(getContext(), "Для работа приложения включите интернет и GPS!",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Для работа приложения включите интернет и GPS!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -48,7 +48,7 @@ public class ChangeStatusAsync extends AsyncTask<Void, Void, Response<ResponseBo
     @Override
     protected Response<ResponseBody> doInBackground(Void... params) {
         try {
-            return App.getApi().change_worker_status(api_key, new_status).execute();
+            return App.getApi().changeWorkerStatus(api_key, new_status).execute();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,24 +61,20 @@ public class ChangeStatusAsync extends AsyncTask<Void, Void, Response<ResponseBo
         progressDialog.dismiss();
         boolean result = false;
         if(responseBody == null){
-            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже!",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже!", Toast.LENGTH_SHORT).show();
             return;
         }
         switch (responseBody.code()){
             case STATUS.BadRequest:{
-                Toast.makeText(context, "Неверный запрос! Не могу обновить статус!",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Неверный запрос! Не могу обновить статус!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.Unauthorized:{
-                Toast.makeText(context, "Неверный запрос! Не могу обновить статус!",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Неверный запрос! Не могу обновить статус!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.Ok:{
-                Toast.makeText(context, "Ваш статус обновлен!",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Ваш статус обновлен!", Toast.LENGTH_SHORT).show();
                 result = true;
                 break;
             }

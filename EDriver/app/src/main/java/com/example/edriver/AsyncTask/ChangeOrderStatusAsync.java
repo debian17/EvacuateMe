@@ -17,10 +17,6 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-/**
- * Created by Андрей Кравченко on 24-Apr-17.
- */
-
 public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
 
     private Context context;
@@ -32,7 +28,8 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
     private ProgressDialog progressDialog;
     private Order order;
 
-    public ChangeOrderStatusAsync(Context context, int order_id, int new_status, ChangeOrderStatusCallBack changeOrderStatusCallBack){
+    public ChangeOrderStatusAsync(Context context, int order_id, int new_status,
+                                  ChangeOrderStatusCallBack changeOrderStatusCallBack){
         this.context = context;
         this.order_id = order_id;
         this.new_status = new_status;
@@ -81,12 +78,10 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
             }
             case STATUS.NotFound:{
                 result = false;
-                //Toast.makeText(context, "Такой заказ не найден!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.Unauthorized:{
                 result = false;
-                //Toast.makeText(context, "Вы не авторизованы!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.Ok:{

@@ -4,10 +4,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-/**
- * Created by Андрей Кравченко on 14-Apr-17.
- */
-
 public final class Net {
     public static boolean isAvailable(Context context){
         ConnectivityManager connectivityManager

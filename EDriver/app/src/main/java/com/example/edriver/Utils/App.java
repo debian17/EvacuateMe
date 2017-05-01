@@ -7,10 +7,6 @@ import com.example.edriver.Interface.Server_API;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by Андрей Кравченко on 16-Apr-17.
- */
-
 public class App extends Application {
     private static Server_API api;
     private Retrofit retrofit;
