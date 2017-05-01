@@ -76,7 +76,6 @@ public class NavigationDrawerActivity extends AppCompatActivity
         int id = item.getItemId();
         switch (id){
             case R.id.nav_map:{
-                Log.d("TAG", "ткнул на выбор карты");
                 changeUI();
                 break;
             }
@@ -116,13 +115,11 @@ public class NavigationDrawerActivity extends AppCompatActivity
         if(Net.isAvailable(NavigationDrawerActivity.this) && Gps.isAvailable(NavigationDrawerActivity.this)){
             MainMapFragment mainMapFragment = new MainMapFragment();
             fragmentTransaction.replace(R.id.main_container_fragment, mainMapFragment);
-            Log.d("TAG", "Прикрепил карту");
             isMapAttached = true;
         }
         else {
             GpsOffFragment gpsOffFragment = new GpsOffFragment();
             fragmentTransaction.replace(R.id.main_container_fragment, gpsOffFragment);
-            Log.d("TAG", "Прикрепил GPS off " + String.valueOf(isMapAttached));
         }
         fragmentTransaction.commit();
     }

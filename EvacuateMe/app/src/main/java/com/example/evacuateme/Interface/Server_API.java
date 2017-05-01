@@ -29,7 +29,7 @@ public interface Server_API {
     Call<ResponseBody> isUserExists(@Path("phone") String phoneNumber);
 
     @GET("/api/code/{phone}")
-    Call<ResponseBody> get_code(@Path("phone") String phoneNumber);
+    Call<ResponseBody> getCode(@Path("phone") String phoneNumber);
 
     @POST("/api/clients")
     Call<ResponseBody> signUp(@Body JsonObject jsonData);
@@ -38,23 +38,24 @@ public interface Server_API {
     Call<ResponseBody> signIn(@Header("phone") String phoneNumber, @Header("code") String code);
 
     @GET("/api/car_types")
-    Call<List<CarType>> get_car_type(@Header("api_key") String api_key);
+    Call<List<CarType>> getCarType(@Header("api_key") String api_key);
 
     @POST("api/help/companies")
-    Call<List<Companies>> get_companies(@Header("api_key") String api_key, @Body JsonObject jsonObject);
+    Call<List<Companies>> getCompanies(@Header("api_key") String api_key, @Body JsonObject jsonObject);
 
     @POST("/api/orders")
-    Call<OrderData> create_order(@Header("api_key") String api_key, @Body JsonObject jsonObject);
+    Call<OrderData> createOrder(@Header("api_key") String api_key, @Body JsonObject jsonObject);
 
     @GET("/api/orders/{order_id}/status")
-    Call<OrderStatus> get_order_status(@Header("api_key") String api_key, @Path("order_id") int order_id);
+    Call<OrderStatus> getOrderStatus(@Header("api_key") String api_key, @Path("order_id") int order_id);
 
     @PUT("/api/orders/{order_id}/status/{new_status}")
-    Call<ResponseBody> changeOrderStatus(@Header("api_key") String api_key, @Path("order_id") int order_id, @Path("new_status") int new_status);
+    Call<ResponseBody> changeOrderStatus(@Header("api_key") String api_key, @Path("order_id") int order_id,
+                                         @Path("new_status") int new_status);
 
     @GET("/api/workers/{worker_id}/location")
-    Call<WorkerLocation> get_worker_location(@Header("api_key") String api_key, @Path("worker_id") int worker_id);
+    Call<WorkerLocation> getWorkerLocation(@Header("api_key") String api_key, @Path("worker_id") int worker_id);
 
     @GET("/api/orders/{order_id}/info")
-    Call<OrderInfo> get_order_info(@Header("api_key") String api_key, @Path("order_id") int order_id);
+    Call<OrderInfo> getOrderInfo(@Header("api_key") String api_key, @Path("order_id") int order_id);
 }

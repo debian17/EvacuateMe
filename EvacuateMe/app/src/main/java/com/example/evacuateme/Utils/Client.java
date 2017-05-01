@@ -1,9 +1,5 @@
 package com.example.evacuateme.Utils;
 
-/**
- * Created by Андрей Кравченко on 21-Apr-17.
- */
-
 public class Client {
     private static Client client = new Client();
     private Client(){

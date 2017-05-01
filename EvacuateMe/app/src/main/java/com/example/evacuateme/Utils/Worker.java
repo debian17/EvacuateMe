@@ -1,9 +1,5 @@
 package com.example.evacuateme.Utils;
 
-/**
- * Created by Андрей Кравченко on 28-Apr-17.
- */
-
 public class Worker {
     private static Worker worker = new Worker();
     private Worker(){

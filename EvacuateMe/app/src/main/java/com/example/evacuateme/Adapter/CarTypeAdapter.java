@@ -21,10 +21,6 @@ import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
 
-/**
- * Created by Андрей Кравченко on 18-Apr-17.
- */
-
 public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -36,14 +32,12 @@ public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.ViewHold
         }
     }
 
-    public CarTypeAdapter(Context context, List<CarType> items){
-        this.context = context;
+    public CarTypeAdapter(List<CarType> items){
         this.items = items;
         client = Client.getInstance();
     }
 
     private List<CarType> items;
-    private Context context;
     private View elemView;
     private Client client;
 
@@ -62,7 +56,6 @@ public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.ViewHold
             holder.itemView.setBackgroundColor(Color.GREEN);
             elemView = holder.itemView;
             client.setCar_type(carType.id);
-            Log.d("TYPE", String.valueOf(carType.id));
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,7 +64,6 @@ public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.ViewHold
                 holder.itemView.setBackgroundColor(Color.GREEN);
                 elemView = holder.itemView;
                 client.setCar_type(carType.id);
-                Log.d("TYPE", String.valueOf(carType.id));
             }
         });
     }
@@ -80,5 +72,4 @@ public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.ViewHold
     public int getItemCount() {
         return items.size();
     }
-
 }

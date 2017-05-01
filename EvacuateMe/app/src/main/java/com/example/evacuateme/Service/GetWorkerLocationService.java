@@ -8,9 +8,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
-import com.example.evacuateme.Model.OrderStatus;
 import com.example.evacuateme.Model.WorkerLocation;
 import com.example.evacuateme.Utils.App;
 import com.example.evacuateme.Utils.MyAction;
@@ -23,10 +21,6 @@ import java.util.TimerTask;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-/**
- * Created by Андрей Кравченко on 29-Apr-17.
- */
 
 public class GetWorkerLocationService extends Service {
     private Timer timer;
@@ -71,16 +65,14 @@ public class GetWorkerLocationService extends Service {
             @Override
             public void run() {
                 try {
-                    App.getApi().get_worker_location(api_key, worker.getWorker_id()).enqueue(new Callback<WorkerLocation>() {
+                    App.getApi().getWorkerLocation(api_key, worker.getWorker_id()).enqueue(new Callback<WorkerLocation>() {
                         @Override
                         public void onResponse(Call<WorkerLocation> call, Response<WorkerLocation> response) {
                             if(response == null){
-                                Log.d("LOCATION", "ОТВЕТ НУЛЛ");
                                 return;
                             }
                             switch (response.code()){
                                 case STATUS.Ok:{
-                                    Log.d("GWLLS", "КООРДИНАТЫ РАБОТНИКА ОБНОВЛЕНЫ!");
                                     worker.setLatitude(response.body().latitude);
                                     worker.setLongitude(response.body().longitude);
                                     switch (worker.getOrder_status()){
@@ -89,7 +81,6 @@ public class GetWorkerLocationService extends Service {
                                             LocalBroadcastManager.getInstance(GetWorkerLocationService.this).sendBroadcast(intent);
                                             break;
                                         }
-
                                         case STATUS.Performing:{
                                             Intent intent = new Intent(MyAction.OrderLocationChanged);
                                             LocalBroadcastManager.getInstance(GetWorkerLocationService.this).sendBroadcast(intent);
@@ -109,15 +100,10 @@ public class GetWorkerLocationService extends Service {
                                 case STATUS.Unauthorized:{
                                     break;
                                 }
-                                default:{
-                                    Log.d("GWLS", "Внутренняя ошибка сервера!");
-                                    break;
-                                }
                             }
                         }
                         @Override
                         public void onFailure(Call<WorkerLocation> call, Throwable t) {
-                            Log.d("TAG", "ВСЕ ПЛОХО!");
                         }
                     });
                 } catch (Exception e) {

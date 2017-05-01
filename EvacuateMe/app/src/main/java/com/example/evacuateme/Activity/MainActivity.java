@@ -46,8 +46,7 @@ public class MainActivity extends AppCompatActivity implements IsUserExistsCallB
                 public void onClick(View v) {
                     if(!Net.isAvailable(MainActivity.this)){
                         Toast.makeText(MainActivity.this, "Для работы приложения необходимо интернет" +
-                                " соединение!", Toast.LENGTH_SHORT)
-                                .show();
+                                " соединение!", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     if(!isNumberEmpty()){
@@ -56,8 +55,7 @@ public class MainActivity extends AppCompatActivity implements IsUserExistsCallB
                         isUserExistsAsync.execute();
                     }
                     else {
-                        Toast.makeText(MainActivity.this, "Введите Ваш номер телефона!",
-                                Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Введите Ваш номер телефона!", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -65,12 +63,11 @@ public class MainActivity extends AppCompatActivity implements IsUserExistsCallB
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(MainActivity.this, "Извините, но для использования приложения " +
-                        "необходимо предоставить разрешения!", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Извините, но для использования приложения необходимо предоставить разрешения!",
+                        Toast.LENGTH_LONG).show();
                 finish();
             }
         }
@@ -79,8 +76,7 @@ public class MainActivity extends AppCompatActivity implements IsUserExistsCallB
     @Override
     public void completed(boolean isExist) {
         this.isExist = isExist;
-        GetCodeAsync getCodeAsync = new GetCodeAsync(MainActivity.this,
-                phoneNumber_ET.getText().toString(), MainActivity.this);
+        GetCodeAsync getCodeAsync = new GetCodeAsync(MainActivity.this, phoneNumber_ET.getText().toString(), MainActivity.this);
         getCodeAsync.execute();
     }
 

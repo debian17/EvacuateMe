@@ -30,8 +30,7 @@ public class StartFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_start, container, false);
         search_evacuator_BTN = (Button) view.findViewById(R.id.search_evacuator_BTN);
         search_evacuator_BTN.setOnClickListener(new View.OnClickListener() {
@@ -49,8 +48,8 @@ public class StartFragment extends Fragment {
                                     startActivity(intent);
                                 }
                                 else {
-                                    Toast.makeText(getContext(), "Не удалось получить список категорий заказа!", Toast.LENGTH_SHORT)
-                                            .show();
+                                    Toast.makeText(getContext(), "Не удалось получить список категорий заказа!",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });

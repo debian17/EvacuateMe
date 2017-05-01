@@ -15,10 +15,6 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-/**
- * Created by Андрей Кравченко on 14-Apr-17.
- */
-
 public class IsUserExistsAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
     private String phoneNumber;
     private ProgressDialog progressDialog;
@@ -57,8 +53,7 @@ public class IsUserExistsAsync extends AsyncTask<Void, Void, Response<ResponseBo
         progressDialog.dismiss();
         boolean isExist = false;
         if(result == null){
-            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT).show();
             return;
         }
         switch (result.code()){
@@ -67,8 +62,7 @@ public class IsUserExistsAsync extends AsyncTask<Void, Void, Response<ResponseBo
                 break;
             }
             case STATUS.BadRequest:{
-                Toast.makeText(context, "Неверный формат номер телефона!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Неверный формат номер телефона!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.NotFound:{
@@ -76,8 +70,7 @@ public class IsUserExistsAsync extends AsyncTask<Void, Void, Response<ResponseBo
                 break;
             }
             default:{
-                Toast.makeText(context, "Внутренняя ошибка сервера!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Внутренняя ошибка сервера!", Toast.LENGTH_SHORT).show();
                 break;
             }
         }

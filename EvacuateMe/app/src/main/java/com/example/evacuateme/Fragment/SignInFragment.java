@@ -29,8 +29,7 @@ public class SignInFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_sign_in, container, false);
         input_sms_ET = (EditText) view.findViewById(R.id.input_sms_ET);
@@ -60,16 +59,14 @@ public class SignInFragment extends Fragment {
                                         startActivity(intent);
                                     }
                                     else {
-                                        Toast.makeText(getContext(), "Не удалось выполнить вход!", Toast.LENGTH_SHORT)
-                                                .show();
+                                        Toast.makeText(getContext(), "Не удалось выполнить вход!", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
                     signInAsync.execute();
                 }
                 else {
-                    Toast.makeText(getContext(), "Поля кода не может быть пустым!", Toast.LENGTH_SHORT)
-                            .show();
+                    Toast.makeText(getContext(), "Поля кода не может быть пустым!", Toast.LENGTH_SHORT).show();
                 }
             }
         });

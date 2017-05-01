@@ -20,20 +20,16 @@ import com.example.evacuateme.Utils.MyAction;
 import com.example.evacuateme.Utils.STATUS;
 import com.example.evacuateme.Utils.Worker;
 
-
 public class OnTheWayFragment extends Fragment {
     private Button refuse_order_BTN;
     private Button call_worker_BTN;
     private Worker worker;
-    private FragmentTransaction fragmentTransaction;
 
     public OnTheWayFragment() {
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_on_the_way, container, false);
         refuse_order_BTN = (Button) view.findViewById(R.id.refuse_order_BTN);
         call_worker_BTN = (Button) view.findViewById(R.id.call_worker_BTN);

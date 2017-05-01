@@ -34,10 +34,6 @@ import com.example.evacuateme.Utils.Worker;
 
 import java.util.List;
 
-/**
- * Created by Андрей Кравченко on 20-Apr-17.
- */
-
 public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -57,7 +53,6 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
 
     private List<Companies> items;
     private Context context;
-    private Client client;
     private Worker worker;
     private SharedPreferences sharedPreferences;
     private ProgressDialog progressDialog;
@@ -65,7 +60,6 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
     public CompaniesAdapter(Context context, List<Companies> items){
         this.items = items;
         this.context = context;
-        client = Client.getInstance();
         worker = Worker.getInstance();
         sharedPreferences = context.getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
         IntentFilter intentFilter = new IntentFilter();
@@ -139,7 +133,6 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
         @Override
         public void onReceive(Context context, Intent intent) {
             progressDialog.dismiss();
-
             switch (intent.getAction()){
                 case MyAction.OrderConfirmed:{
                     Intent service_intent = new Intent(context, GetWorkerLocationService.class);
@@ -153,9 +146,6 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
                     Toast.makeText(context, "Работник отменил заказ!", Toast.LENGTH_SHORT).show();
                     break;
                 }
-                default:
-                    Log.d("НЕВЕДОМАЯ", "ДИЧЬ");
-                    break;
             }
         }
     };

@@ -3,7 +3,6 @@ package com.example.evacuateme.AsyncTask;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.evacuateme.Interface.GetCompaniesCallBack;
@@ -18,10 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Response;
-
-/**
- * Created by Андрей Кравченко on 18-Apr-17.
- */
 
 public class GetCompaniesAsync extends AsyncTask<Void, Void, Response<List<Companies>>> {
     private Context context;
@@ -56,7 +51,7 @@ public class GetCompaniesAsync extends AsyncTask<Void, Void, Response<List<Compa
         jsonObject.addProperty("longitude", client.getLongitude());
         jsonObject.addProperty("car_type", car_type);
         try {
-            return App.getApi().get_companies(api_key, jsonObject).execute();
+            return App.getApi().getCompanies(api_key, jsonObject).execute();
         } catch (IOException e) {
             e.printStackTrace();
         }

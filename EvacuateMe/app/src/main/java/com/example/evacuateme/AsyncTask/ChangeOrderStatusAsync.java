@@ -15,10 +15,6 @@ import java.io.IOException;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
-/**
- * Created by Андрей Кравченко on 26-Apr-17.
- */
-
 public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
 
     private Context context;
@@ -71,10 +67,6 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
         }
 
         switch (responseBody.code()){
-            case STATUS.BadRequest:{
-                //Toast.makeText(context, "Вы отправили неверные данные!", Toast.LENGTH_SHORT).show();
-                break;
-            }
             case STATUS.NotFound:{
                 Toast.makeText(context, "Такой заказ не найден!", Toast.LENGTH_SHORT).show();
                 break;

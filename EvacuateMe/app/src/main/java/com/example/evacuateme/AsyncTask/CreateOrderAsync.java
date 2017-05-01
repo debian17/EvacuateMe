@@ -3,7 +3,6 @@ package com.example.evacuateme.AsyncTask;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.example.evacuateme.Interface.CreateOrderCallBack;
@@ -17,10 +16,6 @@ import com.google.gson.JsonObject;
 import java.io.IOException;
 
 import retrofit2.Response;
-
-/**
- * Created by Андрей Кравченко on 21-Apr-17.
- */
 
 public class CreateOrderAsync extends AsyncTask<Void, Void, Response<OrderData>> {
 
@@ -38,7 +33,6 @@ public class CreateOrderAsync extends AsyncTask<Void, Void, Response<OrderData>>
         client = Client.getInstance();
         worker = Worker.getInstance();
     }
-
 
     @Override
     protected void onPreExecute() {
@@ -60,7 +54,7 @@ public class CreateOrderAsync extends AsyncTask<Void, Void, Response<OrderData>>
         jsonObject.addProperty("worker_id", worker.getWorker_id());
         jsonObject.addProperty("commentary", client.getComment());
         try {
-            return App.getApi().create_order(api_ley, jsonObject).execute();
+            return App.getApi().createOrder(api_ley, jsonObject).execute();
         } catch (IOException e) {
             e.printStackTrace();
         }

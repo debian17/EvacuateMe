@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Path;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,14 +14,12 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.example.evacuateme.Activity.InfoOrderActivity;
 import com.example.evacuateme.Activity.NavigationDrawerActivity;
 import com.example.evacuateme.Activity.OrderInfoActivity;
 import com.example.evacuateme.Model.OrderInfo;
@@ -192,14 +189,8 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         map.getUiSettings().setZoomControlsEnabled(true);
 
         switch (worker.getOrder_status()){
-
             case STATUS.OnTheWay:{
                 showWorkerPosition(true);
-                break;
-            }
-
-            default:{
-                Log.d("MAP_READY", "НЕВЕДОМЫЙ СТАТУС!");
                 break;
             }
         }
@@ -329,8 +320,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     worker.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         }
         else {
-            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -349,15 +339,13 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     worker.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
         }
         else {
-            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!", Toast.LENGTH_SHORT).show();
         }
     }
 
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, Intent intent) {
-
             switch (intent.getAction()){
                 case MyAction.OrderCanceledByClient:{
                     Intent service_intent = new Intent(getContext(), GetWorkerLocationService.class);
@@ -369,12 +357,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
                     break;
                 }
-
                 case MyAction.WorkerLocationChanged:{
                     showWorkerPosition(false);
                     break;
                 }
-
                 case MyAction.OrderPerforming:{
                     showOrderLocation(true);
                     Toast.makeText(getContext(), "Водитель приехал!", Toast.LENGTH_SHORT);
@@ -383,23 +369,19 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     fragmentTransaction.replace(R.id.info_container_fragment, performingFragment).commit();
                     break;
                 }
-
                 case MyAction.OrderLocationChanged:{
                     showOrderLocation(true);
                     break;
                 }
-
                 case MyAction.OrderCompleted:{
                     Toast.makeText(getContext(), "Заказ завершен!", Toast.LENGTH_SHORT);
                     Intent service_intent = new Intent(getContext(), GetWorkerLocationService.class);
                     getContext().stopService(service_intent);
-
                     Intent status_service = new Intent(getContext(), CheckOrderStatusService.class);
                     getContext().stopService(status_service);
-
                     sharedPreferences = getContext().getSharedPreferences("API_KEY",Context.MODE_PRIVATE);
                     String api_key = sharedPreferences.getString("api_key", "");
-                    App.getApi().get_order_info(api_key, worker.getOrder_id()).enqueue(new Callback<OrderInfo>() {
+                    App.getApi().getOrderInfo(api_key, worker.getOrder_id()).enqueue(new Callback<OrderInfo>() {
                         @Override
                         public void onResponse(Call<OrderInfo> call, Response<OrderInfo> response) {
                             if(response==null){
@@ -412,10 +394,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                             else {
                                 switch (response.code()){
                                     case STATUS.Ok:{
-//                                        Log.d("INFO", String.valueOf(response.body().distance));
-//                                        Log.d("INFO", String.valueOf(response.body().summary));
-//                                        Log.d("INFO", String.valueOf(response.body().order_id));
-//                                        Log.d("INFO", String.valueOf(response.body().company));
                                         Bundle bundle = new Bundle();
                                         bundle.putInt("order_id", response.body().order_id);
                                         bundle.putString("company", response.body().company);
@@ -436,9 +414,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                                     case STATUS.NotFound:{
                                         break;
                                     }
-                                    default:{
-                                        break;
-                                    }
                                 }
                             }
                         }
@@ -448,11 +423,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
                         }
                     });
-                    break;
-                }
-
-                default:{
-                    Log.d("НЕВЕДОМАЯ", "ХЕРНЯ");
                     break;
                 }
             }

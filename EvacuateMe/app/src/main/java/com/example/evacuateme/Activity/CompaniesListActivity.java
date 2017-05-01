@@ -42,5 +42,4 @@ public class CompaniesListActivity extends AppCompatActivity {
             companies_RV.setAdapter(companiesAdapter);
         }
     }
-
 }

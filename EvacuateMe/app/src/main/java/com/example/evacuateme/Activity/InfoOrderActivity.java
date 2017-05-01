@@ -49,24 +49,18 @@ public class InfoOrderActivity extends AppCompatActivity {
             get_list_evacuator_BTN = (Button) findViewById(R.id.get_list_evacuator_BTN);
             category_RV = (RecyclerView) findViewById(R.id.category_RV);
             comment_ET = (EditText) findViewById(R.id.comment_ET);
-
             linearLayoutManager = new LinearLayoutManager(this);
             category_RV.setLayoutManager(linearLayoutManager);
-
             String temp = intent.getStringExtra("car_list");
             Type type = new TypeToken<List<CarType>>(){}.getType();
             items = new Gson().fromJson(temp, type);
-
-            carTypeAdapter = new CarTypeAdapter(this, items);
+            carTypeAdapter = new CarTypeAdapter(items);
             category_RV.setAdapter(carTypeAdapter);
-
             get_list_evacuator_BTN.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
                     String api_key = sharedPreferences.getString("api_key", "");
-
-                    Log.d("CAR_TYPE", String.valueOf(client.getCar_type()));
                     GetCompaniesAsync getCompaniesAsync = new GetCompaniesAsync(InfoOrderActivity.this,
                             api_key, client.getCar_type(), new GetCompaniesCallBack() {
                         @Override
@@ -75,7 +69,6 @@ public class InfoOrderActivity extends AppCompatActivity {
                                 Intent intent = new Intent(InfoOrderActivity.this, CompaniesListActivity.class);
                                 intent.putExtra("list_companies", new Gson().toJson(list_companies));
                                 client.setComment(comment_ET.getText().toString());
-//                                intent.putExtra("comment", comment_ET.getText().toString());
                                 startActivity(intent);
                             }
                             else {

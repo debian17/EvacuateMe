@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.example.evacuateme.Interface.GetCarTypeCallBack;
-import com.example.evacuateme.Interface.GetCodeCallBack;
 import com.example.evacuateme.Model.CarType;
 import com.example.evacuateme.Utils.App;
 import com.example.evacuateme.Utils.STATUS;
@@ -15,12 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Response;
-
-/**
- * Created by Андрей Кравченко on 17-Apr-17.
- */
 
 public class GetCarTypeAsync extends AsyncTask<Void, Void, Response<List<CarType>>> {
     private Context context;
@@ -47,7 +41,7 @@ public class GetCarTypeAsync extends AsyncTask<Void, Void, Response<List<CarType
     @Override
     protected Response<List<CarType>> doInBackground(Void... params) {
         try {
-            return App.getApi().get_car_type(api_key).execute();
+            return App.getApi().getCarType(api_key).execute();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,8 +55,7 @@ public class GetCarTypeAsync extends AsyncTask<Void, Void, Response<List<CarType
         boolean result = false;
         List<CarType> data = new ArrayList<>();
         if(response == null){
-            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT).show();
             return;
         }
         switch (response.code()){
@@ -72,17 +65,15 @@ public class GetCarTypeAsync extends AsyncTask<Void, Void, Response<List<CarType
                 break;
             }
             case STATUS.NotFound:{
-                result = false;
+                Toast.makeText(context, "Данна категория не зарегистрирована!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.Unauthorized:{
-                Toast.makeText(context, "Вы не авторизованы в системе!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Вы не авторизованы в системе!", Toast.LENGTH_SHORT).show();
                 break;
             }
             default:{
-                Toast.makeText(context, "Внутренняя ошибка сервера.", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Внутренняя ошибка сервера.", Toast.LENGTH_SHORT).show();
                 break;
             }
         }

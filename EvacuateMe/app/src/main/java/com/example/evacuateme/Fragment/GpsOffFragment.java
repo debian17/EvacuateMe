@@ -21,7 +21,6 @@ public class GpsOffFragment extends Fragment {
     public GpsOffFragment() {
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

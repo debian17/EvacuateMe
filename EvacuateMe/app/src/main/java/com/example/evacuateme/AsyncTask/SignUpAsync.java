@@ -21,10 +21,6 @@ import retrofit2.Response;
 
 import static android.content.Context.MODE_PRIVATE;
 
-/**
- * Created by Андрей Кравченко on 14-Apr-17.
- */
-
 public class SignUpAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
 
     private Context context;
@@ -33,7 +29,6 @@ public class SignUpAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
     private String code;
     private SignUpCallBack signUpCallBack;
     private ProgressDialog progressDialog;
-    private SharedPreferences sharedPreferences;
 
     public SignUpAsync(Context context, String phoneNumber, String name, String code, SignUpCallBack signUpCallBack){
         this.context = context;
@@ -74,8 +69,7 @@ public class SignUpAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
         boolean result = false;
         String api_key = "";
         if(responseBody == null){
-            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(context, "Сервер временно недоступен. Попробуйте позже.", Toast.LENGTH_SHORT).show();
             return;
         }
         switch (responseBody.code()){
@@ -89,18 +83,15 @@ public class SignUpAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
                 break;
             }
             case STATUS.BadRequest:{
-                Toast.makeText(context, "Неверный формат номер телефона!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Неверный формат номер телефона!", Toast.LENGTH_SHORT).show();
                 break;
             }
             case STATUS.NotFound:{
-                Toast.makeText(context, "Неверно введен проверочный код!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Неверно введен проверочный код!", Toast.LENGTH_SHORT).show();
                 break;
             }
             default:{
-                Toast.makeText(context, "Внутренняя ошибка сервера!", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(context, "Внутренняя ошибка сервера!", Toast.LENGTH_SHORT).show();
                 break;
             }
         }

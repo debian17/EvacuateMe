@@ -30,8 +30,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             final Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_registration, container, false);
         input_name_ET = (EditText) view.findViewById(R.id.input_name_ET);
         input_reg_sms_ET = (EditText) view.findViewById(R.id.input_reg_sms_ET);
@@ -48,32 +47,27 @@ public class RegistrationFragment extends Fragment {
                         @Override
                         public void completed(boolean result, String api_key) {
                             if(result){
-                                sharedPreferences = getContext().getSharedPreferences("API_KEY",
-                                        Context.MODE_PRIVATE);
+                                sharedPreferences = getContext().getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor_key = sharedPreferences.edit();
                                 editor_key.putString("api_key", api_key);
                                 editor_key.apply();
-                                sharedPreferences = getContext().getSharedPreferences("IS_LOGIN",
-                                        Context.MODE_PRIVATE);
+                                sharedPreferences = getContext().getSharedPreferences("IS_LOGIN", Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor_isLogin = sharedPreferences.edit();
                                 editor_isLogin.putBoolean("is_login", true);
                                 editor_isLogin.apply();
                                 Intent intent = new Intent(getContext(), NavigationDrawerActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                        Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
                             }
                             else {
-                                Toast.makeText(getContext(), "Регистрация не удалась!",
-                                        Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Регистрация не удалась!", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
                     signUpAsync.execute();
                 }
                 else {
-                    Toast.makeText(getContext(), "Все поля должны быть заполнены!",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Все поля должны быть заполнены!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
