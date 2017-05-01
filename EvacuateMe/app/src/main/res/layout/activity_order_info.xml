@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.evacuateme.Activity.OrderInfoActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ИНФА О ЗАКАЗЕ!"
+        android:id="@+id/textView"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_order_id_TV"
+        android:text="ID ЗАКАЗА"
+        android:layout_below="@+id/textView"
+        android:layout_alignStart="@+id/confirm_completion_BTN"
+        android:layout_marginTop="18dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_distance_TV"
+        android:text="Дистанция"
+        android:layout_below="@+id/info_order_id_TV"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="33dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_summary_TV"
+        android:text="Сумма заказа"
+        android:layout_below="@+id/info_distance_TV"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="23dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_company_TV"
+        android:text="Название фирмы"
+        android:layout_below="@+id/info_summary_TV"
+        android:layout_alignStart="@+id/confirm_completion_BTN"
+        android:layout_marginTop="24dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Завершить"
+        android:layout_marginTop="204dp"
+        android:id="@+id/confirm_completion_BTN"
+        android:layout_below="@+id/textView"
+        android:layout_alignEnd="@+id/textView"/>
+
+</RelativeLayout>

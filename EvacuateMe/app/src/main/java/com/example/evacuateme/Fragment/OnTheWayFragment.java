@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.example.evacuateme.AsyncTask.ChangeOrderStatusAsync;
 import com.example.evacuateme.Interface.ChangeOrderStatusCallBack;
 import com.example.evacuateme.R;
-import com.example.evacuateme.Service.ConfirmOrderService;
 import com.example.evacuateme.Utils.MyAction;
 import com.example.evacuateme.Utils.STATUS;
 import com.example.evacuateme.Utils.Worker;

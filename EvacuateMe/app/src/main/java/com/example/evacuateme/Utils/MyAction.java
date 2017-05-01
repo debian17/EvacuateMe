@@ -10,4 +10,7 @@ public class MyAction {
     public static final String DrawTwoMarks = "DrawTwoMarks";
     public static final String OrderCanceledByClient = "OrderCanceledByClient";
     public static final String WorkerLocationChanged = "WorkerLocationChanged";
+    public static final String OrderPerforming = "OrderPerforming";
+    public static final String OrderLocationChanged = "OrderLocationChanged";
+    public static final String OrderCompleted = "OrderCompleted";
 }

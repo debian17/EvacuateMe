@@ -42,7 +42,6 @@ public class GetWorkerLocationService extends Service {
         sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
         api_key = sharedPreferences.getString("api_key","");
         worker = Worker.getInstance();
-        Log.d("Я", "СОЗДАЛСО БЛЕАТЬ!");
     }
 
     @Override
@@ -65,7 +64,6 @@ public class GetWorkerLocationService extends Service {
         super.onDestroy();
         timerTask.cancel();
         timer.cancel();
-        Log.d("Я", "ОСТАНОВИЛСО БЛЕАТЬ!");
     }
 
     private void Run(){
@@ -85,8 +83,19 @@ public class GetWorkerLocationService extends Service {
                                     Log.d("GWLLS", "КООРДИНАТЫ РАБОТНИКА ОБНОВЛЕНЫ!");
                                     worker.setLatitude(response.body().latitude);
                                     worker.setLongitude(response.body().longitude);
-                                    Intent intent = new Intent(MyAction.WorkerLocationChanged);
-                                    LocalBroadcastManager.getInstance(GetWorkerLocationService.this).sendBroadcast(intent);
+                                    switch (worker.getOrder_status()){
+                                        case STATUS.OnTheWay:{
+                                            Intent intent = new Intent(MyAction.WorkerLocationChanged);
+                                            LocalBroadcastManager.getInstance(GetWorkerLocationService.this).sendBroadcast(intent);
+                                            break;
+                                        }
+
+                                        case STATUS.Performing:{
+                                            Intent intent = new Intent(MyAction.OrderLocationChanged);
+                                            LocalBroadcastManager.getInstance(GetWorkerLocationService.this).sendBroadcast(intent);
+                                            break;
+                                        }
+                                    }
                                     break;
                                 }
                                 case STATUS.NotFound:{

@@ -14,10 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".Service.ConfirmOrderService"
-                 android:enabled="true"/>
-        <service android:name=".Service.GetWorkerLocationService"
-                 android:enabled="true"/>
+        <service
+            android:name=".Service.CheckOrderStatusService"
+            android:enabled="true"/>
+        <service
+            android:name=".Service.GetWorkerLocationService"
+            android:enabled="true"/>
+
         <activity
             android:name=".Activity.MainActivity"
             android:screenOrientation="portrait">
@@ -44,6 +47,8 @@
         <activity android:name=".Activity.InfoOrderActivity">
         </activity>
         <activity android:name=".Activity.CompaniesListActivity">
+        </activity>
+        <activity android:name=".Activity.OrderInfoActivity">
         </activity>
     </application>
 

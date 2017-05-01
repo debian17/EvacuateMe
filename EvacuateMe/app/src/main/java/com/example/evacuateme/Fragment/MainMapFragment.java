@@ -21,8 +21,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.example.evacuateme.Activity.InfoOrderActivity;
+import com.example.evacuateme.Activity.NavigationDrawerActivity;
+import com.example.evacuateme.Activity.OrderInfoActivity;
+import com.example.evacuateme.Model.OrderInfo;
 import com.example.evacuateme.R;
+import com.example.evacuateme.Service.CheckOrderStatusService;
 import com.example.evacuateme.Service.GetWorkerLocationService;
+import com.example.evacuateme.Utils.App;
 import com.example.evacuateme.Utils.Client;
 import com.example.evacuateme.Utils.MyAction;
 import com.example.evacuateme.Utils.STATUS;
@@ -42,6 +49,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, android.location.LocationListener {
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
@@ -57,6 +68,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private FragmentTransaction fragmentTransaction;
     private Client client;
     private Worker worker;
+    private SharedPreferences sharedPreferences;
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -266,25 +278,33 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         intentFilter.addAction(MyAction.OrderCanceledByClient);
         intentFilter.addAction(MyAction.WorkerLocationChanged);
         intentFilter.addAction(MyAction.OrderConfirmed);
+        intentFilter.addAction(MyAction.OrderLocationChanged);
+        intentFilter.addAction(MyAction.OrderPerforming);
+        intentFilter.addAction(MyAction.OrderCompleted);
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(broadcastReceiver, intentFilter);
         if (checkPlayServices() && googleApiClient.isConnected()) {
             startLocationUpdates();
         }
         switch (worker.getOrder_status()){
             case STATUS.OnTheWay:{
-                Log.d("MMF", "ЗАКАЗ ГОТОВ К ОТОБРАЖЕНИЮ!");
-                Log.d("SERVICE", "ЗАПУСКАЮ");
-                Intent service_intent = new Intent(getContext(), GetWorkerLocationService.class);
-                getContext().startService(service_intent);
                 OnTheWayFragment onTheWayFragment = new OnTheWayFragment();
                 fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.info_container_fragment, onTheWayFragment).commit();
                 break;
             }
+
+            case STATUS.Performing:{
+                PerformingFragment performingFragment = new PerformingFragment();
+                fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.info_container_fragment, performingFragment).commit();
+                break;
+            }
+
             default:{
                 StartFragment startFragment = new StartFragment();
                 fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+                break;
             }
         }
     }
@@ -314,14 +334,36 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         }
     }
 
+    private void showOrderLocation(boolean flag){
+        if(map!=null){
+            map.clear();
+            if(flag){
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(worker.getLatitude(), worker.getLongitude()))
+                        .zoom(13)
+                        .build();
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                map.moveCamera(cameraUpdate);
+            }
+            map.addMarker(new MarkerOptions().position(new LatLng(worker.getLatitude(),
+                    worker.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        }
+        else {
+            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context, Intent intent) {
 
             switch (intent.getAction()){
                 case MyAction.OrderCanceledByClient:{
                     Intent service_intent = new Intent(getContext(), GetWorkerLocationService.class);
                     getContext().stopService(service_intent);
+                    Intent status_service = new Intent(getContext(), CheckOrderStatusService.class);
+                    getContext().stopService(status_service);
                     StartFragment startFragment = new StartFragment();
                     fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
@@ -330,6 +372,82 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
                 case MyAction.WorkerLocationChanged:{
                     showWorkerPosition(false);
+                    break;
+                }
+
+                case MyAction.OrderPerforming:{
+                    showOrderLocation(true);
+                    Toast.makeText(getContext(), "Водитель приехал!", Toast.LENGTH_SHORT);
+                    PerformingFragment performingFragment = new PerformingFragment();
+                    fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.info_container_fragment, performingFragment).commit();
+                    break;
+                }
+
+                case MyAction.OrderLocationChanged:{
+                    showOrderLocation(true);
+                    break;
+                }
+
+                case MyAction.OrderCompleted:{
+                    Toast.makeText(getContext(), "Заказ завершен!", Toast.LENGTH_SHORT);
+                    Intent service_intent = new Intent(getContext(), GetWorkerLocationService.class);
+                    getContext().stopService(service_intent);
+
+                    Intent status_service = new Intent(getContext(), CheckOrderStatusService.class);
+                    getContext().stopService(status_service);
+
+                    sharedPreferences = getContext().getSharedPreferences("API_KEY",Context.MODE_PRIVATE);
+                    String api_key = sharedPreferences.getString("api_key", "");
+                    App.getApi().get_order_info(api_key, worker.getOrder_id()).enqueue(new Callback<OrderInfo>() {
+                        @Override
+                        public void onResponse(Call<OrderInfo> call, Response<OrderInfo> response) {
+                            if(response==null){
+                                Toast.makeText(getContext(), "Получить информацию о заказе не удалось! Свяжитесь с водитилем!",
+                                        Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getContext(), NavigationDrawerActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                getContext().startActivity(intent);
+                            }
+                            else {
+                                switch (response.code()){
+                                    case STATUS.Ok:{
+//                                        Log.d("INFO", String.valueOf(response.body().distance));
+//                                        Log.d("INFO", String.valueOf(response.body().summary));
+//                                        Log.d("INFO", String.valueOf(response.body().order_id));
+//                                        Log.d("INFO", String.valueOf(response.body().company));
+                                        Bundle bundle = new Bundle();
+                                        bundle.putInt("order_id", response.body().order_id);
+                                        bundle.putString("company", response.body().company);
+                                        bundle.putDouble("distance", response.body().distance);
+                                        bundle.putDouble("summary", response.body().summary);
+                                        Intent activity_intent = new Intent(getContext(), OrderInfoActivity.class);
+                                        activity_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        activity_intent.putExtra("data", bundle);
+                                        getContext().startActivity(activity_intent);
+                                        break;
+                                    }
+                                    case STATUS.BadRequest:{
+                                        break;
+                                    }
+                                    case STATUS.Unauthorized:{
+                                        break;
+                                    }
+                                    case STATUS.NotFound:{
+                                        break;
+                                    }
+                                    default:{
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<OrderInfo> call, Throwable t) {
+
+                        }
+                    });
                     break;
                 }
 

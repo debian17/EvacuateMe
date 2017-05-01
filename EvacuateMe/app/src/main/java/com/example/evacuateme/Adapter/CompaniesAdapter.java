@@ -24,9 +24,9 @@ import com.example.evacuateme.Interface.ChangeOrderStatusCallBack;
 import com.example.evacuateme.Interface.CreateOrderCallBack;
 import com.example.evacuateme.Model.Companies;
 import com.example.evacuateme.Model.OrderData;
-import com.example.evacuateme.Model.OrderStatus;
 import com.example.evacuateme.R;
-import com.example.evacuateme.Service.ConfirmOrderService;
+import com.example.evacuateme.Service.CheckOrderStatusService;
+import com.example.evacuateme.Service.GetWorkerLocationService;
 import com.example.evacuateme.Utils.Client;
 import com.example.evacuateme.Utils.MyAction;
 import com.example.evacuateme.Utils.STATUS;
@@ -105,7 +105,7 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
                             worker.setLatitude(orderData.latitude);
                             worker.setLongitude(orderData.longitude);
                             worker.setPhone(orderData.phone);
-                            final Intent intent = new Intent(context, ConfirmOrderService.class);
+                            final Intent intent = new Intent(context, CheckOrderStatusService.class);
                             progressDialog.show();
                             progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
                                 @Override
@@ -142,6 +142,8 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
 
             switch (intent.getAction()){
                 case MyAction.OrderConfirmed:{
+                    Intent service_intent = new Intent(context, GetWorkerLocationService.class);
+                    context.startService(service_intent);
                     Intent new_intent = new Intent(context, NavigationDrawerActivity.class);
                     new_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     context.startActivity(new_intent);
