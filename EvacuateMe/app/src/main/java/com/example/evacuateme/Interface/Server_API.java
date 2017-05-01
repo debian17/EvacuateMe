@@ -19,10 +19,6 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
-/**
- * Created by Андрей Кравченко on 14-Apr-17.
- */
-
 public interface Server_API {
 
     @GET("/api/clients/verification/{phone}")

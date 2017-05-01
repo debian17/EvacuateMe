@@ -13,10 +13,6 @@ import retrofit2.http.Header;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
-/**
- * Created by Андрей Кравченко on 16-Apr-17.
- */
-
 public interface Server_API {
 
     @GET("/api/workers/verification/{phone}")
