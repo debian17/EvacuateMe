@@ -54,4 +54,8 @@ public interface Server_API {
 
     @GET("/api/orders/{order_id}/info")
     Call<OrderInfo> getOrderInfo(@Header("api_key") String api_key, @Path("order_id") int order_id);
+
+    @PUT("/api/orders/{order_id}/rate/{rate}")
+    Call<ResponseBody> estimateOrder(@Header("api_key") String api_key, @Path("order_id") int order_id, @Path("rate") int rate);
+
 }
