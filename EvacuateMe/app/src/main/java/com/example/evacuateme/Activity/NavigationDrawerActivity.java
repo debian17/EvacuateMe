@@ -17,12 +17,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.evacuateme.AsyncTask.GetOrderHistoryAsync;
 import com.example.evacuateme.Fragment.GpsOffFragment;
+import com.example.evacuateme.Fragment.HistoryFragment;
 import com.example.evacuateme.Fragment.MainMapFragment;
 import com.example.evacuateme.Fragment.TestFragment;
+import com.example.evacuateme.Interface.GetOrderHistoryCallBack;
+import com.example.evacuateme.Model.OrderHistory;
 import com.example.evacuateme.R;
 import com.example.evacuateme.Utils.Gps;
 import com.example.evacuateme.Utils.Net;
+import com.google.gson.Gson;
+
+import java.util.List;
 
 public class NavigationDrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -80,6 +87,24 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 break;
             }
             case R.id.nav_orders:{
+                isMapAttached = false;
+                sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
+                String api_key = sharedPreferences.getString("api_key", "");
+                GetOrderHistoryAsync getOrderHistoryAsync = new GetOrderHistoryAsync(NavigationDrawerActivity.this, api_key,
+                        new GetOrderHistoryCallBack() {
+                            @Override
+                            public void completed(boolean result, List<OrderHistory> list_orders) {
+                                if(result){
+                                    fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                                    HistoryFragment historyFragment = new HistoryFragment();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("list_orders", new Gson().toJson(list_orders));
+                                    historyFragment.setArguments(bundle);
+                                    fragmentTransaction.replace(R.id.main_container_fragment, historyFragment).commit();
+                                }
+                            }
+                        });
+                getOrderHistoryAsync.execute();
                 break;
             }
             case R.id.nav_test:{

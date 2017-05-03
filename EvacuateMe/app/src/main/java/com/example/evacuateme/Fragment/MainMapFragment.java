@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import retrofit2.Call;
@@ -66,6 +68,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private Client client;
     private Worker worker;
     private SharedPreferences sharedPreferences;
+    private float zoom;
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -136,16 +139,14 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 map.clear();
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(new LatLng(client.getLatitude(), client.getLongitude()))
-                        .zoom(15)
+                        .zoom(zoom)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                 map.moveCamera(cameraUpdate);
-                map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(),
-                        client.getLongitude())));
+                map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(), client.getLongitude())));
             }
             else {
-                Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!", Toast.LENGTH_SHORT).show();
             }
     }
 
@@ -154,6 +155,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         super.onCreate(savedInstanceState);
         client = Client.getInstance();
         worker = Worker.getInstance();
+        zoom = 15;
         if (checkPlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
@@ -174,10 +176,23 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         find_me_BTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Location temp = getMyLocation();
-                client.setLatitude(temp.getLatitude());
-                client.setLongitude(temp.getLongitude());
-                moveCameraToMyLocation();
+                switch (worker.getOrder_status()){
+                    case STATUS.OnTheWay:{
+                        showWorkerPosition(true);
+                        break;
+                    }
+                    case STATUS.Performing:{
+                        showOrderLocation(true);
+                        break;
+                    }
+                    default:{
+                        Location temp = getMyLocation();
+                        client.setLatitude(temp.getLatitude());
+                        client.setLongitude(temp.getLongitude());
+                        moveCameraToMyLocation();
+                        break;
+                    }
+                }
             }
         });
         return view;
@@ -187,7 +202,12 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.getUiSettings().setZoomControlsEnabled(true);
-
+        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+                zoom = map.getCameraPosition().zoom;
+            }
+        });
         switch (worker.getOrder_status()){
             case STATUS.OnTheWay:{
                 showWorkerPosition(true);
@@ -308,7 +328,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 double mLong = (client.getLongitude() + worker.getLongitude())/2;
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(new LatLng(mLat, mLong))
-                        .zoom(13)
+                        .zoom(zoom)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                 map.moveCamera(cameraUpdate);
@@ -330,7 +350,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             if(flag){
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(new LatLng(worker.getLatitude(), worker.getLongitude()))
-                        .zoom(13)
+                        .zoom(zoom)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                 map.moveCamera(cameraUpdate);

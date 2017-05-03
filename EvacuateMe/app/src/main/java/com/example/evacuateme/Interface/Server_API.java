@@ -1,7 +1,10 @@
 package com.example.evacuateme.Interface;
 
+import android.support.design.widget.BottomSheetBehavior;
+
 import com.example.evacuateme.Model.CarType;
 import com.example.evacuateme.Model.Companies;
+import com.example.evacuateme.Model.OrderHistory;
 import com.example.evacuateme.Model.OrderInfo;
 import com.example.evacuateme.Model.OrderStatus;
 import com.example.evacuateme.Model.OrderData;
@@ -58,4 +61,6 @@ public interface Server_API {
     @PUT("/api/orders/{order_id}/rate/{rate}")
     Call<ResponseBody> estimateOrder(@Header("api_key") String api_key, @Path("order_id") int order_id, @Path("rate") int rate);
 
+    @GET("/api/orders/history")
+    Call<List<OrderHistory>> getOrderHistory(@Header("api_key") String api_key);
 }

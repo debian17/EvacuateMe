@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
-             android:layout_height="match_parent"
+             android:layout_height="wrap_content"
              tools:context="com.example.evacuateme.Fragment.StartFragment">
 
     <RelativeLayout
@@ -13,9 +13,7 @@
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:text="Поиск эвакуатора"
-            android:layout_marginTop="10dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginStart="97dp"
             android:background="#5AC1E2"
             android:textColor="#FFFFFF"
             />
