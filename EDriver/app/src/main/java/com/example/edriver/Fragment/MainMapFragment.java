@@ -75,6 +75,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private MyLocation myLocation = MyLocation.getInstance();
     private List<Polyline> polylines;
     private SharedPreferences sharedPreferences;
+    private float zoom;
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -144,7 +145,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 if(flag){
                     CameraPosition cameraPosition = new CameraPosition.Builder()
                             .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
-                            .zoom(15)
+                            .zoom(zoom)
                             .build();
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                     map.moveCamera(cameraUpdate);
@@ -200,7 +201,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             double mLong = (order.getLongitude() + myLocation.getLongitude())/2;
             CameraPosition cameraPosition = new CameraPosition.Builder()
                     .target(new LatLng(mLat, mLong))
-                    .zoom(13)
+                    .zoom(zoom)
                     .build();
             CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
             map.moveCamera(cameraUpdate);
@@ -225,6 +226,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         polylines = new ArrayList<>();
+        zoom = 15;
         if (checkPlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
@@ -243,10 +245,15 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         find_me_BTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Location temp = getMyLocation();
-                myLocation.setLatitude(temp.getLatitude());
-                myLocation.setLongitude(temp.getLongitude());
-                moveCameraToMyLocation(true);
+                if(order.getOrder_status() == Order.OnTheWay){
+                    DrawRoute();
+                }
+                else {
+                    Location temp = getMyLocation();
+                    myLocation.setLatitude(temp.getLatitude());
+                    myLocation.setLongitude(temp.getLongitude());
+                    moveCameraToMyLocation(true);
+                }
             }
         });
         return view;
@@ -256,14 +263,14 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.getUiSettings().setZoomControlsEnabled(true);
-        switch (order.getOrder_status()){
-            case Order.OnTheWay:{
-                DrawRoute();
-                break;
+        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+                zoom = map.getCameraPosition().zoom;
             }
-            default:{
-                break;
-            }
+        });
+        if(order.getOrder_status()==Order.OnTheWay){
+            DrawRoute();
         }
     }
 

@@ -1,9 +1,12 @@
 package com.example.edriver.Interface;
 
 import com.example.edriver.Model.DataOrder;
+import com.example.edriver.Model.OrderHistory;
 import com.example.edriver.Model.OrderInfo;
 import com.example.edriver.Model.OrderStatus;
 import com.google.gson.JsonObject;
+
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -42,4 +45,7 @@ public interface Server_API {
 
     @GET("/api/orders/{order_id}/info")
     Call<OrderInfo> getOrderInfo(@Header("api_key") String api_key, @Path("order_id") int order_id);
+
+    @GET("/api/orders/history")
+    Call<List<OrderHistory>> getOrderHistory(@Header("api_key") String api_key);
 }
