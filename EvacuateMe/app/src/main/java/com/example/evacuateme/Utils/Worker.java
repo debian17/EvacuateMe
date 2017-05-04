@@ -3,7 +3,6 @@ package com.example.evacuateme.Utils;
 public class Worker {
     private static Worker worker = new Worker();
     private Worker(){
-
     }
 
     public static Worker getInstance(){return worker;}
