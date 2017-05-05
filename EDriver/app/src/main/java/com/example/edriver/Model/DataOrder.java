@@ -16,9 +16,17 @@ public class DataOrder {
     @Expose
     public String clientPhone;
 
-    @SerializedName("commentary")
+    @SerializedName("car_model")
     @Expose
-    public String comment;
+    public String car_model;
+
+    @SerializedName("distance")
+    @Expose
+    public Double distance;
+
+    @SerializedName("car_colour")
+    @Expose
+    public String car_colour;
 
     @SerializedName("order_id")
     @Expose

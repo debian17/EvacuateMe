@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.edriver.AsyncTask.ChangeOrderStatusAsync;
@@ -25,6 +26,7 @@ import com.example.edriver.Utils.STATUS;
 public class SelectionFragment extends Fragment {
     private Button confirm_order_BTN;
     private Button refuse_order_BTN;
+    private TextView distance_order_TV;
     private FragmentTransaction fragmentTransaction;
 
     public SelectionFragment() {
@@ -37,7 +39,10 @@ public class SelectionFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_selection, container, false);
         confirm_order_BTN = (Button) view.findViewById(R.id.confirm_order_BTN);
         refuse_order_BTN = (Button) view.findViewById(R.id.refuse_order_BTN);
+        distance_order_TV = (TextView) view.findViewById(R.id.distance_order_TV);
         final Order order = Order.getInstance();
+
+        distance_order_TV.setText(String.valueOf(order.getDistance()/1000)+" КМ");
 
         confirm_order_BTN.setOnClickListener(new View.OnClickListener() {
             @Override

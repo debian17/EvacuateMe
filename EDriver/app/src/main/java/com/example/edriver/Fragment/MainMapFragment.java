@@ -146,9 +146,12 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     CameraPosition cameraPosition = new CameraPosition.Builder()
                             .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
                             .zoom(zoom)
+                            .tilt(60)
+                            .bearing(45)
                             .build();
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                    map.moveCamera(cameraUpdate);
+                    map.animateCamera(cameraUpdate);
+                    //map.moveCamera(cameraUpdate);
                 }
                 map.addMarker(new MarkerOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())));
             }
@@ -263,6 +266,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
         map.getUiSettings().setZoomControlsEnabled(true);
+        map.getUiSettings().setCompassEnabled(true);
         map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
             public void onCameraMove() {

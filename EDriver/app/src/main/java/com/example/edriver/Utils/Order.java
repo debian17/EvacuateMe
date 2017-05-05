@@ -13,7 +13,9 @@ public class Order {
     private Double longitude;
     private String phone;
     private int order_id;
-    private String comment;
+    private String car_model;
+    private String car_colour;
+    private Double distance;
     private int order_status;
 
     public static final int Awaiting = 0;
@@ -63,11 +65,27 @@ public class Order {
         this.order_id = order_id;
     }
 
-    public String getComment() {
-        return comment;
+    public String getCar_model() {
+        return car_model;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setCar_model(String car_model) {
+        this.car_model = car_model;
+    }
+
+    public String getCar_colour() {
+        return car_colour;
+    }
+
+    public void setCar_colour(String car_colour) {
+        this.car_colour = car_colour;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
     }
 }

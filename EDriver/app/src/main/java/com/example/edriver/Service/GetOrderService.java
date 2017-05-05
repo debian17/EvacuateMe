@@ -89,7 +89,9 @@ public class GetOrderService extends Service {
                                     order.setLatitude(response.body().latitude);
                                     order.setLongitude(response.body().longitude);
                                     order.setPhone(response.body().clientPhone);
-                                    order.setComment(response.body().comment);
+                                    order.setCar_model(response.body().car_model);
+                                    order.setCar_colour(response.body().car_colour);
+                                    order.setDistance(response.body().distance);
                                     order.setOrder_status(Order.Awaiting);
                                     if(NavigationDrawerActivity.active){
                                         Intent intent = new Intent(MyAction.Order);
