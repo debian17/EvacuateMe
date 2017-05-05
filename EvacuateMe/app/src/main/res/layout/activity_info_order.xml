@@ -32,25 +32,36 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Комментарий к заказу:"
-            android:id="@+id/comment_TV"/>
+            android:text="Укажите марку автомобиля:"
+            android:id="@+id/model_TV"/>
         <EditText
             android:inputType="textMultiLine"
-            android:lines="8"
-            android:minLines="6"
-            android:gravity="top|left"
-            android:maxLines="10"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:scrollbars="vertical"
-            android:id="@+id/comment_ET"
-            android:layout_below="@id/comment_TV"/>
+            android:id="@+id/car_model_ET"
+            android:layout_below="@id/model_TV"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Укажите марку автомобиля:"
+            android:id="@+id/colour_TV"
+            android:layout_below="@id/car_model_ET"/>
+        <EditText
+            android:inputType="textMultiLine"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:scrollbars="vertical"
+            android:id="@+id/car_colour_ET"
+            android:layout_below="@id/colour_TV"/>
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Найти эвакуатор"
             android:id="@+id/get_list_evacuator_BTN"
-            android:layout_below="@id/comment_ET"
+            android:layout_below="@id/car_colour_ET"
             android:layout_centerHorizontal="true"/>
     </RelativeLayout>
 

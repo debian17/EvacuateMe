@@ -11,7 +11,8 @@ public class Client {
 
     private Double latitude;
     private Double longitude;
-    private String comment;
+    private String car_model;
+    private String car_colour;
     private int car_type;
 
     public Double getLatitude() {
@@ -30,12 +31,20 @@ public class Client {
         this.longitude = longitude;
     }
 
-    public String getComment() {
-        return comment;
+    public String getCar_model() {
+        return car_model;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public void setCar_model(String car_model) {
+        this.car_model = car_model;
+    }
+
+    public String getCar_colour() {
+        return car_colour;
+    }
+
+    public void setCar_colour(String car_colour) {
+        this.car_colour = car_colour;
     }
 
     public int getCar_type() {

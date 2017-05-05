@@ -52,7 +52,8 @@ public class CreateOrderAsync extends AsyncTask<Void, Void, Response<OrderData>>
         jsonObject.addProperty("car_type", client.getCar_type());
         jsonObject.addProperty("company_id", worker.getCompany_id());
         jsonObject.addProperty("worker_id", worker.getWorker_id());
-        jsonObject.addProperty("commentary", client.getComment());
+        jsonObject.addProperty("car_model", client.getCar_model());
+        jsonObject.addProperty("car_colour", client.getCar_colour());
         try {
             return App.getApi().createOrder(api_ley, jsonObject).execute();
         } catch (IOException e) {

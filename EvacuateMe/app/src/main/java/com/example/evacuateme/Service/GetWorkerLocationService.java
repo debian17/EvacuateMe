@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.example.evacuateme.Model.WorkerLocation;
 import com.example.evacuateme.Utils.App;
@@ -36,6 +37,7 @@ public class GetWorkerLocationService extends Service {
         sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
         api_key = sharedPreferences.getString("api_key","");
         worker = Worker.getInstance();
+        Log.d("GWLS", "CREATE");
     }
 
     @Override
@@ -58,6 +60,7 @@ public class GetWorkerLocationService extends Service {
         super.onDestroy();
         timerTask.cancel();
         timer.cancel();
+        Log.d("GWLS", "DESTROY");
     }
 
     private void Run(){
@@ -71,6 +74,7 @@ public class GetWorkerLocationService extends Service {
                             if(response == null){
                                 return;
                             }
+                            Log.d("GWLS", "WORK");
                             switch (response.code()){
                                 case STATUS.Ok:{
                                     worker.setLatitude(response.body().latitude);

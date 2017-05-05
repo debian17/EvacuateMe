@@ -36,7 +36,8 @@ public class InfoOrderActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private CarTypeAdapter carTypeAdapter;
     private SharedPreferences sharedPreferences;
-    private EditText comment_ET;
+    private EditText car_model_ET;
+    private EditText car_colour_ET;
     private Client client;
 
     @Override
@@ -48,7 +49,9 @@ public class InfoOrderActivity extends AppCompatActivity {
         if(intent !=null){
             get_list_evacuator_BTN = (Button) findViewById(R.id.get_list_evacuator_BTN);
             category_RV = (RecyclerView) findViewById(R.id.category_RV);
-            comment_ET = (EditText) findViewById(R.id.comment_ET);
+            car_model_ET = (EditText) findViewById(R.id.car_model_ET);
+            car_colour_ET = (EditText) findViewById(R.id.car_colour_ET);
+
             linearLayoutManager = new LinearLayoutManager(this);
             category_RV.setLayoutManager(linearLayoutManager);
             String temp = intent.getStringExtra("car_list");
@@ -59,26 +62,42 @@ public class InfoOrderActivity extends AppCompatActivity {
             get_list_evacuator_BTN.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
-                    String api_key = sharedPreferences.getString("api_key", "");
-                    GetCompaniesAsync getCompaniesAsync = new GetCompaniesAsync(InfoOrderActivity.this,
-                            api_key, client.getCar_type(), new GetCompaniesCallBack() {
-                        @Override
-                        public void completed(boolean result, List<Companies> list_companies) {
-                            if(result){
-                                Intent intent = new Intent(InfoOrderActivity.this, CompaniesListActivity.class);
-                                intent.putExtra("list_companies", new Gson().toJson(list_companies));
-                                client.setComment(comment_ET.getText().toString());
-                                startActivity(intent);
+                    if(!isEmptyET()){
+                        sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
+                        String api_key = sharedPreferences.getString("api_key", "");
+                        GetCompaniesAsync getCompaniesAsync = new GetCompaniesAsync(InfoOrderActivity.this,
+                                api_key, client.getCar_type(), new GetCompaniesCallBack() {
+                            @Override
+                            public void completed(boolean result, List<Companies> list_companies) {
+                                if(result){
+                                    Intent intent = new Intent(InfoOrderActivity.this, CompaniesListActivity.class);
+                                    intent.putExtra("list_companies", new Gson().toJson(list_companies));
+                                    client.setCar_model(car_model_ET.getText().toString());
+                                    client.setCar_colour(car_colour_ET.getText().toString());
+                                    startActivity(intent);
+                                }
+                                else {
+                                    Toast.makeText(InfoOrderActivity.this, "Для данной категории нет свободных эвакуаторов!", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                            else {
-                                Toast.makeText(InfoOrderActivity.this, "Для данной категории нет свободных эвакуаторов!", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                    getCompaniesAsync.execute();
+                        });
+                        getCompaniesAsync.execute();
+                    }
+                    else {
+                        Toast.makeText(InfoOrderActivity.this, "Для заказа необходимо заполнить все поля!", Toast.LENGTH_SHORT)
+                                .show();
+                    }
                 }
             });
+        }
+    }
+
+    private boolean isEmptyET(){
+        if(car_model_ET.getText().toString().equals("") || car_colour_ET.getText().toString().equals("")){
+            return true;
+        }
+        else {
+            return false;
         }
     }
 }

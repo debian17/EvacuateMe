@@ -1,5 +1,6 @@
 package com.example.evacuateme.Activity;
 
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +26,8 @@ import com.example.evacuateme.Fragment.TestFragment;
 import com.example.evacuateme.Interface.GetOrderHistoryCallBack;
 import com.example.evacuateme.Model.OrderHistory;
 import com.example.evacuateme.R;
+import com.example.evacuateme.Service.CheckOrderStatusService;
+import com.example.evacuateme.Service.GetWorkerLocationService;
 import com.example.evacuateme.Utils.Gps;
 import com.example.evacuateme.Utils.Net;
 import com.google.gson.Gson;
@@ -36,6 +39,8 @@ public class NavigationDrawerActivity extends AppCompatActivity
     private SharedPreferences sharedPreferences;
     private FragmentTransaction fragmentTransaction;
     private boolean isMapAttached = false;
+    public static boolean active;
+    private NotificationManager notificationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,5 +166,31 @@ public class NavigationDrawerActivity extends AppCompatActivity
         Intent intent = new Intent(NavigationDrawerActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        active = true;
+        Log.d("LOG_ACTIVITY", String.valueOf(NavigationDrawerActivity.active));
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        active = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        Intent service_intent = new Intent(NavigationDrawerActivity.this, GetWorkerLocationService.class);
+//        stopService(service_intent);
+//        Intent status_service = new Intent(NavigationDrawerActivity.this, CheckOrderStatusService.class);
+//        stopService(status_service);
     }
 }

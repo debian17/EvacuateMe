@@ -142,7 +142,8 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                         .zoom(zoom)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                map.moveCamera(cameraUpdate);
+                //map.moveCamera(cameraUpdate);
+                map.animateCamera(cameraUpdate);
                 map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(), client.getLongitude())));
             }
             else {
@@ -331,7 +332,8 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                         .zoom(zoom)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                map.moveCamera(cameraUpdate);
+                map.animateCamera(cameraUpdate);
+                //map.moveCamera(cameraUpdate);
             }
             map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(),
                     client.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
@@ -353,7 +355,8 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                         .zoom(zoom)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                map.moveCamera(cameraUpdate);
+                //map.moveCamera(cameraUpdate);
+                map.animateCamera(cameraUpdate);
             }
             map.addMarker(new MarkerOptions().position(new LatLng(worker.getLatitude(),
                     worker.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
