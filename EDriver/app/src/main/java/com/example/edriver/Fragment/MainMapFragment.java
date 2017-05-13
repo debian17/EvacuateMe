@@ -7,6 +7,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.hardware.GeomagneticField;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +20,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +53,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -58,7 +65,7 @@ import retrofit2.Response;
 
 public class MainMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener,
-        android.location.LocationListener, RoutingListener {
+        android.location.LocationListener, RoutingListener, SensorEventListener {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private static int UPDATE_INTERVAL = 10; // 10 sec
@@ -76,6 +83,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private List<Polyline> polylines;
     private SharedPreferences sharedPreferences;
     private float zoom;
+    private LatLng N;
+    private float mDeclination;
+    private float[] mRotationMatrix = new float[16];
+    private SensorManager mSensorManager;
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -137,6 +148,27 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         return null;
     }
 
+    private LatLng getVector(LatLng start, LatLng end){
+        return new LatLng(end.latitude-start.latitude, end.longitude - start.longitude);
+    }
+
+    private double getVectorLength(LatLng vector){
+        return Math.sqrt((vector.latitude*vector.latitude) + (vector.longitude*vector.longitude));
+    }
+
+    private double scalarMultiplication(LatLng a, LatLng b){
+        return a.latitude*b.latitude + a.longitude*b.longitude;
+    }
+
+    private float getAngle(LatLng a, LatLng b){
+        double cos = scalarMultiplication(a, b)/(getVectorLength(a)*getVectorLength(b));
+        Log.d("COS", String.valueOf(cos));
+        Log.d("ACOS", String.valueOf(Math.acos(cos)));
+        float result = 360.0f - (float)Math.acos(cos);
+        Log.d("ANGLE", String.valueOf(result));
+        return result;
+    }
+
     private void moveCameraToMyLocation(boolean flag){
         if(myLocation!=null){
             if(map!=null){
@@ -146,12 +178,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     CameraPosition cameraPosition = new CameraPosition.Builder()
                             .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
                             .zoom(zoom)
-                            .tilt(60)
-                            .bearing(45)
+                            .bearing(360.0f)
                             .build();
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
                     map.animateCamera(cameraUpdate);
-                    //map.moveCamera(cameraUpdate);
                 }
                 map.addMarker(new MarkerOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())));
             }
@@ -197,17 +227,29 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
     }
 
-    private void DrawRoute(){
+    private void DrawRoute(boolean flag){
         if(map!=null){
             map.clear();
-            double mLat = (order.getLatitude() + myLocation.getLatitude())/2;
-            double mLong = (order.getLongitude() + myLocation.getLongitude())/2;
-            CameraPosition cameraPosition = new CameraPosition.Builder()
-                    .target(new LatLng(mLat, mLong))
-                    .zoom(zoom)
-                    .build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-            map.moveCamera(cameraUpdate);
+            if(flag){
+//                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(new LatLngBounds(new LatLng(myLocation.getLatitude(),
+//                        myLocation.getLongitude()), new LatLng(order.getLatitude(), order.getLongitude())), 50);
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
+                        //.target(new LatLng(order.getLatitude(), order.getLongitude()))
+                        .zoom(zoom)
+                        .build();
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                map.animateCamera(cameraUpdate);
+            }
+            else{
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
+                        .zoom(zoom)
+                        .build();
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                map.animateCamera(cameraUpdate);
+            }
+
             map.addMarker(new MarkerOptions().position(new LatLng(order.getLatitude(),
                     order.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
 
@@ -230,6 +272,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         super.onCreate(savedInstanceState);
         polylines = new ArrayList<>();
         zoom = 15;
+        N = new LatLng(0.0f, 0.00000001f);
         if (checkPlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
@@ -249,7 +292,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             @Override
             public void onClick(View v) {
                 if(order.getOrder_status() == Order.OnTheWay){
-                    DrawRoute();
+                    DrawRoute(true);
                 }
                 else {
                     Location temp = getMyLocation();
@@ -274,7 +317,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             }
         });
         if(order.getOrder_status()==Order.OnTheWay){
-            DrawRoute();
+            DrawRoute(true);
         }
     }
 
@@ -308,8 +351,21 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         Toast.makeText(getContext(), "Установить GPS соединение не удалось!", Toast.LENGTH_SHORT).show();
     }
 
+
+
     @Override
     public void onLocationChanged(Location location) {
+        GeomagneticField field = new GeomagneticField(
+                (float)location.getLatitude(),
+                (float)location.getLongitude(),
+                (float)location.getAltitude(),
+                System.currentTimeMillis()
+        );
+
+        // getDeclination returns degrees
+        mDeclination = field.getDeclination();
+        Log.d("DECL", String.valueOf(mDeclination));
+
         if((location.getLatitude() == myLocation.getLatitude()) && (location.getLongitude() == myLocation.getLongitude())){
             myLocation.setNew(false);
         }
@@ -319,7 +375,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             myLocation.setNew(true);
         }
         if(order.getOrder_status()==Order.OnTheWay){
-            DrawRoute();
+            DrawRoute(false);
             return;
         }
         if(order.getOrder_status()==Order.Performing){
@@ -428,7 +484,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     break;
                 }
                 case MyAction.DrawTwoMarks:{
-                    DrawRoute();
+                    DrawRoute(true);
                     break;
                 }
                 case MyAction.StartedImplementation:{
@@ -491,8 +547,32 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         }
     };
 
+    private void updateCamera(float bearing) {
+        CameraPosition oldPos = map.getCameraPosition();
+
+        CameraPosition pos = CameraPosition.builder(oldPos).bearing(bearing).build();
+        map.moveCamera(CameraUpdateFactory.newCameraPosition(pos));
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+            SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
+            float[] orientation = new float[3];
+            SensorManager.getOrientation(mRotationMatrix, orientation);
+            float bearing = (float)Math.toDegrees(orientation[0]) + mDeclination;
+            Log.d("BEARING", String.valueOf(bearing));
+            updateCamera(bearing);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }

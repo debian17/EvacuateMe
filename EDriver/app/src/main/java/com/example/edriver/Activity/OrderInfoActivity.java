@@ -22,6 +22,7 @@ public class OrderInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_info);
 
+        setTitle("Информация о заказе");
         confirm_completion_BTN = (Button) findViewById(R.id.confirm_completion_BTN);
         info_distance_TV = (TextView) findViewById(R.id.info_distance_TV);
         info_order_id_TV = (TextView) findViewById(R.id.info_order_id_TV);
@@ -30,9 +31,9 @@ public class OrderInfoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent!=null){
             bundle = intent.getBundleExtra("data");
-            info_distance_TV.setText(String.valueOf(bundle.getDouble("distance")));
-            info_summary_TV.setText(String.valueOf(bundle.getDouble("summary")));
-            info_order_id_TV.setText(String.valueOf(bundle.getInt("order_id")));
+            info_distance_TV.setText("Дистанция = "+String.valueOf(bundle.getDouble("distance")/1000+"км"));
+            info_summary_TV.setText("Сумма заказа = "+String.valueOf(bundle.getDouble("summary")+"руб"));
+            info_order_id_TV.setText("Номер заказа: "+String.valueOf(bundle.getInt("order_id")));
         }
         else {
             String error = "Нет данных";
