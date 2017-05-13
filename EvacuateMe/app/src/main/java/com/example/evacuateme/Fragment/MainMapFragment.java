@@ -71,86 +71,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private SharedPreferences sharedPreferences;
     private float zoom;
 
-    private void checkPermission() {
-        if (ActivityCompat.checkSelfPermission(getContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getContext(),
-                android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        googleApiClient = new GoogleApiClient.Builder(getContext())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API).build();
-    }
-
-    private boolean checkPlayServices() {
-        int resultCode = GooglePlayServicesUtil
-                .isGooglePlayServicesAvailable(getActivity());
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
-                GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(),
-                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
-            } else {
-                Toast.makeText(getContext(), "Телефон не поддерживает Google Play Services!",
-                        Toast.LENGTH_LONG).show();
-                getActivity().finish();
-            }
-            return false;
-        }
-        return true;
-    }
-
-    protected void createLocationRequest() {
-        locationRequest = new LocationRequest();
-        locationRequest.setInterval(UPDATE_INTERVAL);
-        locationRequest.setFastestInterval(FATEST_INTERVAL);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setSmallestDisplacement(DISPLACEMENT);
-    }
-
-    protected void startLocationUpdates() {
-        checkPermission();
-        LocationServices.FusedLocationApi.requestLocationUpdates(
-                googleApiClient, locationRequest, this);
-    }
-
-    protected void stopLocationUpdates() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                googleApiClient, this);
-    }
-
-    private Location getMyLocation() {
-        checkPermission();
-        if (googleApiClient.isConnected()) {
-            return LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        }
-        return null;
-    }
-
-    private void moveCameraToMyLocation(){
-            if(map!=null){
-                isLocated = true;
-                map.clear();
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(client.getLatitude(), client.getLongitude()))
-                        .zoom(zoom)
-                        .build();
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                map.animateCamera(cameraUpdate);
-                map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(), client.getLongitude())));
-            }
-            else {
-                Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!", Toast.LENGTH_SHORT).show();
-            }
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,8 +131,147 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
             }
         });
 
-        if(worker.getOrder_status() == STATUS.OnTheWay){
-            showWorkerPosition(true);
+        map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                if(worker.getOrder_status()==STATUS.OnTheWay){
+                    showWorkerPosition(true);
+                }
+            }
+        });
+    }
+
+    private void checkPermission() {
+        if (ActivityCompat.checkSelfPermission(getContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(),
+                android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+    }
+
+    private boolean checkPlayServices() {
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(getActivity());
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (GooglePlayServicesUtil.isUserRecoverableError(resultCode)) {
+                GooglePlayServicesUtil.getErrorDialog(resultCode, getActivity(),
+                        PLAY_SERVICES_RESOLUTION_REQUEST).show();
+            } else {
+                Toast.makeText(getContext(), "Телефон не поддерживает Google Play Services!",
+                        Toast.LENGTH_LONG).show();
+                getActivity().finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+    }
+
+    protected void createLocationRequest() {
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(UPDATE_INTERVAL);
+        locationRequest.setFastestInterval(FATEST_INTERVAL);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setSmallestDisplacement(DISPLACEMENT);
+    }
+
+    protected void startLocationUpdates() {
+        checkPermission();
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                googleApiClient, locationRequest, this);
+    }
+
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                googleApiClient, this);
+    }
+
+    private Location getMyLocation() {
+        checkPermission();
+        if (googleApiClient.isConnected()) {
+            return LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        }
+        return null;
+    }
+
+    //работа с картой
+
+    private void moveCameraToMyLocation(){
+        if(map!=null){
+            isLocated = true;
+            map.clear();
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(new LatLng(client.getLatitude(), client.getLongitude()))
+                    .zoom(zoom)
+                    .build();
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+            map.animateCamera(cameraUpdate, 300, new GoogleMap.CancelableCallback() {
+                @Override
+                public void onFinish() {
+
+                }
+
+                @Override
+                public void onCancel() {
+
+                }
+            });
+            map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(), client.getLongitude())));
+        }
+        else {
+            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showWorkerPosition(boolean flag){
+        if(map!=null){
+            map.clear();
+            if(flag){
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(new LatLng(client.getLatitude(), client.getLongitude()))
+                        .include(new LatLng(worker.getLatitude(), worker.getLongitude()));
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 200);
+                map.moveCamera(cameraUpdate);
+            }
+            else {
+                map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(),
+                        client.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+                map.addMarker(new MarkerOptions().position(new LatLng(worker.getLatitude(),
+                        worker.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+            }
+        }
+        else {
+            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showOrderLocation(boolean flag){
+        if(map!=null){
+            map.clear();
+            if(flag){
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(worker.getLatitude(), worker.getLongitude()))
+                        .zoom(zoom)
+                        .build();
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                map.animateCamera(cameraUpdate);
+            }
+            map.addMarker(new MarkerOptions().position(new LatLng(worker.getLatitude(),
+                    worker.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+        }
+        else {
+            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -317,50 +376,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
                 break;
             }
-        }
-    }
-
-    private void showWorkerPosition(boolean flag){
-        if(map!=null){
-            map.clear();
-            if(flag){
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(worker.getLatitude(), worker.getLongitude()))
-                        .zoom(zoom)
-                        .build();
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-//                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(new LatLngBounds(
-//                        new LatLng(client.getLatitude(), client.getLongitude()),
-//                        new LatLng(worker.getLatitude(), worker.getLongitude())),50);
-                map.animateCamera(cameraUpdate);
-            }
-            map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(),
-                    client.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-
-            map.addMarker(new MarkerOptions().position(new LatLng(worker.getLatitude(),
-                    worker.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-        }
-        else {
-            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void showOrderLocation(boolean flag){
-        if(map!=null){
-            map.clear();
-            if(flag){
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(worker.getLatitude(), worker.getLongitude()))
-                        .zoom(zoom)
-                        .build();
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                map.animateCamera(cameraUpdate);
-            }
-            map.addMarker(new MarkerOptions().position(new LatLng(worker.getLatitude(),
-                    worker.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-        }
-        else {
-            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!", Toast.LENGTH_SHORT).show();
         }
     }
 

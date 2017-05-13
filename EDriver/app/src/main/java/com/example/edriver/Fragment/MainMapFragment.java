@@ -65,7 +65,7 @@ import retrofit2.Response;
 
 public class MainMapFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener,
-        android.location.LocationListener, RoutingListener, SensorEventListener {
+        android.location.LocationListener, RoutingListener {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
     private static int UPDATE_INTERVAL = 10; // 10 sec
@@ -83,10 +83,65 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
     private List<Polyline> polylines;
     private SharedPreferences sharedPreferences;
     private float zoom;
-    private LatLng N;
-    private float mDeclination;
-    private float[] mRotationMatrix = new float[16];
-    private SensorManager mSensorManager;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        polylines = new ArrayList<>();
+        zoom = 15;
+        if (checkPlayServices()) {
+            buildGoogleApiClient();
+            createLocationRequest();
+        } else {
+            Toast.makeText(getContext(), "Google Play Services не поддерживаются данным устройством!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.main_map_fragment, container, false);
+        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        find_me_BTN = (ImageButton) view.findViewById(R.id.find_me_BTN);
+        find_me_BTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(order.getOrder_status() == Order.OnTheWay){
+                    DrawRoute(true);
+                }
+                else {
+                    Location temp = getMyLocation();
+                    myLocation.setLatitude(temp.getLatitude());
+                    myLocation.setLongitude(temp.getLongitude());
+                    moveCameraToMyLocation(true);
+                }
+            }
+        });
+        return view;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        map = googleMap;
+        map.getUiSettings().setZoomControlsEnabled(true);
+        map.getUiSettings().setCompassEnabled(true);
+        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+            @Override
+            public void onCameraMove() {
+                zoom = map.getCameraPosition().zoom;
+            }
+        });
+
+        map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+                if(order.getOrder_status()==Order.OnTheWay){
+                    DrawRoute(true);
+                }
+            }
+        });
+    }
 
     private void checkPermission() {
         if (ActivityCompat.checkSelfPermission(getContext(),
@@ -148,26 +203,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         return null;
     }
 
-    private LatLng getVector(LatLng start, LatLng end){
-        return new LatLng(end.latitude-start.latitude, end.longitude - start.longitude);
-    }
-
-    private double getVectorLength(LatLng vector){
-        return Math.sqrt((vector.latitude*vector.latitude) + (vector.longitude*vector.longitude));
-    }
-
-    private double scalarMultiplication(LatLng a, LatLng b){
-        return a.latitude*b.latitude + a.longitude*b.longitude;
-    }
-
-    private float getAngle(LatLng a, LatLng b){
-        double cos = scalarMultiplication(a, b)/(getVectorLength(a)*getVectorLength(b));
-        Log.d("COS", String.valueOf(cos));
-        Log.d("ACOS", String.valueOf(Math.acos(cos)));
-        float result = 360.0f - (float)Math.acos(cos);
-        Log.d("ANGLE", String.valueOf(result));
-        return result;
-    }
+    //работа с картой
 
     private void moveCameraToMyLocation(boolean flag){
         if(myLocation!=null){
@@ -178,10 +214,17 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     CameraPosition cameraPosition = new CameraPosition.Builder()
                             .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
                             .zoom(zoom)
-                            .bearing(360.0f)
                             .build();
                     CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                    map.animateCamera(cameraUpdate);
+                    map.animateCamera(cameraUpdate, 300, new GoogleMap.CancelableCallback() {
+                        @Override
+                        public void onFinish() {
+                        }
+
+                        @Override
+                        public void onCancel() {
+                        }
+                    });
                 }
                 map.addMarker(new MarkerOptions().position(new LatLng(myLocation.getLatitude(), myLocation.getLongitude())));
             }
@@ -194,9 +237,40 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         }
     }
 
-    @Override
-    public void onRoutingFailure(RouteException e) {
+    private void DrawRoute(boolean flag){
+        if(map!=null){
+            map.clear();
+            if(flag){
+                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                builder.include(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
+                        .include(new LatLng(order.getLatitude(), order.getLongitude()));
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 200);
+                map.moveCamera(cameraUpdate);
+            }
+            else{
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
+                        .zoom(zoom)
+                        .build();
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+                map.animateCamera(cameraUpdate);
+            }
 
+            map.addMarker(new MarkerOptions().position(new LatLng(order.getLatitude(),
+                    order.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+
+            map.addMarker(new MarkerOptions().position(new LatLng(myLocation.getLatitude(),
+                    myLocation.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+            LatLng start = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            LatLng end = new LatLng(order.getLatitude(), order.getLongitude());
+            Routing routing = new Routing.Builder().travelMode(Routing.TravelMode.DRIVING).withListener(this)
+                    .waypoints(start, end).build();
+            routing.execute();
+        }
+        else {
+            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -227,98 +301,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
 
     }
 
-    private void DrawRoute(boolean flag){
-        if(map!=null){
-            map.clear();
-            if(flag){
-//                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(new LatLngBounds(new LatLng(myLocation.getLatitude(),
-//                        myLocation.getLongitude()), new LatLng(order.getLatitude(), order.getLongitude())), 50);
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
-                        //.target(new LatLng(order.getLatitude(), order.getLongitude()))
-                        .zoom(zoom)
-                        .build();
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                map.animateCamera(cameraUpdate);
-            }
-            else{
-                CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(myLocation.getLatitude(), myLocation.getLongitude()))
-                        .zoom(zoom)
-                        .build();
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                map.animateCamera(cameraUpdate);
-            }
-
-            map.addMarker(new MarkerOptions().position(new LatLng(order.getLatitude(),
-                    order.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-
-            map.addMarker(new MarkerOptions().position(new LatLng(myLocation.getLatitude(),
-                    myLocation.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-
-            LatLng start = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            LatLng end = new LatLng(order.getLatitude(), order.getLongitude());
-            Routing routing = new Routing.Builder().travelMode(Routing.TravelMode.DRIVING).withListener(this)
-                    .waypoints(start, end).build();
-            routing.execute();
-        }
-        else {
-            Toast.makeText(getContext(), "Карта не может отобразить Ваше местоположение!", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        polylines = new ArrayList<>();
-        zoom = 15;
-        N = new LatLng(0.0f, 0.00000001f);
-        if (checkPlayServices()) {
-            buildGoogleApiClient();
-            createLocationRequest();
-        } else {
-            Toast.makeText(getContext(), "Google Play Services не поддерживаются данным устройством!", Toast.LENGTH_SHORT).show();
-        }
-    }
+    public void onRoutingFailure(RouteException e) {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.main_map_fragment, container, false);
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-        find_me_BTN = (ImageButton) view.findViewById(R.id.find_me_BTN);
-        find_me_BTN.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(order.getOrder_status() == Order.OnTheWay){
-                    DrawRoute(true);
-                }
-                else {
-                    Location temp = getMyLocation();
-                    myLocation.setLatitude(temp.getLatitude());
-                    myLocation.setLongitude(temp.getLongitude());
-                    moveCameraToMyLocation(true);
-                }
-            }
-        });
-        return view;
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        map = googleMap;
-        map.getUiSettings().setZoomControlsEnabled(true);
-        map.getUiSettings().setCompassEnabled(true);
-        map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
-            @Override
-            public void onCameraMove() {
-                zoom = map.getCameraPosition().zoom;
-            }
-        });
-        if(order.getOrder_status()==Order.OnTheWay){
-            DrawRoute(true);
-        }
     }
 
     @Override
@@ -351,21 +336,8 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         Toast.makeText(getContext(), "Установить GPS соединение не удалось!", Toast.LENGTH_SHORT).show();
     }
 
-
-
     @Override
     public void onLocationChanged(Location location) {
-        GeomagneticField field = new GeomagneticField(
-                (float)location.getLatitude(),
-                (float)location.getLongitude(),
-                (float)location.getAltitude(),
-                System.currentTimeMillis()
-        );
-
-        // getDeclination returns degrees
-        mDeclination = field.getDeclination();
-        Log.d("DECL", String.valueOf(mDeclination));
-
         if((location.getLatitude() == myLocation.getLatitude()) && (location.getLongitude() == myLocation.getLongitude())){
             myLocation.setNew(false);
         }
@@ -547,32 +519,8 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         }
     };
 
-    private void updateCamera(float bearing) {
-        CameraPosition oldPos = map.getCameraPosition();
-
-        CameraPosition pos = CameraPosition.builder(oldPos).bearing(bearing).build();
-        map.moveCamera(CameraUpdateFactory.newCameraPosition(pos));
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
-            SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
-            float[] orientation = new float[3];
-            SensorManager.getOrientation(mRotationMatrix, orientation);
-            float bearing = (float)Math.toDegrees(orientation[0]) + mDeclination;
-            Log.d("BEARING", String.valueOf(bearing));
-            updateCamera(bearing);
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 }

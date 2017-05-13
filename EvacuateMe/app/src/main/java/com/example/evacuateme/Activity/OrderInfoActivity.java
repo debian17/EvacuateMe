@@ -35,6 +35,7 @@ public class OrderInfoActivity extends AppCompatActivity {
         info_order_id_TV = (TextView) findViewById(R.id.info_order_id_TV);
         info_summary_TV = (TextView) findViewById(R.id.info_summary_TV);
         ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        ratingBar.setStepSize(1.0f);
 
         Intent intent = getIntent();
         if(intent!=null){
@@ -59,7 +60,7 @@ public class OrderInfoActivity extends AppCompatActivity {
                     sharedPreferences = getSharedPreferences("API_KEY", Context.MODE_PRIVATE);
                     String api_key = sharedPreferences.getString("api_key", "");
                     EstimateOrderAsync estimateOrderAsync = new EstimateOrderAsync(OrderInfoActivity.this,
-                            api_key, bundle.getInt("order_id"), Math.round(ratingBar.getRating()));
+                            api_key, bundle.getInt("order_id"), (int)ratingBar.getRating());
                     estimateOrderAsync.execute();
                 }
                 Intent intent = new Intent(OrderInfoActivity.this, NavigationDrawerActivity.class);
