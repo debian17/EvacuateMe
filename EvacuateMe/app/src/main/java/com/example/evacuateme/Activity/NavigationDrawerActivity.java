@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
+import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,11 +17,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.example.evacuateme.AsyncTask.GetOrderHistoryAsync;
-import com.example.evacuateme.Fragment.CarSettingsFragment;
 import com.example.evacuateme.Fragment.GpsOffFragment;
 import com.example.evacuateme.Fragment.HistoryFragment;
 import com.example.evacuateme.Fragment.MainMapFragment;
+import com.example.evacuateme.Fragment.TestFragment;
 import com.example.evacuateme.Interface.GetOrderHistoryCallBack;
 import com.example.evacuateme.Model.OrderHistory;
 import com.example.evacuateme.R;
@@ -28,6 +31,7 @@ import com.example.evacuateme.Service.GetWorkerLocationService;
 import com.example.evacuateme.Utils.Gps;
 import com.example.evacuateme.Utils.Net;
 import com.google.gson.Gson;
+
 import java.util.List;
 
 public class NavigationDrawerActivity extends AppCompatActivity
@@ -108,11 +112,14 @@ public class NavigationDrawerActivity extends AppCompatActivity
                 getOrderHistoryAsync.execute();
                 break;
             }
-            case R.id.nav_settings:{
+            case R.id.nav_test:{
                 isMapAttached = false;
                 fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                CarSettingsFragment carSettingsFragment = new CarSettingsFragment();
-                fragmentTransaction.replace(R.id.main_container_fragment, carSettingsFragment).commit();
+                TestFragment testFragment = new TestFragment();
+                fragmentTransaction.replace(R.id.main_container_fragment, testFragment).commit();
+                break;
+            }
+            case R.id.nav_settings:{
                 break;
             }
             case R.id.nav_exit:{
@@ -165,6 +172,7 @@ public class NavigationDrawerActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         active = true;
+        Log.d("LOG_ACTIVITY", String.valueOf(NavigationDrawerActivity.active));
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -180,9 +188,9 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Intent service_intent = new Intent(NavigationDrawerActivity.this, GetWorkerLocationService.class);
-        stopService(service_intent);
-        Intent status_service = new Intent(NavigationDrawerActivity.this, CheckOrderStatusService.class);
-        stopService(status_service);
+//        Intent service_intent = new Intent(NavigationDrawerActivity.this, GetWorkerLocationService.class);
+//        stopService(service_intent);
+//        Intent status_service = new Intent(NavigationDrawerActivity.this, CheckOrderStatusService.class);
+//        stopService(status_service);
     }
 }
