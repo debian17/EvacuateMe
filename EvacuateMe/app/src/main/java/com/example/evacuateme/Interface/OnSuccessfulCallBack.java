@@ -1,5 +1,5 @@
 package com.example.evacuateme.Interface;
 
-public interface ChangeOrderStatusCallBack {
+public interface OnSuccessfulCallBack {
     public void completed(boolean result);
 }
