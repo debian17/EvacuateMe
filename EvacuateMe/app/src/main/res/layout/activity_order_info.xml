@@ -10,7 +10,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ИНФА О ЗАКАЗЕ!"
+        android:text="ИНФОРМАЦИЯ О ЗАКАЗЕ!"
         android:id="@+id/textView"/>
 
     <TextView
@@ -27,28 +27,27 @@
         android:layout_height="wrap_content"
         android:id="@+id/info_distance_TV"
         android:text="Дистанция"
+        android:layout_marginTop="19dp"
         android:layout_below="@+id/info_order_id_TV"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="33dp"/>
+        android:layout_alignParentStart="true"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/info_summary_TV"
         android:text="Сумма заказа"
+        android:layout_marginTop="16dp"
         android:layout_below="@+id/info_distance_TV"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="23dp"/>
+        android:layout_alignParentStart="true"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/info_company_TV"
         android:text="Название фирмы"
-        android:layout_marginTop="26dp"
+        android:layout_marginTop="18dp"
         android:layout_below="@+id/info_summary_TV"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="11dp"/>
+        android:layout_alignParentStart="true"/>
 
     <Button
         android:layout_width="wrap_content"

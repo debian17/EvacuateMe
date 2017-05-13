@@ -30,6 +30,7 @@ public class CompaniesListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_companies_list);
+        setTitle("Компании");
         Intent intent = getIntent();
         if(intent!=null){
             companies_RV = (RecyclerView) findViewById(R.id.companies_RV);

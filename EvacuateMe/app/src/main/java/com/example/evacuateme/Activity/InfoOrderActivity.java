@@ -44,6 +44,7 @@ public class InfoOrderActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_order);
+        setTitle("Формирование заказа");
         client = Client.getInstance();
         Intent intent = getIntent();
         if(intent !=null){

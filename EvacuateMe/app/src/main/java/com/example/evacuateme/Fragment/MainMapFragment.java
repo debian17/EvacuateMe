@@ -45,6 +45,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -142,7 +143,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                         .zoom(zoom)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                //map.moveCamera(cameraUpdate);
                 map.animateCamera(cameraUpdate);
                 map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(), client.getLongitude())));
             }
@@ -157,6 +157,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         client = Client.getInstance();
         worker = Worker.getInstance();
         zoom = 15;
+        getActivity().setTitle("EvacuateMe");
         if (checkPlayServices()) {
             buildGoogleApiClient();
             createLocationRequest();
@@ -209,11 +210,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 zoom = map.getCameraPosition().zoom;
             }
         });
-        switch (worker.getOrder_status()){
-            case STATUS.OnTheWay:{
-                showWorkerPosition(true);
-                break;
-            }
+
+        if(worker.getOrder_status() == STATUS.OnTheWay){
+            showWorkerPosition(true);
         }
     }
 
@@ -325,15 +324,15 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         if(map!=null){
             map.clear();
             if(flag){
-                double mLat = (client.getLatitude() + worker.getLatitude())/2;
-                double mLong = (client.getLongitude() + worker.getLongitude())/2;
                 CameraPosition cameraPosition = new CameraPosition.Builder()
-                        .target(new LatLng(mLat, mLong))
+                        .target(new LatLng(worker.getLatitude(), worker.getLongitude()))
                         .zoom(zoom)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+//                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(new LatLngBounds(
+//                        new LatLng(client.getLatitude(), client.getLongitude()),
+//                        new LatLng(worker.getLatitude(), worker.getLongitude())),50);
                 map.animateCamera(cameraUpdate);
-                //map.moveCamera(cameraUpdate);
             }
             map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(),
                     client.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
@@ -355,7 +354,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                         .zoom(zoom)
                         .build();
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
-                //map.moveCamera(cameraUpdate);
                 map.animateCamera(cameraUpdate);
             }
             map.addMarker(new MarkerOptions().position(new LatLng(worker.getLatitude(),

@@ -40,9 +40,9 @@ public class OrderInfoActivity extends AppCompatActivity {
         if(intent!=null){
             bundle = intent.getBundleExtra("data");
             info_company_TV.setText(bundle.getString("company"));
-            info_distance_TV.setText(String.valueOf(bundle.getDouble("distance")/1000) + " КМ");
-            info_summary_TV.setText(String.valueOf(bundle.getDouble("summary") + " рублей"));
-            info_order_id_TV.setText(String.valueOf(bundle.getInt("order_id")));
+            info_distance_TV.setText("Дистанция = "+String.valueOf(bundle.getDouble("distance")/1000)+"КМ");
+            info_summary_TV.setText("Сумма заказа = "+String.valueOf(bundle.getDouble("summary")+"руб"));
+            info_order_id_TV.setText("Номер заказа: "+String.valueOf(bundle.getInt("order_id")));
         }
         else {
             String error = "Нет данных";

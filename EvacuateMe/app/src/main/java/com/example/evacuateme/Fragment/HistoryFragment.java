@@ -36,6 +36,7 @@ public class HistoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
+        getActivity().setTitle("История заказов");
         history_title_TV = (TextView) view.findViewById(R.id.history_title_TV);
         Bundle bundle = getArguments();
         if(bundle!=null){
