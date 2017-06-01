@@ -351,6 +351,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         super.onResume();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(MyAction.OrderCanceledByClient);
+        intentFilter.addAction(MyAction.OrderCanceledByWorker);
         intentFilter.addAction(MyAction.WorkerLocationChanged);
         intentFilter.addAction(MyAction.OrderConfirmed);
         intentFilter.addAction(MyAction.OrderLocationChanged);
@@ -398,6 +399,19 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                     fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
                     break;
                 }
+
+                case MyAction.OrderCanceledByWorker: {
+                    Log.d("EVENT", "Заказ отменен на карте!");
+                    Intent service_intent = new Intent(getContext(), GetWorkerLocationService.class);
+                    getContext().stopService(service_intent);
+                    Intent status_service = new Intent(getContext(), CheckOrderStatusService.class);
+                    getContext().stopService(status_service);
+                    StartFragment startFragment = new StartFragment();
+                    fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+                    break;
+                }
+
                 case MyAction.WorkerLocationChanged:{
                     showWorkerPosition(false);
                     break;
