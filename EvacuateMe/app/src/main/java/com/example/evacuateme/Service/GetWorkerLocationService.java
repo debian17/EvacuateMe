@@ -47,6 +47,7 @@ public class GetWorkerLocationService extends Service {
         timerTask = new TimerTask() {
             @Override
             public void run() {
+                Log.d("WLS", "Проверка изменились ли координаты");
                 Run();
             }
         };

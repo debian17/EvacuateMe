@@ -241,6 +241,11 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                 builder.include(new LatLng(client.getLatitude(), client.getLongitude()))
                         .include(new LatLng(worker.getLatitude(), worker.getLongitude()));
                 CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(builder.build(), 200);
+                map.addMarker(new MarkerOptions().position(new LatLng(client.getLatitude(),
+                        client.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+                map.addMarker(new MarkerOptions().position(new LatLng(worker.getLatitude(),
+                        worker.getLongitude()))).setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
                 map.moveCamera(cameraUpdate);
             }
             else {

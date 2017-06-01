@@ -38,7 +38,7 @@
                          android:layout_height="wrap_content"
                          android:background="#DFE8EC"
                          android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true">
+                         android:layout_centerHorizontal="true">
 
             </FrameLayout>
         </RelativeLayout>

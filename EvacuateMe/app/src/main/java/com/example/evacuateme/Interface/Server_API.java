@@ -64,7 +64,7 @@ public interface Server_API {
     @GET("/api/orders/history")
     Call<List<OrderHistory>> getOrderHistory(@Header("api_key") String api_key);
 
-    @POST("api/")
+    @PUT("api/clients/car")
     Call<ResponseBody> changeCarSettings(@Header("api_key") String api_key, @Body JsonObject jsonObject);
 
 }

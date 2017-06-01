@@ -27,14 +27,18 @@ public class SignUpAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
     private String phoneNumber;
     private String name;
     private String code;
+    private String car_model;
+    private String car_colour;
     private SignUpCallBack signUpCallBack;
     private ProgressDialog progressDialog;
 
-    public SignUpAsync(Context context, String phoneNumber, String name, String code, SignUpCallBack signUpCallBack){
+    public SignUpAsync(Context context, String phoneNumber, String name, String car_model, String car_colour, String code, SignUpCallBack signUpCallBack){
         this.context = context;
         this.phoneNumber = phoneNumber;
         this.name = name;
         this.code = code;
+        this.car_colour = car_colour;
+        this.car_model = car_model;
         this.signUpCallBack = signUpCallBack;
     }
 
@@ -52,6 +56,8 @@ public class SignUpAsync extends AsyncTask<Void, Void, Response<ResponseBody>> {
     protected Response<ResponseBody> doInBackground(Void... params) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("phone", phoneNumber);
+        jsonObject.addProperty("car_model", car_model);
+        jsonObject.addProperty("car_colour", car_colour);
         jsonObject.addProperty("code", code);
         jsonObject.addProperty("name", name);
         try {

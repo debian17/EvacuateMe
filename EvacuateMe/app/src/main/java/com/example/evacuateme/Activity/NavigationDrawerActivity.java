@@ -180,9 +180,5 @@ public class NavigationDrawerActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Intent service_intent = new Intent(NavigationDrawerActivity.this, GetWorkerLocationService.class);
-        stopService(service_intent);
-        Intent status_service = new Intent(NavigationDrawerActivity.this, CheckOrderStatusService.class);
-        stopService(status_service);
     }
 }

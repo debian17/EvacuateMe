@@ -56,6 +56,7 @@ public class CheckOrderStatusService extends Service {
         timerTask = new TimerTask() {
             @Override
             public void run() {
+                Log.d("COSS", "Проверка изменился ли статус заказа");
                 Run();
             }
         };
@@ -138,12 +139,6 @@ public class CheckOrderStatusService extends Service {
                                             break;
                                         }
                                     }
-                                    break;
-                                }
-                                default:{
-                                    Intent service_intent = new Intent(CheckOrderStatusService.this, GetWorkerLocationService.class);
-                                    stopService(service_intent);
-                                    stopSelf();
                                     break;
                                 }
                             }

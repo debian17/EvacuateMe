@@ -22,6 +22,8 @@ import com.example.evacuateme.R;
 public class RegistrationFragment extends Fragment {
     private EditText input_name_ET;
     private EditText input_reg_sms_ET;
+    private EditText car_reg_model_ET;
+    private EditText car_reg_colour_ET;
     private Button signUp_BTN;
     private Bundle bundle;
     private SharedPreferences sharedPreferences;
@@ -34,6 +36,8 @@ public class RegistrationFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_registration, container, false);
         input_name_ET = (EditText) view.findViewById(R.id.input_name_ET);
         input_reg_sms_ET = (EditText) view.findViewById(R.id.input_reg_sms_ET);
+        car_reg_colour_ET = (EditText) view.findViewById(R.id.car_reg_colour_ET);
+        car_reg_model_ET = (EditText) view.findViewById(R.id.car_reg_model_ET);
         signUp_BTN = (Button) view.findViewById(R.id.signUp_BTN);
         bundle = getArguments();
         signUp_BTN.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +47,8 @@ public class RegistrationFragment extends Fragment {
                     SignUpAsync signUpAsync = new SignUpAsync(getContext(),
                             bundle.getString("phoneNumber", ""),
                             input_name_ET.getText().toString(),
+                            car_reg_model_ET.getText().toString(),
+                            car_reg_colour_ET.getText().toString(),
                             input_reg_sms_ET.getText().toString(), new SignUpCallBack() {
                         @Override
                         public void completed(boolean result, String api_key) {
@@ -55,6 +61,14 @@ public class RegistrationFragment extends Fragment {
                                 SharedPreferences.Editor editor_isLogin = sharedPreferences.edit();
                                 editor_isLogin.putBoolean("is_login", true);
                                 editor_isLogin.apply();
+                                sharedPreferences = getContext().getSharedPreferences("CAR_SETTINGS", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor_car_model = sharedPreferences.edit();
+                                editor_car_model.putString("car_model", car_reg_model_ET.getText().toString());
+                                editor_car_model.apply();
+                                sharedPreferences = getContext().getSharedPreferences("CAR_SETTINGS", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor_car_colour = sharedPreferences.edit();
+                                editor_car_colour.putString("car_colour", car_reg_colour_ET.getText().toString());
+                                editor_car_colour.apply();
                                 Intent intent = new Intent(getContext(), NavigationDrawerActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(intent);
