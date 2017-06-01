@@ -12,20 +12,32 @@
             android:layout_height="wrap_content"
             android:id="@+id/distance_order_TV"/>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/car_model_order_TV"
+            android:layout_below="@id/distance_order_TV"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/car_colour_order_TV"
+            android:layout_below="@id/car_model_order_TV"/>
+
         <Button
             android:id="@+id/confirm_order_BTN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
+
             android:layout_marginTop="12dp"
-            android:text="Подтвердить"/>
+            android:text="Подтвердить"
+            android:layout_below="@id/car_colour_order_TV"/>
 
         <Button
             android:id="@+id/refuse_order_BTN"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_marginTop="12dp"
             android:text="Отказаться"/>
     </RelativeLayout>

@@ -27,6 +27,8 @@ public class SelectionFragment extends Fragment {
     private Button confirm_order_BTN;
     private Button refuse_order_BTN;
     private TextView distance_order_TV;
+    private TextView car_model_order_TV;
+    private TextView car_colour_order_TV;
     private FragmentTransaction fragmentTransaction;
 
     public SelectionFragment() {
@@ -40,8 +42,12 @@ public class SelectionFragment extends Fragment {
         confirm_order_BTN = (Button) view.findViewById(R.id.confirm_order_BTN);
         refuse_order_BTN = (Button) view.findViewById(R.id.refuse_order_BTN);
         distance_order_TV = (TextView) view.findViewById(R.id.distance_order_TV);
+        car_model_order_TV = (TextView) view.findViewById(R.id.car_model_order_TV);
+        car_colour_order_TV = (TextView) view.findViewById(R.id.car_colour_order_TV);
         final Order order = Order.getInstance();
 
+        car_model_order_TV.setText(order.getCar_model());
+        car_colour_order_TV.setText(order.getCar_colour());
         distance_order_TV.setText(String.valueOf(order.getDistance()/1000)+" КМ");
 
         confirm_order_BTN.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +67,6 @@ public class SelectionFragment extends Fragment {
                             LocalBroadcastManager.getInstance(getContext()).sendBroadcast(markers);
                         }
                         else {
-                            Log.d("ORDER", "НЕ УДАЛОСЬ ПОДТВЕРДИТЬ");
                             Toast.makeText(getContext(), "К сожалению клиент отменил заказ!", Toast.LENGTH_SHORT).show();
                             StartFragment startFragment = new StartFragment();
                             fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();

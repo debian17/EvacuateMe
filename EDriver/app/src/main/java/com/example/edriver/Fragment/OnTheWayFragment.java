@@ -27,6 +27,7 @@ import com.example.edriver.Utils.Order;
 public class OnTheWayFragment extends Fragment {
     private Button i_am_here_BTN;
     private Button call_client_BTN;
+    private Button refuse_client_BTN;
     private FragmentTransaction fragmentTransaction;
 
     public OnTheWayFragment() {
@@ -38,6 +39,7 @@ public class OnTheWayFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_on_the_way, container, false);
 
         i_am_here_BTN = (Button) view.findViewById(R.id.i_am_here_BTN);
+        refuse_client_BTN = (Button) view.findViewById(R.id.refuse_client_BTN);
         call_client_BTN = (Button) view.findViewById(R.id.call_client_BTN);
 
         final Order order = Order.getInstance();
@@ -60,6 +62,28 @@ public class OnTheWayFragment extends Fragment {
                 changeOrderStatusAsync.execute();
             }
         });
+
+
+        refuse_client_BTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChangeOrderStatusAsync changeOrderStatusAsync = new ChangeOrderStatusAsync(getContext(), order.getOrder_id(),
+                        Order.CanceledByWorker, new ChangeOrderStatusCallBack() {
+                    @Override
+                    public void completed(boolean result) {
+                        fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                        StartFragment startFragment = new StartFragment();
+                        fragmentTransaction.replace(R.id.info_container_fragment, startFragment).commit();
+                        Intent service_intent = new Intent(getActivity(), CheckOrderStatusService.class);
+                        getActivity().stopService(service_intent);
+                        Intent intent = new Intent(MyAction.OrderCanceledByClient);
+                        LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
+                    }
+                });
+                changeOrderStatusAsync.execute();
+            }
+        });
+
 
         call_client_BTN.setOnClickListener(new View.OnClickListener() {
             @Override

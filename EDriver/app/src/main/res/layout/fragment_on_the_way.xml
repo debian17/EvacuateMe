@@ -17,6 +17,14 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/refuse_client_BTN"
+            android:text="Отказаться"
+            android:layout_below="@id/i_am_here_BTN"/>
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="Позвонить клиенту"
             android:id="@+id/call_client_BTN"/>
