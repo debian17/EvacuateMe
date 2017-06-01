@@ -46,7 +46,6 @@ public class CheckOrderStatusService extends Service {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         worker = Worker.getInstance();
         order_id = worker.getOrder_id();
-        Log.d("COSS", "CREATE "+"OID= "+String.valueOf(order_id));
     }
 
     @Override
@@ -69,7 +68,6 @@ public class CheckOrderStatusService extends Service {
         super.onDestroy();
         timerTask.cancel();
         timer.cancel();
-        Log.d("COSS", "DESTROY");
     }
 
     @Override
@@ -88,10 +86,8 @@ public class CheckOrderStatusService extends Service {
                             if(response == null){
                                 return;
                             }
-                            Log.d("COSS", "WORK = " + String.valueOf(response.code()));
                             switch (response.code()){
                                 case STATUS.Ok:{
-                                    Log.d("COSS", "WORK_STATUS "+String.valueOf(response.body().description));
                                     switch (response.body().id){
                                         case STATUS.Awaiting:{
                                             break;
@@ -114,7 +110,6 @@ public class CheckOrderStatusService extends Service {
                                         case STATUS.Performing:{
                                             if(worker.getOrder_status()!=STATUS.Performing){
                                                 worker.setOrder_status(STATUS.Performing);
-                                                Log.d("ACTIVITY", String.valueOf(NavigationDrawerActivity.active));
                                                 if(NavigationDrawerActivity.active){
                                                     Intent intent = new Intent(MyAction.OrderPerforming);
                                                     LocalBroadcastManager.getInstance(CheckOrderStatusService.this).sendBroadcast(intent);

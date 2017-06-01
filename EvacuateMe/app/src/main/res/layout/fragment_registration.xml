@@ -24,9 +24,38 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/car_reg_model_TV"
+            android:text="Укажите модель Вашего автомобиля:"
+            android:layout_below="@id/input_name_ET"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/car_reg_model_ET"
+            android:layout_below="@id/car_reg_model_TV"
+            android:hint="Mazda RX8"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/car_reg_colour_TV"
+            android:text="Укажите цвет автомобиля:"
+            android:layout_below="@id/car_reg_model_ET"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/car_reg_colour_ET"
+            android:layout_below="@id/car_reg_colour_TV"
+            android:hint="Белый"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/input_reg_sms_TV"
             android:text="Введите код из СМС:"
-            android:layout_below="@id/input_name_ET"
+            android:layout_below="@id/car_reg_colour_ET"
             android:layout_marginTop="10dp"
             />
 

@@ -52,6 +52,9 @@ public class InfoOrderActivity extends AppCompatActivity {
             category_RV = (RecyclerView) findViewById(R.id.category_RV);
             car_model_ET = (EditText) findViewById(R.id.car_model_ET);
             car_colour_ET = (EditText) findViewById(R.id.car_colour_ET);
+            sharedPreferences = getSharedPreferences("CAR_SETTINGS", Context.MODE_PRIVATE);
+            car_model_ET.setText(sharedPreferences.getString("car_model", ""));
+            car_colour_ET.setText(sharedPreferences.getString("car_colour", ""));
 
             linearLayoutManager = new LinearLayoutManager(this);
             category_RV.setLayoutManager(linearLayoutManager);

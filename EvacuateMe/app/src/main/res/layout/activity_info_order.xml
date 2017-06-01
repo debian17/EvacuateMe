@@ -50,7 +50,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Укажите марку автомобиля:"
+            android:text="Укажите цвет автомобиля:"
             android:id="@+id/colour_TV"
             android:layout_below="@id/car_model_ET"/>
         <EditText
