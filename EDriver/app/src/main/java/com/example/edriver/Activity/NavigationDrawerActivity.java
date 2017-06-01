@@ -23,7 +23,6 @@ import com.example.edriver.AsyncTask.GetOrderHistoryAsync;
 import com.example.edriver.Fragment.GpsOffFragment;
 import com.example.edriver.Fragment.HistoryFragment;
 import com.example.edriver.Fragment.MainMapFragment;
-import com.example.edriver.Fragment.TestFragment;
 import com.example.edriver.Interface.GetOrderHistoryCallBack;
 import com.example.edriver.Model.OrderHistory;
 import com.example.edriver.R;
@@ -108,13 +107,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 break;
             }
             case R.id.nav_settings:{
-                break;
-            }
-            case R.id.nav_test:{
-                isMapAttached = false;
-                fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                TestFragment testFragment = new TestFragment();
-                fragmentTransaction.replace(R.id.main_container_fragment, testFragment).commit();
                 break;
             }
             case R.id.nav_exit:{

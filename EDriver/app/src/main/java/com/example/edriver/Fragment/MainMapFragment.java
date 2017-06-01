@@ -68,9 +68,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
         android.location.LocationListener, RoutingListener {
 
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-    private static int UPDATE_INTERVAL = 10; // 10 sec
-    private static int FATEST_INTERVAL = 5; // 5 sec
-    private static int DISPLACEMENT = 5; // 10 meters
+    private static int UPDATE_INTERVAL = 0; // 10 sec
+    private static int FATEST_INTERVAL = 0; // 5 sec
+    private static int DISPLACEMENT = 0; // 10 meters
 
     private GoogleMap map;
     private GoogleApiClient googleApiClient;

@@ -4,7 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_map"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@android:drawable/ic_dialog_map"
             android:title="Карта" />
         <item
             android:id="@+id/nav_orders"
@@ -12,19 +12,15 @@
             android:title="Заказы" />
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Настройки" />
-        <item
-            android:id="@+id/nav_test"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Test" />
+            android:title="Настройки" />
     </group>
 
     <item android:title="Аккаунт">
         <menu>
             <item
                 android:id="@+id/nav_exit"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@android:drawable/ic_lock_power_off"
                 android:title="Выйти" />
         </menu>
     </item>
