@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.evacuateme.Interface.ChangeOrderStatusCallBack;
@@ -65,6 +66,7 @@ public class ChangeOrderStatusAsync extends AsyncTask<Void, Void, Response<Respo
             Toast.makeText(context, "Не удалось выполнить операцию!", Toast.LENGTH_SHORT).show();
             return;
         }
+        Log.d("ORDER_CODE", String.valueOf(responseBody.code()));
 
         switch (responseBody.code()){
             case STATUS.NotFound:{
