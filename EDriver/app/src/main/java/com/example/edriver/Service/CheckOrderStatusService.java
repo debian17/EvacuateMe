@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.example.edriver.Model.OrderStatus;
 import com.example.edriver.Utils.App;
@@ -73,11 +74,20 @@ public class CheckOrderStatusService extends Service {
                             }
                             switch (response.code()){
                                 case STATUS.Ok:{
+                                    Log.d("ORDER_STATUS", String.valueOf(response.body().id));
                                     switch (response.body().id){
                                         case Order.CanceledByClient:{
                                             order.setOrder_status(Order.CanceledByClient);
                                             Intent intent = new Intent(MyAction.OrderCanceledByClient);
-                                            intent.putExtra("canceled", true);
+                                            LocalBroadcastManager.getInstance(CheckOrderStatusService.this).sendBroadcast(intent);
+                                            stopSelf();
+                                            break;
+                                        }
+
+                                        case Order.Completed:{
+                                            Log.d("ORDER", "COMPLETED");
+                                            order.setOrder_status(Order.Completed);
+                                            Intent intent = new Intent(MyAction.OrderCompleted);
                                             LocalBroadcastManager.getInstance(CheckOrderStatusService.this).sendBroadcast(intent);
                                             stopSelf();
                                             break;

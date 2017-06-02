@@ -53,8 +53,8 @@ public class OnTheWayFragment extends Fragment {
                         fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
                         PerformingFragment performingFragment = new PerformingFragment();
                         fragmentTransaction.replace(R.id.info_container_fragment, performingFragment).commit();
-                        Intent service_intent = new Intent(getActivity(), CheckOrderStatusService.class);
-                        getActivity().stopService(service_intent);
+//                        Intent service_intent = new Intent(getActivity(), CheckOrderStatusService.class);
+//                        getActivity().stopService(service_intent);
                         Intent intent = new Intent(MyAction.StartedImplementation);
                         LocalBroadcastManager.getInstance(getContext()).sendBroadcast(intent);
                     }
@@ -62,7 +62,6 @@ public class OnTheWayFragment extends Fragment {
                 changeOrderStatusAsync.execute();
             }
         });
-
 
         refuse_client_BTN.setOnClickListener(new View.OnClickListener() {
             @Override

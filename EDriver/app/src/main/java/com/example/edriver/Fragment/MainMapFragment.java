@@ -470,7 +470,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback, Goo
                         @Override
                         public void onResponse(Call<OrderInfo> call, Response<OrderInfo> response) {
                             if(response==null){
-                                Toast.makeText(getContext(), "Получить информацию о заказе не удалось! Свяжитесь с водитилем!",
+                                Toast.makeText(getContext(), "Получить информацию о заказе не удалось!",
                                         Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(getContext(), NavigationDrawerActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

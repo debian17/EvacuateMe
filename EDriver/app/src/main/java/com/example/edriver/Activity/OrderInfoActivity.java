@@ -1,14 +1,20 @@
 package com.example.edriver.Activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.edriver.AsyncTask.ChangeOrderStatusAsync;
+import com.example.edriver.AsyncTask.ChangeStatusAsync;
+import com.example.edriver.Interface.ChangeStatusCallBack;
 import com.example.edriver.R;
 import com.example.edriver.Service.GetOrderService;
+import com.example.edriver.Utils.STATUS;
 
 public class OrderInfoActivity extends AppCompatActivity {
     private Bundle bundle;
@@ -48,7 +54,15 @@ public class OrderInfoActivity extends AppCompatActivity {
                 Intent intent = new Intent(OrderInfoActivity.this, NavigationDrawerActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 Intent service_intent = new Intent(OrderInfoActivity.this, GetOrderService.class);
+                Log.d("S", "SERVICE_INTENT");
                 startService(service_intent);
+                ChangeStatusAsync changeStatusAsync = new ChangeStatusAsync(OrderInfoActivity.this, STATUS.Working,
+                        new ChangeStatusCallBack() {
+                            @Override
+                            public void completed(boolean result) {
+                            }
+                        });
+                changeStatusAsync.execute();
                 startActivity(intent);
             }
         });

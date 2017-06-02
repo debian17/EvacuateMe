@@ -45,6 +45,7 @@ public class GetOrderService extends Service {
         api_key = sharedPreferences.getString("api_key", "");
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         order = Order.getInstance();
+        Log.d("GOS", "STARTED");
     }
 
     @Override
