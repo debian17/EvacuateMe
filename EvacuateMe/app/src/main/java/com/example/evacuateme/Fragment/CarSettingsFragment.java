@@ -33,6 +33,8 @@ public class CarSettingsFragment extends Fragment {
         car_settings_colour_ET = (EditText) view.findViewById(R.id.car_settings_colour_ET);
         change_settings_BTN = (Button) view.findViewById(R.id.change_settings_BTN);
 
+        getActivity().setTitle("Настройки");
+
         sharedPreferences = getContext().getSharedPreferences("CAR_SETTINGS", Context.MODE_PRIVATE);
         car_settings_model_ET.setText(sharedPreferences.getString("car_model", ""));
         car_settings_colour_ET.setText(sharedPreferences.getString("car_colour", ""));
