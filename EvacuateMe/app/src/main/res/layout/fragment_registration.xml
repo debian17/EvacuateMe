@@ -3,79 +3,76 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.evacuateme.Fragment.RegistrationFragment">
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="25dp"
+        android:layout_marginLeft="25dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Введите Вашем имя:"
-            android:id="@+id/input_name_TV"/>
+            android:text="РЕГИСТРАЦИЯ"
+            android:id="@+id/reg"
+            android:textSize="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/input_name_TV"
+            android:layout_below="@id/reg"
             android:id="@+id/input_name_ET"
-            android:hint="Иван"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/car_reg_model_TV"
-            android:text="Укажите модель Вашего автомобиля:"
-            android:layout_below="@id/input_name_ET"
+            android:hint="Ваше имя"
+            android:textSize="20dp"
+            android:layout_marginTop="20dp"
             />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/car_reg_model_ET"
-            android:layout_below="@id/car_reg_model_TV"
-            android:hint="Mazda RX8"/>
+            android:layout_below="@id/input_name_ET"
+            android:hint="Марка автомобиля"
+            android:textSize="20dp"
+            android:layout_marginTop="10dp"
+            />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/car_reg_colour_TV"
-            android:text="Укажите цвет автомобиля:"
-            android:layout_below="@id/car_reg_model_ET"/>
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/car_reg_colour_ET"
-            android:layout_below="@id/car_reg_colour_TV"
-            android:hint="Белый"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/input_reg_sms_TV"
-            android:text="Введите код из СМС:"
-            android:layout_below="@id/car_reg_colour_ET"
+            android:layout_below="@id/car_reg_model_ET"
+            android:hint="Цвет автомобиля"
             android:layout_marginTop="10dp"
             />
+
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/input_reg_sms_ET"
-            android:layout_below="@id/input_reg_sms_TV"
-            android:hint="1234"
-            android:inputType="number"/>
+            android:layout_below="@id/car_reg_colour_ET"
+            android:hint="Код из СМС"
+            android:inputType="number"
+            android:layout_marginTop="10dp"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Вход в приложение"
+            android:text="ЗАРЕГИСТРИРОВАТЬСЯ"
             android:id="@+id/signUp_BTN"
-            android:layout_below="@id/input_reg_sms_ET"/>
-
-
+            android:layout_below="@id/input_reg_sms_ET"
+            android:background="#5AC1E2"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>
 
+    </ScrollView>
 </FrameLayout>

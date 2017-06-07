@@ -44,8 +44,7 @@ public class HistoryFragment extends Fragment {
             Type type = new TypeToken<List<OrderHistory>>(){}.getType();
             items = new Gson().fromJson(temp, type);
             if(!items.isEmpty()){
-                Log.d("HF", items.get(0).beginning_time);
-                history_title_TV.setText("История заказов");
+                history_title_TV.setText("");
                 historyRV = (RecyclerView) view.findViewById(R.id.orders_history_RV);
                 linearLayoutManager = new LinearLayoutManager(getContext());
                 historyRV.setLayoutManager(linearLayoutManager);

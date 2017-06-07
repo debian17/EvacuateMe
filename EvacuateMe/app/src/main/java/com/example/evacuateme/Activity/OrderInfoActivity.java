@@ -34,15 +34,15 @@ public class OrderInfoActivity extends AppCompatActivity {
         info_distance_TV = (TextView) findViewById(R.id.info_distance_TV);
         info_order_id_TV = (TextView) findViewById(R.id.info_order_id_TV);
         info_summary_TV = (TextView) findViewById(R.id.info_summary_TV);
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        ratingBar = (RatingBar) findViewById(R.id.make_rate_RB);
         ratingBar.setStepSize(1.0f);
 
         Intent intent = getIntent();
         if(intent!=null){
             bundle = intent.getBundleExtra("data");
-            info_company_TV.setText(bundle.getString("company"));
-            info_distance_TV.setText("Дистанция = "+String.valueOf(bundle.getDouble("distance")/1000)+"КМ");
-            info_summary_TV.setText("Сумма заказа = "+String.valueOf(bundle.getDouble("summary")+"руб"));
+            info_company_TV.setText("Компания: "+bundle.getString("company"));
+            info_distance_TV.setText("Расстояние: "+String.valueOf(bundle.getDouble("distance")/1000)+" км");
+            info_summary_TV.setText("Сумма заказа: "+String.valueOf(bundle.getDouble("summary")+"руб"));
             info_order_id_TV.setText("Номер заказа: "+String.valueOf(bundle.getInt("order_id")));
         }
         else {

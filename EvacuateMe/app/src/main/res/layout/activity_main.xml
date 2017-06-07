@@ -5,7 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.evacuateme.Activity.MainActivity">
+    tools:context="com.example.evacuateme.Activity.MainActivity"
+    android:layout_marginLeft="25dp"
+    android:layout_marginRight="25dp">
 
     <TextView
         android:layout_width="wrap_content"
@@ -13,30 +15,30 @@
         android:text="Приветствуем Вас!"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/hi_TV"/>
+        android:id="@+id/hi_TV"
+        android:textSize="20dp"
+        android:layout_marginTop="25dp"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Введите номер телефона:"
-        android:layout_below="@id/hi_TV"
-        android:layout_marginTop="50dp"
-        android:id="@+id/number_phone_TV"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/phoneNumber_ET"
-        android:layout_below="@id/number_phone_TV"
-        android:inputType="number"/>
+        android:layout_below="@id/hi_TV"
+        android:inputType="number"
+        android:hint="Номер Вашего телефона"
+        android:layout_marginTop="25dp"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/start_BTN"
         android:text="Начать использование!"
         android:layout_below="@id/phoneNumber_ET"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="#5AC1E2"
+        android:textColor="#FFFFFF"
         />
 
 </RelativeLayout>

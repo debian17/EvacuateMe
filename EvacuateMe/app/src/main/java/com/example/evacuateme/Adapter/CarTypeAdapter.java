@@ -53,7 +53,7 @@ public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.ViewHold
         final CarType carType = items.get(position);
         holder.car_type_name.setText(carType.name);
         if(position==0){
-            holder.itemView.setBackgroundColor(Color.GREEN);
+            holder.itemView.setBackgroundColor(Color.parseColor("#5AC1E2"));
             elemView = holder.itemView;
             client.setCar_type(carType.id);
         }
@@ -61,7 +61,7 @@ public class CarTypeAdapter extends RecyclerView.Adapter<CarTypeAdapter.ViewHold
             @Override
             public void onClick(View v) {
                 elemView.setBackgroundColor(Color.WHITE);
-                holder.itemView.setBackgroundColor(Color.GREEN);
+                holder.itemView.setBackgroundColor(Color.parseColor("#5AC1E2"));
                 elemView = holder.itemView;
                 client.setCar_type(carType.id);
             }

@@ -10,16 +10,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.evacuateme.Activity.InfoOrderActivity">
+    tools:context="com.example.evacuateme.Activity.InfoOrderActivity"
+    android:layout_marginRight="20dp"
+    android:layout_marginLeft="20dp"
+    android:background="@color/cardview_light_background">
+
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Уточните детали заказа:"
-        android:id="@+id/detail_TV"/>
+        android:text="Уточните детали заказа"
+        android:id="@+id/detail_TV"
+        android:layout_marginTop="20dp"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        />
+    </RelativeLayout>
+
 <android.support.v7.widget.RecyclerView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -37,8 +52,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Укажите марку автомобиля:"
-            android:id="@+id/model_TV"/>
+            android:text="Марка автомобиля:"
+            android:id="@+id/model_TV"
+            android:textSize="16dp"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"
+            />
+
         <EditText
             android:inputType="textMultiLine"
             android:layout_height="wrap_content"
@@ -52,7 +72,11 @@
             android:layout_height="wrap_content"
             android:text="Укажите цвет автомобиля:"
             android:id="@+id/colour_TV"
-            android:layout_below="@id/car_model_ET"/>
+            android:layout_below="@id/car_model_ET"
+            android:layout_marginTop="10dp"
+            android:textSize="16dp"
+            android:textStyle="bold"/>
+
         <EditText
             android:inputType="textMultiLine"
             android:layout_height="wrap_content"
@@ -62,12 +86,16 @@
             android:layout_below="@id/colour_TV"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Найти эвакуатор"
             android:id="@+id/get_list_evacuator_BTN"
             android:layout_below="@id/car_colour_ET"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:background="#5AC1E2"
+            android:textColor="#FFFFFF"/>
+
     </RelativeLayout>
 
 </LinearLayout>

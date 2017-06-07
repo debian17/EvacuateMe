@@ -6,7 +6,9 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+
+        >
 
         <Button
             android:id="@+id/search_evacuator_BTN"
@@ -16,6 +18,7 @@
             android:layout_centerHorizontal="true"
             android:background="#5AC1E2"
             android:textColor="#FFFFFF"
+            android:layout_marginBottom="30dp"
             />
 
     </RelativeLayout>

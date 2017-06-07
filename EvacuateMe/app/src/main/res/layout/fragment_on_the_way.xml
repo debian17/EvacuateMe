@@ -5,21 +5,30 @@
              tools:context="com.example.evacuateme.Fragment.OnTheWayFragment">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp">
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Отменить заказ"
-            android:id="@+id/refuse_order_BTN"/>
+            android:id="@+id/refuse_order_BTN"
+            android:background="#5AC1E2"
+            android:textColor="#FFFFFF"
+            android:layout_centerHorizontal="true"/>
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:text="Позвонить водителю"
-            android:id="@+id/call_worker_BTN"/>
+            android:id="@+id/call_worker_BTN"
+            android:background="#5AC1E2"
+            android:textColor="#FFFFFF"
+            android:layout_below="@id/refuse_order_BTN"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"/>
     </RelativeLayout>
 
 </FrameLayout>

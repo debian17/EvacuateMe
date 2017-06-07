@@ -43,6 +43,6 @@ public class OrderHistory {
 
     @SerializedName("rate")
     @Expose
-    public Double rate;
+    public Integer rate;
 
 }

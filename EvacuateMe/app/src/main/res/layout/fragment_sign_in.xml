@@ -5,28 +5,28 @@
     tools:context="com.example.evacuateme.Fragment.SignInFragment">
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginRight="25dp"
+    android:layout_marginLeft="25dp"
+    android:layout_marginTop="25dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Введите подтверждающий код из СМС:"
-        android:id="@+id/input_sms_TV"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/input_sms_TV"
         android:id="@+id/input_sms_ET"
-        android:hint="1234"
+        android:hint="Код из СМС сообещения"
         android:inputType="number"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Вход в приложение"
         android:id="@+id/signIn_BTN"
-        android:layout_below="@id/input_sms_ET"/>
+        android:layout_below="@id/input_sms_ET"
+        android:layout_marginTop="25dp"
+        android:background="#5AC1E2"
+        android:textColor="#FFFFFF"/>
 
 </RelativeLayout>
 

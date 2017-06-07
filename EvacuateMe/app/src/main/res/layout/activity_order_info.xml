@@ -5,67 +5,86 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.evacuateme.Activity.OrderInfoActivity">
+    tools:context="com.example.evacuateme.Activity.OrderInfoActivity"
+    android:layout_marginLeft="25dp"
+    android:layout_marginRight="25dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ИНФОРМАЦИЯ О ЗАКАЗЕ!"
-        android:id="@+id/textView"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/info_order_id_TV"
-        android:text="ID ЗАКАЗА"
-        android:layout_marginTop="21dp"
-        android:layout_below="@+id/textView"
-        android:layout_alignStart="@+id/info_company_TV"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/info_distance_TV"
-        android:text="Дистанция"
-        android:layout_marginTop="19dp"
-        android:layout_below="@+id/info_order_id_TV"
-        android:layout_alignParentStart="true"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/info_summary_TV"
-        android:text="Сумма заказа"
-        android:layout_marginTop="16dp"
-        android:layout_below="@+id/info_distance_TV"
-        android:layout_alignParentStart="true"/>
+        android:text="Ваш заказ завершен!"
+        android:id="@+id/textView"
+        android:textSize="22dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/info_company_TV"
-        android:text="Название фирмы"
-        android:layout_marginTop="18dp"
-        android:layout_below="@+id/info_summary_TV"
-        android:layout_alignParentStart="true"/>
+        android:text="Компания: "
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/textView"
+        android:layout_alignParentStart="true"
+        android:textSize="18dp"/>
 
-    <Button
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Завершить"
-        android:layout_marginTop="138dp"
-        android:id="@+id/confirm_completion_BTN"
+        android:id="@+id/info_order_id_TV"
+        android:text="Номер заказа: "
+        android:layout_marginTop="20dp"
         android:layout_below="@+id/info_company_TV"
-        android:layout_centerHorizontal="true"/>
+        android:textSize="18dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_distance_TV"
+        android:text="Дистанция:"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/info_order_id_TV"
+        android:layout_alignParentStart="true"
+        android:textSize="18dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/info_summary_TV"
+        android:text="Сумма заказа:"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/info_distance_TV"
+        android:textSize="18dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rate_pls"
+        android:text="Оцените заказ"
+        android:layout_below="@id/info_summary_TV"
+        android:textSize="18dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"/>
 
     <RatingBar
-        android:id="@+id/ratingBar"
+        android:id="@+id/make_rate_RB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/info_company_TV"
-        android:layout_marginStart="46dp"
-        android:layout_marginTop="35dp"
+        android:layout_below="@id/rate_pls"
+        android:layout_marginTop="5dp"
+        android:layout_centerHorizontal="true"
         />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Завершить"
+        android:id="@+id/confirm_completion_BTN"
+        android:layout_below="@id/make_rate_RB"
+        android:layout_centerHorizontal="true"
+        android:background="#5AC1E2"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="10dp"/>
 
 </RelativeLayout>

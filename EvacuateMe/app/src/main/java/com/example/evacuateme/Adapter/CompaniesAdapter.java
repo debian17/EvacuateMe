@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,8 @@ import com.example.evacuateme.Utils.MyAction;
 import com.example.evacuateme.Utils.STATUS;
 import com.example.evacuateme.Utils.Worker;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.ViewHolder> {
@@ -41,6 +44,8 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
         private TextView tariff;
         private TextView duration;
         private Button make_order;
+        private RatingBar ratingBar;
+        private TextView min_sum;
 
         public ViewHolder(View ItemView){
             super(ItemView);
@@ -48,6 +53,8 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
             tariff = (TextView) itemView.findViewById(R.id.tariff_TV);
             duration = (TextView) itemView.findViewById(R.id.duration_TV);
             make_order = (Button) itemView.findViewById(R.id.make_order_BTN);
+            ratingBar = (RatingBar) itemView.findViewById(R.id.companies_rate_RB);
+            min_sum = (TextView) itemView.findViewById(R.id.min_sum_TV);
         }
     }
 
@@ -83,8 +90,16 @@ public class CompaniesAdapter extends RecyclerView.Adapter<CompaniesAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Companies company = items.get(position);
         holder.company_name.setText(company.name);
-        holder.tariff.setText(String.valueOf(company.tariff));
-        holder.duration.setText(company.closestDuration);
+        holder.min_sum.setText("Заказ от: " + String.valueOf(company.minSum)+ "руб.");
+        holder.tariff.setText("Тариф: " + String.valueOf(company.tariff)+ "руб./км");
+        holder.duration.setText("Время прибытия: "+ String.valueOf(company.closestDuration));
+        holder.ratingBar.setIsIndicator(true);
+        if(company.rate == 0){
+            holder.ratingBar.setRating(0);
+        }
+        else {
+            holder.ratingBar.setRating((company.rate.floatValue()));
+        }
         holder.make_order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
