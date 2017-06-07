@@ -5,13 +5,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.edriver.Activity.OrderInfoActivity">
+    tools:context="com.example.edriver.Activity.OrderInfoActivity"
+    android:layout_marginLeft="25dp"
+    android:layout_marginRight="25dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ИНФОРМАЦИЯ О ЗАКАЗЕ!"
-        android:id="@+id/textView"/>
+        android:text="Заказа завершен!"
+        android:id="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:textSize="20dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -20,7 +25,8 @@
         android:text="ID ЗАКАЗА"
         android:layout_below="@+id/textView"
         android:layout_alignStart="@+id/confirm_completion_BTN"
-        android:layout_marginTop="18dp"/>
+        android:layout_marginTop="25dp"
+        android:textSize="18dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -29,7 +35,8 @@
         android:text="Дистанция"
         android:layout_below="@+id/info_order_id_TV"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="33dp"/>
+        android:layout_marginTop="25dp"
+        android:textSize="18dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -38,16 +45,19 @@
         android:text="Сумма заказа"
         android:layout_below="@+id/info_distance_TV"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="23dp"/>
+        android:layout_marginTop="25dp"
+        android:textSize="18dp"/>
 
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Завершить"
-        android:layout_marginTop="29dp"
+        android:layout_marginTop="25dp"
         android:id="@+id/confirm_completion_BTN"
         android:layout_below="@+id/info_summary_TV"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        android:background="#5AC1E2"
+        android:textColor="#FFFFFF"/>
 
 </RelativeLayout>

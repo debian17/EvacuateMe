@@ -5,13 +5,31 @@
              tools:context="com.example.edriver.Fragment.PerformingFragment">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp">
 
-        <Button
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Выполнение заказа"
+            android:textColor="#000000"
+            android:textSize="18dp"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/p_order"
+            android:textStyle="bold"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/complete_order_BTN"
-            android:text="Завершить заказ"/>
+            android:text="Завершить заказ"
+            android:layout_below="@id/p_order"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:background="#5AC1E2"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="30dp"/>
 
     </RelativeLayout>
 

@@ -5,29 +5,42 @@
              tools:context="com.example.edriver.Fragment.OnTheWayFragment">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:text="Погрузил"
-            android:id="@+id/i_am_here_BTN"/>
+            android:id="@+id/i_am_here_BTN"
+            android:layout_centerHorizontal="true"
+            android:background="#5AC1E2"
+            android:textColor="#FFFFFF"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:id="@+id/refuse_client_BTN"
             android:text="Отказаться"
-            android:layout_below="@id/i_am_here_BTN"/>
-
+            android:layout_below="@id/i_am_here_BTN"
+            android:layout_centerHorizontal="true"
+            android:background="#5AC1E2"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="5dp"/>
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:text="Позвонить клиенту"
-            android:id="@+id/call_client_BTN"/>
+            android:id="@+id/call_client_BTN"
+            android:layout_below="@id/refuse_client_BTN"
+            android:layout_centerHorizontal="true"
+            android:background="#5AC1E2"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="15dp"/>
+
     </RelativeLayout>
 
 </FrameLayout>

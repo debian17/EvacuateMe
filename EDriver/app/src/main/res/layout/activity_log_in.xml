@@ -5,27 +5,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.edriver.Activity.LogInActivity">
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/input_code_TV"
-        android:text="Введите проверочный код из СМС:"/>
+    tools:context="com.example.edriver.Activity.LogInActivity"
+    android:layout_marginLeft="25dp"
+    android:layout_marginRight="25dp">
     
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/input_code_ET"
         android:inputType="number"
-        android:hint="1234"
-        android:layout_below="@id/input_code_TV"/>
+        android:hint="Код из СМС сообщения"
+        android:layout_marginTop="25dp"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Вход"
         android:layout_below="@id/input_code_ET"
-        android:id="@+id/signIn_BTN"/>
+        android:id="@+id/signIn_BTN"
+        android:layout_marginTop="25dp"
+        android:background="#5AC1E2"
+        android:textColor="#FFFFFF"/>
 
 </RelativeLayout>

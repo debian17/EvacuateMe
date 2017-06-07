@@ -106,9 +106,6 @@ public class NavigationDrawerActivity extends AppCompatActivity implements Navig
                 getOrderHistoryAsync.execute();
                 break;
             }
-            case R.id.nav_settings:{
-                break;
-            }
             case R.id.nav_exit:{
                 exit();
                 break;

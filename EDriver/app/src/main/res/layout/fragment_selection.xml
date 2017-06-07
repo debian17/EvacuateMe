@@ -5,41 +5,66 @@
              tools:context="com.example.edriver.Fragment.SelectionFragment">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/distance_order_TV"/>
+        android:layout_height="match_parent"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/car_model_order_TV"
-            android:layout_below="@id/distance_order_TV"/>
+            android:text="ауди купэ"
+            android:textSize="16dp"
+            android:textColor="#000000"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/car_colour_order_TV"
-            android:layout_below="@id/car_model_order_TV"/>
+            android:layout_below="@id/car_model_order_TV"
+            android:text="белый"
+            android:textSize="16dp"
+            android:textColor="#000000"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="3dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/distance_order_TV"
+            android:layout_below="@id/car_colour_order_TV"
+            android:text="123.4КМ"
+            android:textSize="16dp"
+            android:textColor="#000000"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="3dp"
+            android:textStyle="bold"/>
 
         <Button
             android:id="@+id/confirm_order_BTN"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="5dp"
             android:text="Подтвердить"
-            android:layout_below="@id/car_colour_order_TV"/>
+            android:layout_below="@id/distance_order_TV"
+            android:layout_centerHorizontal="true"
+            android:background="#5AC1E2"
+            android:textColor="#FFFFFF"/>
 
         <Button
             android:id="@+id/refuse_order_BTN"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="12dp"
-            android:text="Отказаться"/>
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/confirm_order_BTN"
+            android:layout_centerHorizontal="true"
+            android:text="Отказаться"
+            android:background="#5AC1E2"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="30dp"/>
     </RelativeLayout>
 
 </FrameLayout>

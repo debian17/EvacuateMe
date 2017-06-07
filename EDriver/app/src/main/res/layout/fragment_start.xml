@@ -6,19 +6,20 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp">
 
         <ToggleButton
             android:id="@+id/change_status_BTN"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textOn="Закончить работу"
             android:textOff="Начать работу"
             android:layout_centerHorizontal="true"
-            android:layout_marginStart="97dp"
             android:background="#5AC1E2"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
             />
 
     </RelativeLayout>

@@ -37,8 +37,8 @@ public class OrderInfoActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent!=null){
             bundle = intent.getBundleExtra("data");
-            info_distance_TV.setText("Дистанция = "+String.valueOf(bundle.getDouble("distance")/1000+"км"));
-            info_summary_TV.setText("Сумма заказа = "+String.valueOf(bundle.getDouble("summary")+"руб"));
+            info_distance_TV.setText("Расстояние: "+String.valueOf(bundle.getDouble("distance")/1000+" км"));
+            info_summary_TV.setText("Стоимость: "+String.valueOf(bundle.getDouble("summary")+"руб"));
             info_order_id_TV.setText("Номер заказа: "+String.valueOf(bundle.getInt("order_id")));
         }
         else {
