@@ -12,7 +12,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="35dp"
-            android:text="Погрузил"
+            android:text="Прибыл на место"
             android:id="@+id/i_am_here_BTN"
             android:layout_centerHorizontal="true"
             android:background="#5AC1E2"
